@@ -6,6 +6,7 @@ import com.web.n7.model.Competition;
 import com.web.n7.model.Team;
 import com.web.n7.service.CompetitionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class CompetitionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition, @RequestParam Long organizerId) {
         Competition createdCompetition = competitionService.create(competition, organizerId);
         return ResponseEntity.ok(createdCompetition);

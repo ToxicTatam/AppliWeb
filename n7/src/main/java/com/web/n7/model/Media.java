@@ -45,5 +45,4 @@ public class Media {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-
 }

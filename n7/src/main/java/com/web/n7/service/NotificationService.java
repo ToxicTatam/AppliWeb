@@ -30,20 +30,10 @@ public class NotificationService {
         notification.setType(type);
         notification.setCreatedAt(LocalDateTime.now());
 
-        Notification savedNotification = notificationRepository.save(notification);
-
-        // Envoyer également un email si l'utilisateur a une adresse email
-        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-            try {
-                /*TO DO*/
-            } catch (Exception e) {
-                // Logger l'erreur mais ne pas bloquer le processus si l'email échoue
-                System.err.println("Erreur lors de l'envoi de l'email à " + user.getEmail() + ": " + e.getMessage());
-            }
-        }
-
-        return savedNotification;
+        return notificationRepository.save(notification);
     }
+
+
 
     private void send(String to, String subject, String body) {
         /*TO DO*/

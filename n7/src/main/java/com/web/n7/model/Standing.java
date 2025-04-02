@@ -61,4 +61,88 @@ public class Standing {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public void addGoalsFor(int goals) {
+        if (this.goalsFor == null) {
+            this.goalsFor = 0;
+        }
+        this.goalsFor += goals;
+        updateGoalDifference();
+        updateTimestamp();
+
+    }
+
+    public void addGoalsAgainst(int goals) {
+        if (this.goalsAgainst == null) {
+            this.goalsAgainst = 0;
+        }
+        this.goalsAgainst += goals;
+        updateGoalDifference();
+        updateTimestamp();
+    }
+
+    public void addWin() {
+        if (this.matchesWon == null) {
+            this.matchesWon = 0;
+        }
+        if (this.matchesPlayed == null) {
+            this.matchesPlayed = 0;
+        }
+        if (this.points == null) {
+            this.points = 0;
+        }
+
+        this.matchesWon += 1;
+        this.matchesPlayed += 1;
+        this.points += 3;
+        updateTimestamp();
+
+    }
+
+    public void addLoss() {
+        if (this.matchesLost == null) {
+            this.matchesLost = 0;
+        }
+        if (this.matchesPlayed == null) {
+            this.matchesPlayed = 0;
+        }
+
+        this.matchesLost += 1;
+        this.matchesPlayed += 1;
+        updateTimestamp();
+
+    }
+
+    public void addDraw() {
+        if (this.matchesDrawn == null) {
+            this.matchesDrawn = 0;
+        }
+        if (this.matchesPlayed == null) {
+            this.matchesPlayed = 0;
+        }
+        if (this.points == null) {
+            this.points = 0;
+        }
+
+        this.matchesDrawn += 1;
+        this.matchesPlayed += 1;
+        this.points += 1;
+        updateTimestamp();
+
+    }
+
+    public void updateGoalDifference() {
+        if (this.goalsFor == null) {
+            this.goalsFor = 0;
+        }
+        if (this.goalsAgainst == null) {
+            this.goalsAgainst = 0;
+        }
+        this.goalDifference = this.goalsFor - this.goalsAgainst;
+    }
+
+    private void updateTimestamp() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
 }

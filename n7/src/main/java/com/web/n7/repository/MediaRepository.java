@@ -11,4 +11,5 @@ public interface MediaRepository extends JpaRepository<Media, Long> {
     List<Media> findByMatchId(Long matchId);
     List<Media> findByType(MediaType type);
     List<Media> findByUploadedById(Long userId);
+
 }

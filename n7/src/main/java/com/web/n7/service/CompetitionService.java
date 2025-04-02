@@ -1,9 +1,7 @@
 package com.web.n7.service;
 
 
-import com.web.n7.model.Competition;
-import com.web.n7.model.Team;
-import com.web.n7.model.User;
+import com.web.n7.model.*;
 import com.web.n7.model.enumeration.CompetitionStatus;
 import com.web.n7.model.enumeration.CompetitionType;
 import com.web.n7.model.enumeration.NotificationType;
@@ -11,12 +9,12 @@ import com.web.n7.model.enumeration.Role;
 import com.web.n7.repository.CompetitionRepository;
 import com.web.n7.repository.TeamRepository;
 import com.web.n7.repository.UserRepository;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CompetitionService {
@@ -24,17 +22,21 @@ public class CompetitionService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final NotificationService notificationService;
+    private final MatchService matchService;
+
 
     public CompetitionService(
             CompetitionRepository competitionRepository,
             UserRepository userRepository,
             TeamRepository teamRepository,
-            NotificationService notificationService
+            NotificationService notificationService,
+            MatchService MatchService
     ) {
         this.competitionRepository = competitionRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.notificationService = notificationService;
+        this.matchService= MatchService;
     }
 
     public Competition create(Competition competition, Long organizerId) {
@@ -135,4 +137,39 @@ public class CompetitionService {
         competition.getTeams().remove(team);
         return competitionRepository.save(competition);
     }
+
+    public List<Standing> calculateStandings(Long competitionId) {
+
+
+        List<Match> matches = matchService.findByCompetitionId(competitionId);
+        Map<Long, Standing> standings = new HashMap<>();
+
+        for (Match match : matches) {
+            updateTeamStanding(standings, match.getHomeTeam().getId(), match.getHomeScore(), match.getAwayScore());
+            updateTeamStanding(standings, match.getAwayTeam().getId(), match.getAwayScore(), match.getHomeScore());
+        }
+        return new ArrayList<>(standings.values()).stream()
+                .sorted(Comparator.comparingInt(Standing::getPoints).reversed())
+                .collect(Collectors.toList());
+    }
+
+    private void updateTeamStanding(Map<Long, Standing> standings, Long teamId, int goalsFor, int goalsAgainst) {
+        Standing standing = standings.getOrDefault(teamId, new Standing());
+
+        standing.addGoalsFor(goalsFor);
+        standing.addGoalsAgainst(goalsAgainst);
+        if (goalsFor > goalsAgainst) {
+            standing.addWin();
+        } else if (goalsFor < goalsAgainst) {
+            standing.addLoss();
+        } else {
+            standing.addDraw();
+        }
+        standing.setUpdatedAt(LocalDateTime.now());
+
+        standings.put(teamId, standing);
+    }
+
+
+
 }

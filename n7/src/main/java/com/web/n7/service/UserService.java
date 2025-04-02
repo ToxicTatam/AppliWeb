@@ -64,4 +64,8 @@ public class UserService {
     public List<User> findAll() {
         return userRepository.findAll();
     }
+
+    public List<User> findAllNonAdminUsers() {
+        return userRepository.findByRoleNot(Role.ADMIN);
+    }
 }

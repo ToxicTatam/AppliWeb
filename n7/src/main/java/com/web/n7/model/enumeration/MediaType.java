@@ -1,7 +1,9 @@
 package com.web.n7.model.enumeration;
 
 public enum MediaType {
-    PHOTO,
+    IMAGE,
     VIDEO,
+    AUDIO,
     DOCUMENT
-}
+
+    }
