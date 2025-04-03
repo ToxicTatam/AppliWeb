@@ -3,6 +3,7 @@ package com.web.n7.controller;
 import com.web.n7.model.Match;
 import com.web.n7.service.MatchService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class MatchController {
         this.matchService = matchService;
     }
 
-    @PostMapping
+    @PostMapping("/save")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
     public ResponseEntity<Match> createMatch(
             @RequestBody Match match,
             @RequestParam Long competitionId,

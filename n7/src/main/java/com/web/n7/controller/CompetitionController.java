@@ -23,7 +23,7 @@ public class CompetitionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
     public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition, @RequestParam Long organizerId) {
         Competition createdCompetition = competitionService.create(competition, organizerId);
         return ResponseEntity.ok(createdCompetition);

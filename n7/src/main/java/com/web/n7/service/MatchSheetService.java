@@ -6,6 +6,7 @@ import com.web.n7.model.Match;
 import com.web.n7.model.MatchSheet;
 import com.web.n7.repository.MatchRepository;
 import com.web.n7.repository.MatchSheetRepository;
+import com.web.n7.repository.PlayerHistoryRepository;
 import com.web.n7.repository.PlayerParticipationRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +19,18 @@ public class MatchSheetService {
     private final MatchSheetRepository matchSheetRepository;
     private final MatchRepository matchRepository;
     private final PlayerParticipationRepository playerParticipationRepository;
+    private final PlayerHistoryRepository playerHistoryRepository;
 
     public MatchSheetService(
             MatchSheetRepository matchSheetRepository,
             MatchRepository matchRepository,
-            PlayerParticipationRepository playerParticipationRepository
+            PlayerParticipationRepository playerParticipationRepository,
+            PlayerHistoryRepository playerHistoryRepository
     ) {
         this.matchSheetRepository = matchSheetRepository;
         this.matchRepository = matchRepository;
         this.playerParticipationRepository = playerParticipationRepository;
+        this.playerHistoryRepository = playerHistoryRepository;
     }
 
     public MatchSheet create(Long matchId) {
