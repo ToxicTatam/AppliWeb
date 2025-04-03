@@ -16,6 +16,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for handling operations related to competitions.
+ * Provides methods to create, retrieve, update, delete, and manage competitions,
+ * teams, and standings within competitions.
+ */
 @Service
 public class CompetitionService {
     private final CompetitionRepository competitionRepository;
@@ -23,6 +28,7 @@ public class CompetitionService {
     private final TeamRepository teamRepository;
     private final NotificationService notificationService;
     private final MatchService matchService;
+
 
 
     public CompetitionService(

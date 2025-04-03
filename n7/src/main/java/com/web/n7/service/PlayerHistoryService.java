@@ -26,6 +26,7 @@ public class PlayerHistoryService {
         return playerHistoryRepository.findByMatchId(matchId);
     }
 
+
     public Map<String, Object> calculatePlayerStatistics(Long playerId) {
         List<PlayerHistory> histories = playerHistoryRepository.findByPlayerId(playerId);
 

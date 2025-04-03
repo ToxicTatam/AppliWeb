@@ -53,7 +53,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         organizer.setEmail("organizer@example.com");
         organizer.setPassword(passwordEncoder.encode("password"));
         organizer.setFirstName("John");
-        organizer.setSurName("Doe");
+        organizer.setLastName("Doe");
         organizer.setRole(Role.ORGANIZER.name());
         organizer.setCreatedAt(LocalDateTime.now());
         organizer.setUpdatedAt(LocalDateTime.now());
@@ -63,7 +63,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         coach.setEmail("coach@example.com");
         coach.setPassword(passwordEncoder.encode("password"));
         coach.setFirstName("Alice");
-        coach.setSurName("Smith");
+        coach.setLastName("Smith");
         coach.setRole(Role.COACH.name());
         coach.setCreatedAt(LocalDateTime.now());
         coach.setUpdatedAt(LocalDateTime.now());
@@ -120,8 +120,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         // Création de la feuille de match
         MatchSheet matchSheet = new MatchSheet();
         matchSheet.setMatch(match1);
-        matchSheet.setValidated(false);
-        matchSheet.setStrategy("Standard 4-4-2");
+        matchSheet.setHomeStrategy("Standard 4-4-2");
+        matchSheet.setAwayStrategy("Standard 4-3-3");
         matchSheet.setCreatedAt(LocalDateTime.now());
         matchSheet.setUpdatedAt(LocalDateTime.now());
         matchSheetRepository.save(matchSheet);

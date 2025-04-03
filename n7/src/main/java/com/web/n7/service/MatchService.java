@@ -22,17 +22,20 @@ public class MatchService {
     private final CompetitionRepository competitionRepository;
     private final TeamRepository teamRepository;
     private final NotificationService notificationService;
+    private final StandingService standingService;
 
     public MatchService(
             MatchRepository matchRepository,
             CompetitionRepository competitionRepository,
             TeamRepository teamRepository,
-            NotificationService notificationService
+            NotificationService notificationService,
+            StandingService standingService
     ) {
         this.matchRepository = matchRepository;
         this.competitionRepository = competitionRepository;
         this.teamRepository = teamRepository;
         this.notificationService = notificationService;
+        this.standingService = standingService;
     }
 
     public Match create(Match match, Long competitionId, Long homeTeamId, Long awayTeamId) {
@@ -109,6 +112,7 @@ public class MatchService {
 
         // Mettre à jour les classements
         // (Cette partie serait implémentée dans un StandingService)
+        standingService.updateStandingsAfterMatch(updatedMatch);
 
         // Envoyer des notifications aux coachs
         String resultMessage = "Résultat du match: " + match.getHomeTeam().getName() + " " +

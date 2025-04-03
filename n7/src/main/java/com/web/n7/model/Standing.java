@@ -6,11 +6,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "standings")
+@Builder
 public class Standing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +22,6 @@ public class Standing {
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
-
-//    @OneToOne
-//    @JoinColumn(name = "competition_id", nullable = false)
-//    private Competition competition;
-//
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private List<EquipeClassement> equipesClassement = new ArrayList<>();
 
     @Column(name = "matches_played")
     private Integer matchesPlayed;

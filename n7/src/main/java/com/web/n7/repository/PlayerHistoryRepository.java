@@ -12,6 +12,6 @@ public interface PlayerHistoryRepository extends JpaRepository<PlayerHistory, Lo
     List<PlayerHistory> findByMatchId(Long matchId);
    // List<PlayerHistory> findByPlayerIdAndCompetitionId(Long playerId, Long competitionId);
     @Query("SELECT ph FROM PlayerHistory ph WHERE ph.player.id = :playerId AND ph.match.competition.id = :competitionId")
-    List<PlayerHistory> findByPlayerIdAndCompetitionId(@Param("playerId") Long playerId, @Param("competitionId") Long competitionId);
+     List<PlayerHistory> findByPlayerIdAndCompetitionId(@Param("playerId") Long playerId, @Param("competitionId") Long competitionId);
 
 }

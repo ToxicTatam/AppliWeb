@@ -82,7 +82,7 @@ public class UserController {
             User existingUser = userOptional.get();
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setFirstName(updatedUser.getFirstName());
-            existingUser.setSurName(updatedUser.getSurName());
+            existingUser.setLastName(updatedUser.getLastName());
             existingUser.setRole(updatedUser.getRole());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
             existingUser.setProfilPicture(updatedUser.getProfilPicture());

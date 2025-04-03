@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
@@ -29,14 +28,14 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;// Pas besoin vraiment de gerer ca donc c'est nullable mais je conserve quand même
 
-    @Column
+    @Column(name = "user_name")
     private String userName;
 
-    @Column(nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
-    private String surName;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     @Column(nullable = false)
     private String role; // COACH, ORGANISATEUR, PLAYER, ADMIN? à voir
@@ -50,12 +49,5 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    //ORGANIZER
-//    @OneToMany(mappedBy = "organisateur", cascade = CascadeType.ALL)
-//    private List<Competition> competitions = new ArrayList<>();
-
-    //COACH
-//    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL)
-//    private List<Equipe> equipes = new ArrayList<>();
 
 }

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+import static java.lang.constant.ConstantDescs.NULL;
+
 @RestController
 @RequestMapping("/api/match-sheets")
 public class MatchSheetController {
@@ -30,9 +32,5 @@ public class MatchSheetController {
         return matchSheet.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}/validate")
-    public ResponseEntity<MatchSheet> validateMatchSheet(@PathVariable Long id) {
-        MatchSheet validatedSheet = matchSheetService.validate(id);
-        return ResponseEntity.ok(validatedSheet);
-    }
+
 }

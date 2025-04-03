@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface StandingRepository extends JpaRepository<Standing, Long> {
     List<Standing> findByCompetitionIdOrderByRankAsc(Long competitionId);
     Optional<Standing> findByCompetitionIdAndTeamId(Long competitionId, Long teamId);
+
 }

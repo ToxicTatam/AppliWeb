@@ -1,5 +1,6 @@
 package com.web.n7.model;
 
+import com.web.n7.model.enumeration.MatchSheetStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,10 +11,9 @@ import java.util.List;
 @Entity
 @Table(name = "match_sheets")
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MatchSheet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,10 @@ public class MatchSheet {
     @JoinColumn(name = "match_id", nullable = false)
     private Match match;
 
-    @Column(name = "is_validated")
-    private boolean isValidated;
+
+    @Column(name = "match_sheet_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MatchSheetStatus status;
 
     @Column(name = "validation_date")
     private LocalDateTime validationDate;
@@ -38,6 +40,11 @@ public class MatchSheet {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="strategy")
-    private String strategy;
+    @Column(name="home_strategy")
+    private String homeStrategy;
+
+    @Column(name="away_strategy")
+    private String awayStrategy;
+
+
 }

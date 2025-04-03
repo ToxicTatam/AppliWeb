@@ -14,10 +14,9 @@ import java.util.Set;
 @Entity
 @Table(name = "teams")
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

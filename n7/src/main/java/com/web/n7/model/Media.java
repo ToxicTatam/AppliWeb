@@ -8,13 +8,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "media")
+@Builder
 public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

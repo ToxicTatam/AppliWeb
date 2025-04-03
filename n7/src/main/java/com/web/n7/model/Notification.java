@@ -8,13 +8,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Table(name = "notifications")
+@Builder
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

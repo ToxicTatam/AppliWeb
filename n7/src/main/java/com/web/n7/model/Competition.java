@@ -5,6 +5,7 @@ import com.web.n7.model.enumeration.CompetitionStatus;
 import com.web.n7.model.enumeration.CompetitionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

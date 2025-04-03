@@ -9,10 +9,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "player_participations")
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PlayerParticipation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,5 +58,21 @@ public class PlayerParticipation {
 
     @Column(name = "substitution_out_time")
     private Integer substitutionOutTime; // Minute de sortie du jeu, pas obligatoire
+
+
+    public PlayerHistory toHistory(Match match) {
+        return PlayerHistory.builder()
+                .player(this.getPlayer())
+                .match(match)
+                .goalsScored(this.getGoalsScored())
+                .assists(0)
+                .minutesPlayed(this.getMinutesPlayed())
+                .yellowCards(this.getYellowCards())
+                .redCards(this.getRedCards())
+                .status(this.getStatus())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
 
 }
