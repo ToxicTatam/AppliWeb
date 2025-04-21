@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll() // Login/register endpoints
                         .requestMatchers("/api/organizer/**").hasRole("ORGANIZER")
                         .requestMatchers("/api/coach/**").hasRole("COACH")
+                        .requestMatchers("/api/teams/**").hasAnyRole("ADMIN", "ORGANIZER", "COACH")
                         .requestMatchers("/api/users/**").hasAnyRole("PLAYER", "ADMIN", "ORGANIZER", "COACH")
                         .anyRequest().authenticated() // Secure all other endpoints
                 )

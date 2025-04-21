@@ -25,6 +25,7 @@ public class Team {
     @Column(nullable = false)
     private String name;
 
+    private String description;
     private String logo;
 
     @Column(nullable = false)

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "standings")
 @Builder
+//stat of a team
 public class Standing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

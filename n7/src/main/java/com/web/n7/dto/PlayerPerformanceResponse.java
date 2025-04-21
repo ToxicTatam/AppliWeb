@@ -11,7 +11,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class PlayerPerformanceResponse {
     private Long playerId;
-    private Map<Long, CompetitionPerformance> performancesByCompetition;
+    //private Map<Long, CompetitionPerformance> performancesByCompetition;
+    private  CompetitionPerformance performancesByCompetition;
     private OverallPerformance overallStats;
 
 }

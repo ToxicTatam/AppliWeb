@@ -17,7 +17,6 @@ public class MatchRequest {
 
     @NotNull
     private String matchDate; // ISO format or LocalDateTime
-
     private String location;
     private String status; // SCHEDULED, ONGOING, COMPLETED, etc.
     private Integer homeScore;

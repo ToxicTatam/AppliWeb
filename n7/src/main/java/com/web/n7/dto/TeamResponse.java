@@ -9,6 +9,7 @@ public class TeamResponse {
     private String logo;
     private String category;
     private String coachName;
+    private String coachId;
     private String createdAt;
     private String updatedAt;
 }

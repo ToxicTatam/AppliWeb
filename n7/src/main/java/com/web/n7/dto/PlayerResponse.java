@@ -10,6 +10,7 @@ public class PlayerResponse {
     private String email;
     private String dateOfBirth;
     private String teamName;
+    private Long teamId;
     private String createdAt;
     private String updatedAt;
 }

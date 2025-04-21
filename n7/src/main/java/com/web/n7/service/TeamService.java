@@ -29,7 +29,7 @@ public class TeamService {
         }
 
 
-        team.setCoach(coach);
+       // team.setCoach(coach);
         team.setCreatedAt(LocalDateTime.now());
         team.setUpdatedAt(LocalDateTime.now());
 
