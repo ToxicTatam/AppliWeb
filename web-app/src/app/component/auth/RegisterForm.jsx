@@ -8,10 +8,12 @@ export default function RegisterForm({ onSubmit, loading }) {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
+        username: '', // Ajout du champ username
+
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'COACH', // Valeur par défaut
+        role: 'PLAYER', // Valeur par défaut
         phone: ''
     });
 
@@ -28,6 +30,12 @@ export default function RegisterForm({ onSubmit, loading }) {
         if (formData.lastName.trim().length < 2) {
             newErrors.lastName = 'Le nom doit contenir au moins 2 caractères';
         }
+
+        // Validation du username
+        if (formData.username.trim().length < 4) {
+            newErrors.username = 'Le nom d\'utilisateur doit contenir au moins 4 caractères';
+        }
+
 
         // Validation de l'email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -104,6 +112,21 @@ export default function RegisterForm({ onSubmit, loading }) {
                         error={errors.lastName}
                     />
                 </div>
+            </div>
+
+            <div>
+                <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="username"
+                    required
+                    value={formData.username}
+                    onChange={handleChange}
+                    label="Nom d'utilisateur"
+                    placeholder="Votre pseudo"
+                    error={errors.username}
+                />
             </div>
 
             <div>
