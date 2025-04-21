@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserService userService;
-    CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>  login(@Valid  @RequestBody LoginRequest loginRequest) {
