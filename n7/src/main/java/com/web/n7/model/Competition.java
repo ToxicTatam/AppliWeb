@@ -33,7 +33,6 @@ public class Competition {
 
     @Column(nullable = false)
     private String description;
-
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
