@@ -18,7 +18,7 @@ export default function RegisterPage() {
             setError('');
             setSuccess('');
 
-            const response = await fetch('/api/auth/register', {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export default function RegisterPage() {
 
             // Attendre 2 secondes avant de rediriger vers la page de connexion
             setTimeout(() => {
-                router.push('/auth/login');
+                router.push('/login');
             }, 2000);
         } catch (error) {
             setError(error.message || 'Une erreur est survenue lors de l\'inscription');

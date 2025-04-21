@@ -9,7 +9,6 @@ export default function RegisterForm({ onSubmit, loading }) {
         firstName: '',
         lastName: '',
         username: '', // Ajout du champ username
-
         email: '',
         password: '',
         confirmPassword: '',
@@ -76,7 +75,7 @@ export default function RegisterForm({ onSubmit, loading }) {
     };
 
     const roleOptions = [
-        { value: 'COACH', label: 'Coach' }
+        { value: 'PLAYER', label: 'PLAYER' }
         // Généralement, on n'autorise pas l'inscription en tant qu'admin ou organisateur directement
         // Les administrateurs pourront promouvoir les utilisateurs plus tard
     ];
