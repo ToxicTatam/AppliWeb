@@ -119,5 +119,22 @@ public class TeamController {
         return ResponseEntity.ok(createdPlayer);
     }
 
+    /**
+     * Retrieves a list of teams participating in a specific competition.
+     *
+     * @param competitionId the ID of the competition for which the teams are to be retrieved
+     * @return a ResponseEntity containing a list of teams if found, or a no content response if no teams are associated with the given competition ID
+     */
+    @GetMapping("/competition/{competitionId}")
+    public ResponseEntity<List<Team>> getTeamsByCompetition(@PathVariable Long competitionId) {
+        List<Team> teams = teamService.findByCompetition(competitionId);
+        if (teams.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(teams);
+    }
+
+
+
 
 }

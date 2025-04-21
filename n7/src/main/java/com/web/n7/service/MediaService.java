@@ -1,6 +1,7 @@
 package com.web.n7.service;
 
 import com.web.n7.model.Media;
+import com.web.n7.model.enumeration.MediaType;
 import com.web.n7.repository.MediaRepository;
 import org.springframework.stereotype.Service;
 
@@ -52,4 +53,28 @@ public class MediaService {
         existingMedia.setUploadedBy(newMediaData.getUploadedBy());
         return mediaRepository.save(existingMedia);
     }
+
+
+    public List<Media> getMediaByCompetitionOrMatch(Long competitionId, Long matchId) {
+        if (competitionId != null) {
+            return mediaRepository.findAllByCompetitionId(competitionId);
+        } else if (matchId != null) {
+            return mediaRepository.findAllByMatchId(matchId);
+        } else {
+            throw new IllegalArgumentException("Either competitionId or matchId must be provided");
+        }
+    }
+
+
+    // Méthode pour obtenir les médias par type
+    public List<Media> getMediaByType(MediaType type) {
+        return mediaRepository.findByType(type);
+    }
+
+    // Méthode pour obtenir les médias par utilisateur (uploadedBy)
+    public List<Media> getMediaByUploadedBy(Long userId) {
+        return mediaRepository.findByUploadedById(userId);
+    }
+
+
 }

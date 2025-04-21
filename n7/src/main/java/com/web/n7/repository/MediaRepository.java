@@ -7,9 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MediaRepository extends JpaRepository<Media, Long> {
-    List<Media> findByCompetitionId(Long competitionId);
-    List<Media> findByMatchId(Long matchId);
+
     List<Media> findByType(MediaType type);
     List<Media> findByUploadedById(Long userId);
+
+
+    List<Media> findAllByCompetitionId(Long competitionId);
+
+    List<Media> findAllByMatchId(Long matchId);
+
 
 }

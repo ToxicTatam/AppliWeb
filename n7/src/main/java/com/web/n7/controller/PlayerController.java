@@ -1,5 +1,6 @@
 package com.web.n7.controller;
 
+import com.web.n7.dto.PlayerPerformanceResponse;
 import com.web.n7.model.Player;
 import com.web.n7.model.PlayerHistory;
 import com.web.n7.service.PlayerPerformanceService;
@@ -63,8 +64,9 @@ public class PlayerController {
      * Endpoint: GET /api/players/{playerId}
      */
     @GetMapping("/players/{playerId}")
-    public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId) {
-        Map<String, Object> playerStats = playerHistoryService.calculatePlayerStatistics(playerId);
+   // public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId)
+    public ResponseEntity<PlayerPerformanceResponse> getPlayerProfile(@PathVariable Long playerId, @RequestParam(required = false)  Long competitionId) {
+      PlayerPerformanceResponse   playerStats= playerHistoryService.getPlayerPerformances(playerId,competitionId);
         return ResponseEntity.ok(playerStats);
     }
 

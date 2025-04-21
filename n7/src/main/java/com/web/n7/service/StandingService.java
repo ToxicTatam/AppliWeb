@@ -14,10 +14,23 @@ public class StandingService {
 
     private final StandingRepository standingRepository;
 
+    /**
+     * Constructs a new instance of the StandingService.
+     *
+     * @param standingRepository the repository used to manage standings in the database
+     */
     public StandingService(StandingRepository standingRepository) {
         this.standingRepository = standingRepository;
     }
 
+    /**
+     * Updates the standings of the respective teams after a match has been played.
+     * Adjusts the number of wins, losses, draws, goals scored, goals conceded,
+     * and other statistics for both the home team and the away team.
+     *
+     * @param match The match object containing details about the teams, competition,
+     *              and the result (home and away scores) to use for updating standings.
+     */
     public void updateStandingsAfterMatch(Match match) {
         Team homeTeam = match.getHomeTeam();
         Team awayTeam = match.getAwayTeam();
@@ -56,6 +69,14 @@ public class StandingService {
         }
     }
 
+    /**
+     * Retrieves an existing standing for the specified competition and team.
+     * If no standing exists, it creates a new standing with default values and returns it.
+     *
+     * @param competition the competition for which the standing is being retrieved or created
+     * @param team the team for which the standing is being retrieved or created
+     * @return the existing or newly created standing for the specified competition and team
+     */
     private Standing getOrCreateStanding(Competition competition, Team team) {
         return standingRepository.findByCompetitionIdAndTeamId(competition.getId(), team.getId())
                 .orElseGet(() -> Standing.builder()
