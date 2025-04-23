@@ -35,7 +35,7 @@ export default function RegisterPage() {
 
             // Attendre 2 secondes avant de rediriger vers la page de connexion
             setTimeout(() => {
-                router.push('/login');
+                router.push('/auth/login');
             }, 2000);
         } catch (error) {
             setError(error.message || 'Une erreur est survenue lors de l\'inscription');
@@ -71,7 +71,7 @@ export default function RegisterPage() {
                 <div className="text-center mt-4">
                     <p className="text-sm text-gray-600">
                         Déjà inscrit ?{' '}
-                        <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+                        <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
                             Se connecter
                         </Link>
                     </p>

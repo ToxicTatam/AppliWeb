@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Input from '@/components/ui/Input';
+import Input from '@/component/ui/Input';
 import Button from '@/component/ui/Button';
 
 export default function ForgotPasswordPage() {
