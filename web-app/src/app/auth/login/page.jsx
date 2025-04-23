@@ -5,38 +5,26 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import LoginForm from '@/component/auth/LoginForm';
+import {useAuth} from "../../hooks/useAuth";
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
+    const { login } = useAuth();
 
     const handleLogin = async (credentials) => {
         try {
             setLoading(true);
             setError('');
 
-            const response = await fetch('http://localhost:8080/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(credentials),
-            });
+            const result = await login(credentials.email, credentials.password);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erreur de connexion');
+            if (!result.success) {
+                throw new Error(result.error || 'Erreur de connexion');
             }
 
-            const data = await response.json();
-
-            // Stocker le token dans localStorage
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify({
-                email: data.email,
-                role: data.role
-            }));
+            const data = result.data;
 
             // Rediriger en fonction du rôle
             if (data.role === 'ADMIN' || data.role === 'ORGANIZER') {
@@ -52,6 +40,7 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">

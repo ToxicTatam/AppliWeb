@@ -14,11 +14,12 @@ export default function DashboardPage() {
     useEffect(() => {
         // Récupérer les informations de l'utilisateur depuis le localStorage
         const storedUser = localStorage.getItem('user');
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authtoken')
 
         if (!storedUser || !token) {
             // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
-            router.push('/auth/login');
+           // router.push('/auth/login');
+            setLoading(false);
             return;
         }
 

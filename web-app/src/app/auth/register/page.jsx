@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import RegisterForm from '@/component/auth/RegisterForm';
+import {useAuth} from "../../hooks/useAuth";
 
 export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const router = useRouter();
+    const { register } = useAuth();
 
     const handleRegister = async (userData) => {
         try {
@@ -18,17 +20,10 @@ export default function RegisterPage() {
             setError('');
             setSuccess('');
 
-            const response = await fetch('http://localhost:8080/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
+            const result = await register(userData);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erreur lors de l\'inscription');
+            if (!result.success) {
+                throw new Error(result.error || 'Erreur lors de l\'inscription');
             }
 
             setSuccess('Inscription réussie ! Vous allez être redirigé vers la page de connexion...');
