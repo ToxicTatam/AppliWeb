@@ -12,7 +12,7 @@ const Page = () => {
         //const data = await res.json();
     
         //if (e) {
-          router.push(`/joueurs/e`);
+          router.push("/joueurs/" + e);
         //} else {
         //  alert('Joueur non trouvé');
         //}

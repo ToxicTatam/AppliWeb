@@ -6,16 +6,9 @@ import { useRouter } from 'next/navigation';
 import {useAuth} from "./hooks/useAuth";
 import Header from "@/component/layout/Header";
 import React from 'react';
+import PlayerStatsCard from '../../../component/players/PlayerStatsCard';
 
 const Page = (playerId) =>{
-    //fetch player data from db
-    //fetch player History
-    //fetch player participation
-
-    const data = {};
-    const history = {};
-    const participation = {}; 
-
     return (
         <div className="min-h-screen flex flex-col">
             {/* Header */}
@@ -44,17 +37,7 @@ const Page = (playerId) =>{
             {/* Gallery Section */}
             <section className="bg-blue-50 py-12">
                 <div className="container mx-auto text-center">
-                    <h3 className="text-2xl font-bold text-gray-700 mb-6">
-                        Informations
-                    </h3>
-                    <h3
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                        Voir l'historique
-                    </h3>
-                    <h3
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                        Voir les participations
-                    </h3>
+                   {id ? <PlayerStatsCard playerId={playerId}/> : <p>Chargement...</p> } 
                 </div>
             </section>
 
