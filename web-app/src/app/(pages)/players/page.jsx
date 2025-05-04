@@ -1,9 +1,11 @@
 "use client"
 import React from 'react';
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
     const router = useRouter();
+    const [query, setQuery] = React.useState("")
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -12,7 +14,7 @@ const Page = () => {
         //const data = await res.json();
     
         //if (e) {
-          router.push("/joueurs/" + e);
+          router.push("/joueurs/" + query);
         //} else {
         //  alert('Joueur non trouvé');
         //}
@@ -50,7 +52,8 @@ const Page = () => {
                         <form onSubmit={handleSearch}>
                             <input 
                                 type="text"
-                                value="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
                                 placeholder="Nom du Joueur"
                             /> 
                             <button type="submit">Rechercher</button>

@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import Sidebar from '@/component/layout/Sidebar';
 import Footer from '@/component/layout/Footer';
 import { useRouter } from 'next/navigation';
-import {useAuth} from "./hooks/useAuth";
 import Header from "@/component/layout/Header";
 import React from 'react';
+import Link from 'next';
 import PlayerStatsCard from '../../../component/players/PlayerStatsCard';
 
 const Page = (playerId) =>{
