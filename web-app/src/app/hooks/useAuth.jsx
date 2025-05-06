@@ -67,19 +67,19 @@ export const AuthProvider = ({ children }) => {
             }));
 
 
-            // Récupérer les informations utilisateur
-            const userRes = await fetch('http://localhost:8080/api/users/me', {
-                headers: {
-                    'Authorization': `Bearer ${data.token}`
-                }
-            });
+            // // Récupérer les informations utilisateur
+            // const userRes = await fetch('http://localhost:8080/api/users/me', {
+            //     headers: {
+            //         'Authorization': `Bearer ${data.token}`
+            //     }
+            // });
 
-            if (!userRes.ok) {
-                throw new Error('Erreur lors de la récupération des informations utilisateur');
-            }
+            // if (!userRes.ok) {
+            //     throw new Error('Erreur lors de la récupération des informations utilisateur');
+            // }
 
-            const userData = await userRes.json();
-            setUser(userData);
+            // const userData = await userRes.json();
+            // setUser(userData);
             return { success: true , data: data};
         } catch (error) {
             return { success: false, error: error.message };

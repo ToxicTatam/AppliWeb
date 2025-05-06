@@ -13,12 +13,12 @@ export default function Home() {
                     <nav>
                         <ul className="flex space-x-4">
                             <li>
-                                <Link href="/login" className="hover:underline">
+                                <Link href="/auth/login" className="hover:underline">
                                     Connexion
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/register" className="hover:underline">
+                                <Link href="/auth/register" className="hover:underline">
                                     Inscription
                                 </Link>
                             </li>
