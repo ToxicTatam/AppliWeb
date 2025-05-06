@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { Info, User, Calendar, Hash, Users } from 'lucide-react';
 const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
 
     const [formData, setFormData] = useState({
@@ -51,7 +52,7 @@ const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
         if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
         if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
         if (!formData.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
-        if (!formData.license_number.trim()) newErrors.licence_number = 'License number is required'
+        if (!formData.licence_number.trim()) newErrors.licence_number = 'License number is required'
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -73,8 +74,8 @@ const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
                         </div>
                         <input
                             type="text"
-                            id="fisrtName"
-                            name="firstName"
+                            id="first_name"
+                            name="first_name"
                             value={formData.first_name}
                             onChange={handleChange}
                             className={`block w-full pl-10 pr-3 py-2 border ${errors.name ? 'border-red-300' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
@@ -97,8 +98,8 @@ const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
                         </div>
                         <input
                             type="text"
-                            id="lastName"
-                            name="lastName"
+                            id="last_name"
+                            name="last_name"
                             value={formData.last_name}
                             onChange={handleChange}
                             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -119,8 +120,8 @@ const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
                         </div>
                         <input
                             type="text"
-                            id="dateOfBirth"
-                            name="dateOfBirth"
+                            id="date_of_birth"
+                            name="date_of_birth"
                             value={formData.date_of_birth}
                             onChange={handleChange}
                             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -132,7 +133,7 @@ const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
 
                 {/* License Number */}
                 <div>
-                    <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="licence_number" className="block text-sm font-medium text-gray-700 mb-1">
                         Numero de License*
                     </label>
                     <div className="relative rounded-md shadow-sm">
@@ -154,7 +155,7 @@ const PlayerForm = ({player=null, onSubmit, isSubmitting=false}) => {
 
                 {/* Team */}
                 <div>
-                    <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="team" className="block text-sm font-medium text-gray-700 mb-1">
                         Equipe
                     </label>
                     <div className="relative rounded-md shadow-sm">

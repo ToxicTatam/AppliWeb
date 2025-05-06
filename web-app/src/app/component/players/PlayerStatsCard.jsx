@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 const PlayerStatsCard = ({playerId}) => {
-    const [history, setHistory] = setUsage([]);
-    const [loading, setLoading] = setUsgae(true);
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
         if (!playerId) throw new Error("No playerId to fetch data");;

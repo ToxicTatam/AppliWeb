@@ -1,7 +1,7 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 const PlayerStatsCard = ({matchId}) => {
-    const [match, setMatch] = setUsage(null);
-    const [loading, setLoading] = setUsgae(true);
+    const [match, setMatch] = useState(null);
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
         if (!matchId) throw new Error("No matchId to fetch data");;
@@ -24,7 +24,7 @@ const PlayerStatsCard = ({matchId}) => {
         };
 
         fetchData();
-    },[playerId]);
+    },[matchId]);
   
 
     if (loading) return <p>Chargement...</p>;

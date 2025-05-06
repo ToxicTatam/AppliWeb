@@ -5,7 +5,7 @@ import Footer from '@/component/layout/Footer';
 import { useRouter } from 'next/navigation';
 import Header from "@/component/layout/Header";
 import React from 'react';
-import Link from 'next';
+import Link from 'next/link';
 import PlayerStatsCard from '../../../component/players/PlayerStatsCard';
 
 const Page = (playerId) =>{
@@ -37,7 +37,7 @@ const Page = (playerId) =>{
             {/* Gallery Section */}
             <section className="bg-blue-50 py-12">
                 <div className="container mx-auto text-center">
-                   {id ? <PlayerStatsCard playerId={playerId}/> : <p>Chargement...</p> } 
+                   {playerId ? <PlayerStatsCard playerId={playerId}/> : <p>Chargement...</p> } 
                 </div>
             </section>
 
@@ -53,4 +53,4 @@ const Page = (playerId) =>{
     );
 };
 
-export default Page();
+export default Page;

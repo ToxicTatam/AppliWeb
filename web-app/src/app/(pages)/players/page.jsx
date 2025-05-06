@@ -54,7 +54,7 @@ const Page = () => {
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                placeholder="Nom du Joueur"
+                                placeholder="Identifiant du Joueur"
                             /> 
                             <button type="submit">Rechercher</button>
                         </form>
@@ -76,4 +76,4 @@ const Page = () => {
     );
 };
 
-export default Page();
+export default Page;

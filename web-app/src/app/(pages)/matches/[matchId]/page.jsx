@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import Sidebar from '@/component/layout/Sidebar';
 import Footer from '@/component/layout/Footer';
 import { useRouter } from 'next/navigation';
-import {useAuth} from "./hooks/useAuth";
 import Header from "@/component/layout/Header";
 import React from 'react';
 import MatchCard from '../../../component/matches/MatchCard';
+import Link from 'next/link'
 
 const Page = (matchId) =>{
     return (
@@ -37,7 +37,7 @@ const Page = (matchId) =>{
             {/* Gallery Section */}
             <section className="bg-blue-50 py-12">
                 <div className="container mx-auto text-center">
-                   {id ? <MatchCard matchId={matchId}/> : <p>Chargement...</p> } 
+                   {matchId ? <MatchCard matchId={matchId}/> : <p>Chargement...</p> } 
                 </div>
             </section>
 
@@ -53,4 +53,4 @@ const Page = (matchId) =>{
     );
 };
 
-export default Page();
+export default Page;
