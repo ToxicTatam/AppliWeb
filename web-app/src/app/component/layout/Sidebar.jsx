@@ -1,178 +1,168 @@
-"use client"
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import {
-    Home, Users, Trophy, Calendar, Clipboard,
-    Settings, FileText, Image, User as UserIcon,
-    ChevronDown, ChevronRight
+import { usePathname } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth';
+import { 
+  Home, 
+  Users, 
+  Trophy, 
+  CalendarDays, 
+  UserCircle, 
+  Image,
+  ClipboardList,
+  Shield,
+  UserPlus,
+  UserMinus,
+  FileEdit,
+  PlusSquare,
+  MinusSquare
 } from 'lucide-react';
+import React from 'react';
 
-const Sidebar = () => {
-    const { user } = useAuth();
-    const router = useRouter();
-    const [expandedMenu, setExpandedMenu] = useState(null);
+export default function Sidebar() {
+  const pathname = usePathname();
+  const { role } = useAuth();
+  
+  const isActive = (path) => {
+    return pathname === path || pathname.startsWith(path + '/') ? 'bg-blue-800 text-white' : 'text-gray-300 hover:bg-blue-700';
+  };
 
-    if (!user) return null; // Ne pas afficher la sidebar pour les utilisateurs non connectés
+  // Navigation links based on user role
+  const getNavLinks = () => {
+    const commonLinks = [
+      { href: '/dashboard', label: 'Tableau de bord', icon: <Home size={20} /> },
+      { href: '/dashboard/profile', label: 'Profil', icon: <UserCircle size={20} /> },
+    ];
 
-    const isActiveLink = (path) => {
-        return router.pathname.startsWith(path);
+    const roleBasedLinks = {
+      admin: [
+        { href: '/dashboard/admin', label: 'Administration', icon: <Shield size={20} /> },
+        { href: '/dashboard/teams', label: 'Équipes', icon: <Users size={20} /> },
+        { href: '/dashboard/players', label: 'Joueurs', icon: <Users size={20} /> },
+        { href: '/dashboard/competitions', label: 'Compétitions', icon: <Trophy size={20} /> },
+        { href: '/dashboard/matches', label: 'Matchs', icon: <CalendarDays size={20} /> },
+        { href: '/dashboard/media', label: 'Médias', icon: <Image size={20} /> },
+      ],
+      coach: [
+        { href: '/dashboard/coach/teams', label: 'Mes équipes', icon: <Users size={20} /> },
+        { 
+          href: '#', 
+          label: 'Gestion des équipes', 
+          icon: <FileEdit size={20} />,
+          subLinks: [
+            { href: '/dashboard/coach/teams/create', label: 'Créer une équipe', icon: <PlusSquare size={16} /> },
+            { href: '/dashboard/coach/teams/update', label: 'Modifier une équipe', icon: <FileEdit size={16} /> }
+          ]
+        },
+        { 
+          href: '#', 
+          label: 'Gestion des joueurs', 
+          icon: <Users size={20} />,
+          subLinks: [
+            { href: '/dashboard/coach/team/new', label: 'Ajouter un joueur', icon: <UserPlus size={16} /> },
+            { href: '/dashboard/coach/team/update', label: 'Modifier un joueur', icon: <FileEdit size={16} /> },
+            { href: '/dashboard/coach/removeplayer', label: 'Retirer un joueur', icon: <UserMinus size={16} /> }
+          ]
+        },
+        { 
+          href: '#', 
+          label: 'Compétitions', 
+          icon: <Trophy size={20} />,
+          subLinks: [
+            { href: '/dashboard/coach/teamcompetition/register', label: 'Inscrire à une compétition', icon: <PlusSquare size={16} /> },
+            { href: '/dashboard/coach/teamcompetition/unregister', label: 'Désinscrire d\'une compétition', icon: <MinusSquare size={16} /> }
+          ]
+        },
+        { href: '/dashboard/coach/match-sheets', label: 'Feuilles de match', icon: <ClipboardList size={20} /> },
+        { href: '/dashboard/coach/media', label: 'Gestion des médias', icon: <Image size={20} /> },
+        { href: '/dashboard/matches', label: 'Matchs', icon: <CalendarDays size={20} /> },
+        { href: '/dashboard/coach/players', label: 'Liste des joueurs', icon: <Users size={20} /> },
+      ],
+      player: [
+        { href: '/dashboard/player/performances', label: 'Mes performances', icon: <Trophy size={20} /> },
+        { href: '/dashboard/matches', label: 'Matchs', icon: <CalendarDays size={20} /> },
+      ],
+      organizer: [
+        { href: '/dashboard/organizer/competitions', label: 'Compétitions', icon: <Trophy size={20} /> },
+        { href: '/dashboard/matches', label: 'Matchs', icon: <CalendarDays size={20} /> },
+        { href: '/dashboard/teams', label: 'Équipes', icon: <Users size={20} /> },
+      ],
     };
 
-    const toggleMenu = (menuName) => {
-        setExpandedMenu(expandedMenu === menuName ? null : menuName);
-    };
+    return [...commonLinks, ...(roleBasedLinks[role] || [])];
+  };
+  
+  // State to track which dropdown is open
+  const [openDropdowns, setOpenDropdowns] = React.useState({});
 
-    // Définir les menus en fonction du rôle de l'utilisateur
-    const renderMenuItems = () => {
-        const role = user?.role;
-
-        const commonItems = [
-            {
-                icon: <Home size={20} />,
-                label: 'Tableau de bord',
-                path: '/dashboard'
-            },
-            {
-                icon: <Trophy size={20} />,
-                label: 'Compétitions',
-                path: '/competitions'
-            },
-            {
-                icon: <Image size={20} />,
-                label: 'Galerie Photos',
-                path: '/gallery'
-            },
-            {
-                icon: <UserIcon size={20} />,
-                label: 'Mon Profil',
-                path: '/profile'
-            }
-        ];
-
-        // Menus pour les coachs
-        const coachItems = [
-            {
-                icon: <Users size={20} />,
-                label: 'Mes Équipes',
-                path: '/dashboard/coach/teams',
-                submenu: [
-                    { label: 'Liste des équipes', path: '/dashboard/coach/teams' },
-                    { label: 'Gestion des joueurs', path: '/dashboard/coach/players' }
-                ]
-            },
-            {
-                icon: <Clipboard size={20} />,
-                label: 'Feuilles de Match',
-                path: '/dashboard/coach/match-sheets'
-            }
-        ];
-
-        // Menus pour les administrateurs/organisateurs
-        const adminItems = [
-            {
-                icon: <Trophy size={20} />,
-                label: 'Gestion Compétitions',
-                path: '/dashboard/admin/competitions',
-                submenu: [
-                    { label: 'Liste des compétitions', path: '/dashboard/admin/competitions' },
-                    { label: 'Créer une compétition', path: '/dashboard/admin/competitions/create' }
-                ]
-            },
-            {
-                icon: <Calendar size={20} />,
-                label: 'Matchs',
-                path: '/dashboard/admin/matches'
-            },
-            {
-                icon: <Users size={20} />,
-                label: 'Gestion Coachs',
-                path: '/dashboard/admin/coaches'
-            },
-            {
-                icon: <FileText size={20} />,
-                label: 'Statistiques',
-                path: '/dashboard/admin/statistics'
-            },
-            {
-                icon: <Settings size={20} />,
-                label: 'Paramètres',
-                path: '/dashboard/admin/settings'
-            }
-        ];
-
-        // Retourner les menus appropriés selon le rôle
-        if (role === 'ADMIN' || role === 'ORGANIZER') {
-            return [...commonItems, ...adminItems];
-        } else if (role === 'COACH') {
-            return [...commonItems, ...coachItems];
-        }
-
-        return commonItems;
-    };
-
-    return (
-        <aside className="bg-gray-800 text-white w-64 min-h-screen flex-shrink-0 hidden md:block">
-            <div className="p-4">
-                <div className="flex items-center justify-center p-2 mb-6">
-                    <span className="text-xl font-bold">FootballManager</span>
+  // Toggle dropdown visibility
+  const toggleDropdown = (label) => {
+    setOpenDropdowns(prev => ({
+      ...prev,
+      [label]: !prev[label]
+    }));
+  };
+  
+  return (
+    <div className="flex flex-col h-full bg-blue-900 w-64 py-5">
+      <div className="px-4 mb-6">
+        <h2 className="text-white text-xl font-semibold">AppliSport</h2>
+      </div>
+      
+      <div className="flex-1 flex flex-col">
+        <nav className="flex-1 px-2 space-y-1">
+          {getNavLinks().map((item) => (
+            <div key={item.href || item.label}>
+              {item.subLinks ? (
+                <div className="space-y-1">
+                  <button
+                    onClick={() => toggleDropdown(item.label)}
+                    className={`w-full group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-300 hover:bg-blue-700`}
+                  >
+                    <div className="flex items-center">
+                      <span className="mr-3">{item.icon}</span>
+                      {item.label}
+                    </div>
+                    <span>
+                      {openDropdowns[item.label] ? (
+                        <svg className="w-4 h-4" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                          <path d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      )}
+                    </span>
+                  </button>
+                  
+                  {openDropdowns[item.label] && (
+                    <div className="pl-6 space-y-1">
+                      {item.subLinks.map(subItem => (
+                        <Link
+                          key={subItem.href}
+                          href={subItem.href}
+                          className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive(subItem.href)}`}
+                        >
+                          <span className="mr-3">{subItem.icon}</span>
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
-
-                <nav>
-                    <ul className="space-y-2">
-                        {renderMenuItems().map((item, index) => (
-                            <li key={index}>
-                                {item.submenu ? (
-                                    <div className="mb-2">
-                                        <button
-                                            onClick={() => toggleMenu(item.label)}
-                                            className={`flex items-center justify-between w-full p-2 rounded-md hover:bg-gray-700 ${
-                                                isActiveLink(item.path) ? 'bg-gray-700' : ''
-                                            }`}
-                                        >
-                                            <div className="flex items-center">
-                                                {item.icon}
-                                                <span className="ml-3">{item.label}</span>
-                                            </div>
-                                            {expandedMenu === item.label ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                                        </button>
-
-                                        {expandedMenu === item.label && (
-                                            <ul className="ml-6 mt-2 space-y-1">
-                                                {item.submenu.map((subItem, subIndex) => (
-                                                    <li key={subIndex}>
-                                                        <Link
-                                                            href={subItem.path}
-                                                            className={`block p-2 rounded-md hover:bg-gray-700 ${
-                                                                router.pathname === subItem.path ? 'bg-gray-700' : ''
-                                                            }`}
-                                                        >
-                                                            {subItem.label}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <Link
-                                        href={item.path}
-                                        className={`flex items-center p-2 rounded-md hover:bg-gray-700 ${
-                                            isActiveLink(item.path) ? 'bg-gray-700' : ''
-                                        }`}
-                                    >
-                                        {item.icon}
-                                        <span className="ml-3">{item.label}</span>
-                                    </Link>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive(item.href)}`}
+                >
+                  <span className="mr-3">{item.icon}</span>
+                  {item.label}
+                </Link>
+              )}
             </div>
-        </aside>
-    );
-};
-
-export default Sidebar;
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+}
