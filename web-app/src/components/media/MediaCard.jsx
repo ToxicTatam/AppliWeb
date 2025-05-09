@@ -1,13 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
+import { mediaType } from '@/lib/utils/enums';
 
 const MediaCard = ({ media }) => {
   // Obtenir le type de média traduit
   const getMediaTypeLabel = (type) => {
     const mediaTypes = {
-      'IMAGE': 'Image',
-      'VIDEO': 'Vidéo',
-      'DOCUMENT': 'Document'
+      [mediaType.IMAGE]: 'Image',
+      [mediaType.VIDEO]: 'Vidéo',
+      [mediaType.DOCUMENT]: 'Document'
     };
     return mediaTypes[type] || type;
   };
@@ -15,16 +16,16 @@ const MediaCard = ({ media }) => {
   // Obtenir la couleur de badge pour le type de média
   const getMediaTypeColor = (type) => {
     const mediaTypeColors = {
-      'IMAGE': 'bg-blue-100 text-blue-800',
-      'VIDEO': 'bg-purple-100 text-purple-800',
-      'DOCUMENT': 'bg-gray-100 text-gray-800'
+      [mediaType.IMAGE]: 'bg-blue-100 text-blue-800',
+      [mediaType.VIDEO]: 'bg-purple-100 text-purple-800',
+      [mediaType.DOCUMENT]: 'bg-gray-100 text-gray-800'
     };
     return mediaTypeColors[type] || 'bg-gray-100 text-gray-800';
   };
   
   // Générer la vignette appropriée selon le type de média
   const renderMediaThumbnail = (media) => {
-    if (media.mediaType === 'IMAGE') {
+    if (media.mediaType === mediaType.IMAGE) {
       return (
         <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
           <img 
@@ -40,7 +41,7 @@ const MediaCard = ({ media }) => {
       );
     }
     
-    if (media.mediaType === 'VIDEO') {
+    if (media.mediaType ===  mediaType.VIDEO) {
       return (
         <div className="relative aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
           <div className="absolute inset-0 opacity-60 bg-gradient-to-b from-transparent to-black rounded-lg"></div>
@@ -51,7 +52,7 @@ const MediaCard = ({ media }) => {
       );
     }
     
-    if (media.mediaType === 'DOCUMENT') {
+    if (media.mediaType ===  mediaType.DOCUMENT) {
       return (
         <div className="relative aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
           <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

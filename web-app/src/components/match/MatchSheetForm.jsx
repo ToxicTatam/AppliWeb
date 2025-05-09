@@ -558,7 +558,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
                   value={tempEvent.type}
                   onChange={handleEventTypeChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500"
-                ></select>
+                >
                   <option value="GOAL">But</option>
                   <option value="YELLOW_CARD">Carton jaune</option>
                   <option value="RED_CARD">Carton rouge</option>
@@ -568,7 +568,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
                 </select>
               </div>
               
-              <div></div>
+              <div>
                 <label htmlFor="minute" className="block text-sm font-medium text-gray-700 mb-1">
                   Minute <span className="text-red-500">*</span>
                 </label>
@@ -608,7 +608,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
               </div>
               
               {tempEvent.type === 'SUBSTITUTION' && (
-                <div></div>
+                <div>
                   <label htmlFor="relatedPlayerId" className="block text-sm font-medium text-gray-700 mb-1">
                     Remplacé par <span className="text-red-500">*</span>
                   </label>
@@ -618,12 +618,12 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
                     value={tempEvent.relatedPlayerId}
                     onChange={handleEventChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500"
-                  ></select>
+                  >
                     <option value="">Sélectionner un joueur</option>
                     {matchSheet.players
                       .filter(id => id !== tempEvent.playerId)
                       .map(playerId => (
-                        <option key={playerId} value={playerId}></option>
+                        <option key={playerId} value={playerId}>
                           {getPlayerName(playerId)}
                         </option>
                       ))}
@@ -632,7 +632,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
               )}
             </div>
             
-            <div className="mb-4"></div>
+            <div className="mb-4">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                 Description
               </label>
@@ -652,7 +652,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
                 type="button"
                 onClick={addEvent}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-              ></button>
+              >
                 Ajouter l'événement
               </button>
             </div>
@@ -665,7 +665,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
             {matchSheet.events.length === 0 ? (
               <p className="text-gray-500 text-sm">Aucun événement ajouté pour le moment</p>
             ) : (
-              <div className="space-y-2"></div>
+              <div className="space-y-2">
                 {matchSheet.events
                   .sort((a, b) => a.minute - b.minute)
                   .map(event => (
@@ -701,13 +701,13 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
                         type="button"
                         onClick={() => removeEvent(event.id)}
                         className="text-red-500 hover:text-red-700"
-                      ></button>
+                      >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
                       </button>
                     </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
@@ -743,7 +743,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
             }`}
           >
             {submitting ? (
-              <></>
+              <>
                 <span className="inline-block animate-spin mr-2">&#9696;</span>
                 {isEdit ? 'Mise à jour...' : 'Création...'}
               </>

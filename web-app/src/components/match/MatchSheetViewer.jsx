@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import MatchService from '@/services/match-service';
+import { PlayerStatus, PlayerPosition } from '@/lib/utils/enums';
 
 const MatchSheetViewer = ({ matchId, teamId, isUserView = true }) => {
   // États pour les données et le chargement
@@ -102,10 +103,12 @@ const MatchSheetViewer = ({ matchId, teamId, isUserView = true }) => {
   const opponentId = isHomeTeam ? match.awayTeamId : match.homeTeamId;
 
   // Grouper les joueurs par statut
-  const starters = matchSheet.playerParticipations.filter(p => p.playerStatus === 'PLAYED');
-  const substitutes = matchSheet.playerParticipations.filter(p => p.playerStatus === 'SUBSTITUTE');
-  const benchPlayers = matchSheet.playerParticipations.filter(p => p.playerStatus === 'BENCH');
-  const unavailablePlayers = matchSheet.playerParticipations.filter(p => p.playerStatus === 'NOT_AVAILABLE');
+  const starters = matchSheet.playerParticipations.filter(p => p.playerStatus === PlayerStatus.STARTER);
+  const substitutes = matchSheet.playerParticipations.filter(p => p.playerStatus === PlayerStatus.SUBSTITUTE);
+  const notPlayed = matchSheet.playerParticipations.filter(p => p.playerStatus === PlayerStatus.NOT_PLAYED);
+  const injured = matchSheet.playerParticipations.filter(p => p.playerStatus === PlayerStatus.INJURED);
+  const expelled = matchSheet.playerParticipations.filter(p => p.playerStatus === PlayerStatus.EXPELLED);
+  const reserves = matchSheet.playerParticipations.filter(p => p.playerStatus === PlayerStatus.RESERVE);
 
   return (
     <div className="space-y-8">
@@ -338,10 +341,10 @@ const MatchSheetViewer = ({ matchId, teamId, isUserView = true }) => {
 // Fonction utilitaire pour obtenir le libellé d'une position
 const getPositionLabel = (position) => {
   const positionMap = {
-    'GOALKEEPER': 'Gardien',
-    'DEFENDER': 'Défenseur',
-    'MIDFIELDER': 'Milieu',
-    'FORWARD': 'Attaquant'
+    [PlayerPosition.GOALKEEPER]: 'Gardien',
+    [PlayerPosition.DEFENDER]: 'Défenseur',
+    [PlayerPosition.MIDFIELDER]: 'Milieu',
+    [PlayerPosition.FORWARD]: 'Attaquant'
   };
   
   return positionMap[position] || position;
