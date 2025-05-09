@@ -1,0 +1,135 @@
+// Données fictives pour les équipes
+const teams = [
+  {
+    id: 1,
+    name: "FC Olympique",
+    description: "Club historique de la région Est fondé en 1950",
+    logo: "/images/teams/fc-olympique.svg",
+    category: "SENIOR",
+    coachId: 1,
+    coachName: "Martin Dupont",
+    playerCount: 25,
+    competitionCount: 2,
+    createdAt: "2023-08-10T09:00:00Z",
+    updatedAt: "2024-07-15T14:30:00Z"
+  },
+  {
+    id: 2,
+    name: "AS Victoria",
+    description: "Club formateur reconnu pour ses jeunes talents",
+    logo: "/images/teams/as-victoria.svg",
+    category: "JUNIOR",
+    coachId: 2,
+    coachName: "Sophie Martin",
+    playerCount: 22,
+    competitionCount: 3,
+    createdAt: "2023-07-22T10:15:00Z",
+    updatedAt: "2024-08-05T11:45:00Z"
+  },
+  {
+    id: 3,
+    name: "Étoile Sportive",
+    description: "Club de quartier avec une forte identité communautaire",
+    logo: "/images/teams/etoile-sportive.svg",
+    category: "VETERAN",
+    coachId: 3,
+    coachName: "Jean Leroy",
+    playerCount: 18,
+    competitionCount: 1,
+    createdAt: "2023-09-05T08:30:00Z",
+    updatedAt: "2024-06-20T16:20:00Z"
+  },
+  {
+    id: 4,
+    name: "Racing Club",
+    description: "Club professionnel avec centre de formation",
+    logo: "/images/teams/racing-club.svg",
+    category: "SENIOR",
+    coachId: 4,
+    coachName: "Alexandre Blanc",
+    playerCount: 28,
+    competitionCount: 3,
+    createdAt: "2023-06-15T11:30:00Z",
+    updatedAt: "2024-08-10T09:40:00Z"
+  },
+  {
+    id: 5,
+    name: "Jeunesse Athlétique",
+    description: "Club spécialisé dans la formation des jeunes joueurs",
+    logo: "/images/teams/jeunesse-athletique.svg",
+    category: "JUNIOR",
+    coachId: 5,
+    coachName: "Marie Legrand",
+    playerCount: 20,
+    competitionCount: 2,
+    createdAt: "2023-08-20T13:45:00Z",
+    updatedAt: "2024-07-30T10:15:00Z"
+  },
+  {
+    id: 6,
+    name: "United Veterans",
+    description: "Club de vétérans avec d'anciens joueurs professionnels",
+    logo: "/images/teams/united-veterans.svg",
+    category: "VETERAN",
+    coachId: 6,
+    coachName: "Paul Dubois",
+    playerCount: 16,
+    competitionCount: 1,
+    createdAt: "2023-10-10T15:20:00Z",
+    updatedAt: "2024-05-15T12:30:00Z"
+  },
+  {
+    id: 7,
+    name: "FC Métropole",
+    description: "Grand club urbain avec infrastructure moderne",
+    logo: "/images/teams/fc-metropole.svg",
+    category: "SENIOR",
+    coachId: 7,
+    coachName: "Thomas Richard",
+    playerCount: 26,
+    competitionCount: 2,
+    createdAt: "2023-07-05T09:10:00Z",
+    updatedAt: "2024-08-12T14:40:00Z"
+  },
+  {
+    id: 8,
+    name: "Académie Sportive",
+    description: "Centre de formation reconnu nationalement",
+    logo: "/images/teams/academie-sportive.svg",
+    category: "JUNIOR",
+    coachId: 8,
+    coachName: "Camille Bernard",
+    playerCount: 24,
+    competitionCount: 2,
+    createdAt: "2023-09-15T10:30:00Z",
+    updatedAt: "2024-08-01T11:20:00Z"
+  },
+  {
+    id: 9,
+    name: "Vétérans United",
+    description: "Club convivial de vétérans avec ambiance familiale",
+    logo: "/images/teams/veterans-united.svg", 
+    category: "VETERAN",
+    coachId: 9,
+    coachName: "Michel Lambert",
+    playerCount: 17,
+    competitionCount: 1,
+    createdAt: "2023-11-05T14:15:00Z", 
+    updatedAt: "2024-06-10T09:50:00Z"
+  },
+  {
+    id: 10,
+    name: "Atlético FC",
+    description: "Club avec style de jeu offensif et technique",
+    logo: "/images/teams/atletico-fc.svg",
+    category: "SENIOR",
+    coachId: 10,
+    coachName: "Julien Moreau",
+    playerCount: 23,
+    competitionCount: 2,
+    createdAt: "2023-08-25T11:45:00Z",
+    updatedAt: "2024-07-20T13:10:00Z"
+  }
+];
+
+export default teams;

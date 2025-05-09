@@ -1,0 +1,286 @@
+src/
+  app/
+    (auth)/                           # Authentication routes grouped
+      login/
+        page.jsx
+      register/
+        page.jsx
+      forgot-password/
+        page.jsx
+
+    (public)/                         # Public pages
+      layout.jsx                      # Public layout 
+      page.jsx                        # Landing page/homepage
+      competitions/
+        page.jsx                      # Public competitions listing
+        [competitionId]/
+          page.jsx                    # Public view of a single competition
+      teams/
+        page.jsx                      # Public teams listing
+        [teamId]/
+          page.jsx                    # Public view of a single team
+      players/
+        page.jsx                      # Public players listing
+        [playerId]/
+          page.jsx                    # Public view of a single player
+      matches/
+        page.jsx                      # Public matches listing
+        [matchId]/
+          page.jsx                    # Public view of a single match
+      media/
+        page.jsx                      # Public media gallery
+   
+     dashboard/                      # Protected dashboard routes
+      layout.jsx                      # Shared dashboard layout with navigation
+      
+      # User Dashboard (base functionality)
+      page.jsx                        # Dashboard home/overview
+      
+      competitions/                   # Competition related pages
+        page.jsx                      # Competition listing with filtering
+        [competitionId]/
+          page.jsx                    # Single competition details
+          teams/
+            page.jsx                  # Teams in a competition
+          matches/
+            page.jsx                  # Matches in a competition
+          standings/
+            page.jsx                  # Standings/table for a competition
+      
+      teams/                          # Team related pages
+        page.jsx                      # Team listing with filtering
+        [teamId]/
+          page.jsx                    # Single team details 
+          players/
+            page.jsx                  # Players in a team
+          matches/
+            page.jsx                  # Matches of a team
+          stats/
+            page.jsx                  # Team statistics
+      
+      players/                        # Player related pages
+        page.jsx                      # Player listing with filtering
+        [playerId]/
+          page.jsx                    # Single player details
+          stats/
+            page.jsx                  # Player statistics
+
+      matches/                        # Match related pages
+        page.jsx                      # Match listing with filtering
+        [matchId]/
+          page.jsx                    # Single match details
+          match-sheet/
+            page.jsx                  # Match sheet details
+
+      media/                          # Media related pages
+        page.jsx                      # Media gallery with filtering
+        [mediaId]/
+          page.jsx                    # Single media item view
+          
+      profile/                        # User profile management
+        page.jsx                      # Profile view/edit
+        settings/
+          page.jsx                    # User settings
+      
+      # Extended role-specific functionality
+      messages/                       # Available for PLAYER, COACH, ADMIN, ORGANIZER
+        page.jsx                      # Message inbox
+        [messageId]/
+          page.jsx                    # Single message view
+        compose/
+          page.jsx                    # Compose new message
+      
+      notifications/                  # Available for PLAYER, COACH, ADMIN, ORGANIZER
+        page.jsx                      # Notifications listing
+      
+      # Coach specific
+      coach/
+        teams/                        # Teams management for coaches
+          page.jsx                    # Coach's teams
+          [teamId]/
+            page.jsx                  # Coach team management
+            players/
+              page.jsx                # Manage players in team
+            matches/
+              page.jsx                # Team matches
+              [matchId]/
+                match-sheet/
+                  page.jsx            # Create/edit match sheet
+      
+      # Organizer specific
+      organizer/
+        competitions/                 # Competition management for organizers
+          page.jsx                    # List of organizer's competitions
+          create/
+            page.jsx                  # Create new competition
+          [competitionId]/
+            page.jsx                  # Manage competition
+            teams/
+              page.jsx                # Manage teams in competition
+            matches/
+              page.jsx                # Manage matches
+              create/
+                page.jsx              # Create match
+              [matchId]/
+                page.jsx              # Edit match
+                validate-sheet/
+                  page.jsx            # Validate match sheets
+        
+      # Admin specific 
+      admin/
+        users/
+          page.jsx                    # Users management
+        competitions/
+          page.jsx                    # All competitions management
+        teams/
+          page.jsx                    # All teams management
+        players/
+          page.jsx                    # All players management
+        matches/
+          page.jsx                    # All matches management
+        media/
+          page.jsx                    # All media management
+        
+    layout.tsx                        # Root layout
+    Clientlayout.jsx                  # Client components wrapper
+    globals.css                       # Global styles
+    
+  components/                         # Reusable components
+    auth/
+      LoginForm.jsx
+      RegisterForm.jsx
+      UserForm.jsx
+      
+    dashboard/
+      navigation/                     # Navigation components
+        Sidebar.jsx
+        Header.jsx
+        MobileMenu.jsx
+        UserMenu.jsx
+        NavigationItems.jsx
+        RoleSpecificNavigation.jsx    # Role-based navigation items
+      
+      common/                         # Common dashboard components
+        DashboardCard.jsx
+        StatsCard.jsx
+        PageHeader.jsx
+        FilterBar.jsx
+        SearchBar.jsx
+      
+    competition/                      # Competition related components
+      CompetitionCard.jsx
+      CompetitionList.jsx
+      CompetitionFilters.jsx
+      CompetitionDetails.jsx
+      CompetitionForm.jsx
+      CompetitionStandings.jsx
+      
+    team/                             # Team related components
+      TeamCard.jsx
+      TeamList.jsx
+      TeamFilters.jsx
+      TeamDetails.jsx
+      TeamForm.jsx
+      TeamPlayersList.jsx
+      
+    player/                           # Player related components
+      PlayerCard.jsx
+      PlayerList.jsx
+      PlayerFilters.jsx
+      PlayerDetails.jsx
+      PlayerStatsCard.jsx
+      PlayerForm.jsx
+      
+    match/                            # Match related components
+      MatchCard.jsx
+      MatchList.jsx
+      MatchFilters.jsx
+      MatchDetails.jsx
+      MatchForm.jsx
+      MatchSheetForm.jsx
+      MatchSheetViewer.jsx
+      
+    media/                            # Media related components
+      MediaCard.jsx
+      MediaList.jsx
+      MediaFilters.jsx
+      MediaUploader.jsx
+      
+    messages/                         # Messaging components
+      MessageList.jsx
+      MessageCard.jsx
+      MessageComposer.jsx
+      MessageViewer.jsx
+      
+    notifications/                    # Notification components
+      NotificationList.jsx
+      NotificationCard.jsx
+      
+    ui/                               # UI components
+      Alert.jsx
+      Badge.jsx
+      Button.jsx
+      Card.jsx
+      Icon.jsx
+      Input.jsx
+      Modal.jsx
+      Select.jsx
+      Table.jsx
+      Tabs.jsx
+      TeamRegistrationModal.jsx
+      PlayerStatsDashboard.jsx
+      Pagination.jsx
+      Dropdown.jsx
+      LoadingSpinner.jsx
+      EmptyState.jsx
+      ErrorBoundary.jsx
+      
+  data/                               # Mock data for development
+    competitions.js
+    teams.js
+    players.js
+    matches.js
+    matchSheets.js
+    media.js
+    messages.js
+    notifications.js
+    standings.js
+    playerPerformance.js
+    
+  hooks/                              # Custom hooks
+    useAuth.jsx                       # Authentication hook
+    useFilter.jsx                     # Filtering hook
+    usePagination.jsx                 # Pagination hook
+    useSort.jsx                       # Sorting hook
+    useDataFetch.jsx                  # Data fetching hook
+    useNotification.jsx               # Notification hook
+    useRoleAccess.jsx                 # Role-based access control
+    
+  lib/                                # Utilities and helper functions
+    api/
+      client.js                       # API client setup
+      endpoints.js                    # API endpoints
+      
+    utils/
+      date-formatter.js               # Date formatting utilities
+      validators.js                   # Form validation utilities
+      formatters.js                   # Data formatting utilities
+      role-utils.js                   # Role-based utilities
+      filter-utils.js                 # Filtering utilities
+      sort-utils.js                   # Sorting utilities
+    
+  context/                            # React context
+    AuthContext.jsx                   # Authentication context
+    NotificationContext.jsx           # Notification context
+    FilterContext.jsx                 # Filtering context
+    ThemeContext.jsx                  # Theme context
+    
+  services/                           # Service layer for API calls
+    auth-service.js                   # Authentication service
+    competition-service.js            # Competition service
+    team-service.js                   # Team service
+    player-service.js                 # Player service
+    match-service.js                  # Match service
+    media-service.js                  # Media service
+    message-service.js                # Message service
+    notification-service.js           # Notification service
