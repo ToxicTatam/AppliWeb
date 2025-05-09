@@ -1,12 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
 export default function ThemeToggle({ className = '' }) {
   const { theme, toggleTheme, changeTheme, availableThemes } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
+  // Ferme le menu si l'utilisateur clique en dehors
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    
+    // N'ajouter l'écouteur que lorsque le menu est ouvert
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]); // Dépendance à isOpen pour n'attacher l'écouteur que lorsque le menu est ouvert
+    
   // Fonction pour gérer le clic sur un thème
   const handleThemeChange = (themeId) => {
     changeTheme(themeId);
@@ -14,7 +33,7 @@ export default function ThemeToggle({ className = '' }) {
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} ref={dropdownRef}>
       {/* Bouton de bascule principal (toggle) */}
       <button
         onClick={() => toggleTheme()}
@@ -55,7 +74,7 @@ export default function ThemeToggle({ className = '' }) {
       </button>
 
       {/* Bouton pour ouvrir le menu des thèmes */}
-      <button
+      {/* <button
         onClick={() => setIsOpen(!isOpen)}
         className="ml-1 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
         aria-label="Choisir un thème"
@@ -74,11 +93,11 @@ export default function ThemeToggle({ className = '' }) {
             d="M19 9l-7 7-7-7" 
           />
         </svg>
-      </button>
+      </button> */}
 
       {/* Menu déroulant des thèmes */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-700">
+        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-30 border border-gray-200 dark:border-gray-700">
           <div className="py-1">
             {availableThemes.map((t) => (
               <button

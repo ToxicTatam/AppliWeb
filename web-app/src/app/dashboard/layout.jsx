@@ -167,8 +167,8 @@ export default function DashboardLayout({ children }) {
             {/* Boutons d'action */}
             <div className="flex items-center space-x-4">
               {/* Sélecteur de thème */}
+        
               <ThemeToggle className="hidden md:block" />
-              
               {/* Notifications */}
               {(hasRole(userRoles.PLAYER) || hasRole(userRoles.COACH) || hasRole(userRoles.ORGANIZER) || hasRole(userRoles.ADMIN)) && (
                 <Link href="/notifications" className={`${theme.isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-green-800'}`}>
@@ -180,6 +180,8 @@ export default function DashboardLayout({ children }) {
                   </div>
                 </Link>
               )}
+
+           
 
               {/* Profil sur mobile */}
               <div className="md:hidden">
