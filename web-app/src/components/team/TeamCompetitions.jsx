@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import TeamService from '@/services/team-service';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamCompetitions = ({ teamId }) => {
   // États pour les données et le chargement
@@ -34,13 +35,8 @@ const TeamCompetitions = ({ teamId }) => {
 
   // Afficher un message de chargement
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-48">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
-
   // Afficher un message d'erreur
   if (error) {
     return (

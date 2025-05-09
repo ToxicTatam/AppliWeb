@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import MatchService from '@/services/match-service';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamMatches = ({ teamId }) => {
   const [matches, setMatches] = useState([]);
@@ -19,7 +20,6 @@ const TeamMatches = ({ teamId }) => {
         setMatches(response.data || []);
         setError(null);
       } catch (err) {
-        console.error('Erreur lors du chargement des matchs:', err);
         setError('Impossible de charger les matchs de l\'équipe.');
         setMatches([]);
       } finally {
@@ -32,11 +32,7 @@ const TeamMatches = ({ teamId }) => {
 
   // Afficher un état de chargement
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Afficher un message d'erreur si nécessaire

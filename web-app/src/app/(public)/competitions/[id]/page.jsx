@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import CompetitionService from '@/services/competition-service';
 import CompetitionDetails from '@/components/competition/CompetitionDetails';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+
 
 export default function CompetitionDetailsPage() {
   const { id } = useParams();
@@ -31,11 +33,7 @@ export default function CompetitionDetailsPage() {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -65,7 +63,7 @@ export default function CompetitionDetailsPage() {
 
   return (
     <div className="space-y-8">
-      <CompetitionDetails competitionId={id} isUserView={false} />
+      <CompetitionDetails competitionId={id} isUserView={true} />
     </div>
   );
 }

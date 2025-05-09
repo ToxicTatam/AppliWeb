@@ -7,6 +7,10 @@ import CompetitionStandings from './CompetitionStandings';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import CompetitionTeamList from './CompetitionTeamList';
 import CompetitionMatchList from './CompetitionMatchList';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+
+
+
 const CompetitionDetails = ({ competitionId, isUserView = true }) => {
   // États pour les données de la compétition
   const [competition, setCompetition] = useState(null);
@@ -79,12 +83,10 @@ const CompetitionDetails = ({ competitionId, isUserView = true }) => {
 
   // Afficher un message de chargement
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
+
+
 
   // Afficher un message d'erreur
   if (error) {
@@ -100,6 +102,7 @@ const CompetitionDetails = ({ competitionId, isUserView = true }) => {
       </div>
     );
   }
+  
 
   // Si pas de données
   if (!competition) {

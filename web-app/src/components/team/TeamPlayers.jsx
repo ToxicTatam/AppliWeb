@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TeamService from '@/services/team-service';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamPlayers = ({ teamId }) => {
   // États pour les données et le chargement
@@ -32,11 +33,7 @@ const TeamPlayers = ({ teamId }) => {
 
   // Afficher un message de chargement
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-48">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Afficher un message d'erreur

@@ -35,7 +35,8 @@ const MatchFilters = ({ onFilterChange, initialFilters = {} }) => {
         const teamsResponse = await TeamService.getAllTeams();
         setTeams(teamsResponse.data || []);
       } catch (error) {
-        console.error('Erreur lors du chargement des données de filtre:', error);
+        setCompetitions([]);
+        setTeams([]);
       } finally {
         setLoading(false);
       }

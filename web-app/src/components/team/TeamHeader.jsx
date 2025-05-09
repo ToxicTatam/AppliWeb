@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TeamService from '@/services/team-service';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamHeader = ({ teamId }) => {
   const [team, setTeam] = useState(null);
@@ -28,12 +29,7 @@ const TeamHeader = ({ teamId }) => {
   }, [teamId]);
 
   if (loading) {
-    return (
-      <div className="bg-gray-200 p-6 animate-pulse">
-        <div className="h-8 w-48 bg-gray-300 rounded mb-2"></div>
-        <div className="h-4 w-32 bg-gray-300 rounded"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error || !team) {

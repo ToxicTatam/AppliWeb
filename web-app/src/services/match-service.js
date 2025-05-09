@@ -2,6 +2,7 @@ import api from '../lib/api/client';
 import endpoints from '../lib/api/endpoints';
 import matchesData from '../data/matches';
 import matchSheetsData from '../data/matchSheets';
+import consolidatedMatchesData from '../data/consolidatedMatches';
 
 // Service pour les matchs
 const matchService = {
@@ -98,29 +99,13 @@ const matchService = {
           throw new Error('Match non trouvé');
         }
         
-        // Simuler des données consolidées avec feuilles de match
-        return {
-          ...match,
-          matchSheets: [], // Normalement on aurait les feuilles de match ici
-          statistics: {
-            homeTeamStats: {
-              goals: match.homeTeamScore || 0,
-              possession: 55,
-              shotsOnTarget: 8,
-              shotsOffTarget: 7,
-              corners: 5,
-              fouls: 10
-            },
-            awayTeamStats: {
-              goals: match.awayTeamScore || 0,
-              possession: 45,
-              shotsOnTarget: 6,
-              shotsOffTarget: 4,
-              corners: 3,
-              fouls: 12
-            }
+        // Si le match a des feuilles de match validées, utiliser les données consolidées
+        if (match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED') {
+          const consolidatedMatch = consolidatedMatchesData.find(cm => cm.id === Number(id));
+          if (consolidatedMatch) {
+            return consolidatedMatch;
           }
-        };
+        }
       }
       
       return await api.get(endpoints.matches.consolidated(id));
@@ -134,31 +119,11 @@ const matchService = {
     try {
       // En mode développement, utiliser les données fictives
       if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler des feuilles de match (devrait être dans un fichier de données séparé)
-        const matchSheets = [
-          {
-            id: 1,
-            matchId: Number(matchId),
-            teamId: matchesData.find(m => m.id === Number(matchId))?.homeTeamId,
-            createdBy: 'coach1',
-            status: 'SUBMITTED',
-            lineup: [],
-            substitutes: [],
-            createdAt: '2025-03-15T14:00:00Z',
-            updatedAt: '2025-03-15T18:30:00Z'
-          },
-          {
-            id: 2,
-            matchId: Number(matchId),
-            teamId: matchesData.find(m => m.id === Number(matchId))?.awayTeamId,
-            createdBy: 'coach2',
-            status: 'VALIDATED',
-            lineup: [],
-            substitutes: [],
-            createdAt: '2025-03-15T14:30:00Z',
-            updatedAt: '2025-03-15T18:30:00Z'
-          }
-        ];
+        const matchSheets = matchSheetsData.filter(sheet => sheet.matchId === Number(matchId));
+        
+        if (!matchSheets || matchSheets.length === 0) {
+          return { data: [], total: 0 };
+        }
         
         return {
           data: matchSheets,
@@ -177,18 +142,11 @@ const matchService = {
     try {
       // En mode développement, utiliser les données fictives
       if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler une feuille de match (devrait être dans un fichier de données séparé)
-        const matchSheet = {
-          id: Number(matchSheetId),
-          matchId: 1, // Correspond à l'ID du match
-          teamId: 1,
-          createdBy: 'coach1',
-          status: 'VALIDATED',
-          lineup: [],
-          substitutes: [],
-          createdAt: '2025-03-15T14:00:00Z',
-          updatedAt: '2025-03-15T18:30:00Z'
-        };
+        const matchSheet = matchSheetsData.find(sheet => sheet.id === Number(matchSheetId));
+        
+        if (!matchSheet) {
+          throw new Error('Feuille de match non trouvée');
+        }
         
         return matchSheet;
       }
@@ -463,28 +421,80 @@ const matchService = {
     }
   },
 
-  // Valider ou invalider une feuille de match (avec commentaires)
-  reviewMatchSheet: async (id, reviewData) => {
+  // Vérifier si un match a des feuilles de match validées
+  hasValidatedMatchSheets: async (matchId) => {
     try {
-      // En mode développement, simuler la validation
+      // En mode développement, utiliser les données fictives
       if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler un délai réseau
-        await new Promise(resolve => setTimeout(resolve, 500));
+        const match = matchesData.find(m => m.id === Number(matchId));
+        if (!match) throw new Error('Match non trouvé');
         
-        // Dans un environnement réel, cette logique serait côté serveur
+        return match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED';
+      }
+      
+      const match = await api.get(endpoints.matches.byId(matchId));
+      return match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED';
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Récupérer une feuille de match consolidée (réunissant les deux équipes)
+  getConsolidatedMatchSheet: async (matchId) => {
+    try {
+      // En mode développement, utiliser les données fictives
+      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        // Vérifier d'abord si les feuilles de match sont validées
+        const match = matchesData.find(m => m.id === Number(matchId));
+        if (!match) throw new Error('Match non trouvé');
+        
+        if (!match.hasMatchSheet || match.matchSheetStatus !== 'VALIDATED') {
+          throw new Error('Ce match n\'a pas de feuilles de match validées');
+        }
+        
+        const consolidatedMatch = consolidatedMatchesData.find(cm => cm.id === Number(matchId));
+        if (!consolidatedMatch) {
+          throw new Error('Feuille de match consolidée non trouvée');
+        }
+        
+        return consolidatedMatch;
+      }
+      
+      return await api.get(endpoints.matches.consolidatedMatchSheet(matchId));
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Récupérer toutes les feuilles de match d'une équipe à travers plusieurs matchs
+  getTeamMatchSheets: async (teamId, filters = {}) => {
+    try {
+      // En mode développement, utiliser les données fictives
+      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        let teamMatchSheets = matchSheetsData.filter(sheet => sheet.teamId === Number(teamId));
+        
+        // Filtrage par statut
+        if (filters.status) {
+          teamMatchSheets = teamMatchSheets.filter(sheet => sheet.status === filters.status);
+        }
+        
+        // Filtrage par compétition
+        if (filters.competitionId) {
+          teamMatchSheets = teamMatchSheets.filter(sheet => sheet.competitionId === Number(filters.competitionId));
+        }
+        
+        // Trier par date (plus récent d'abord)
+        teamMatchSheets.sort((a, b) => new Date(b.matchDateTime) - new Date(a.matchDateTime));
+        
         return {
-          success: true,
-          message: reviewData.approved ? 'Feuille de match validée' : 'Feuille de match invalidée',
-          matchSheetId: id
+          data: teamMatchSheets,
+          total: teamMatchSheets.length,
+          page: 1,
+          pageSize: teamMatchSheets.length
         };
       }
       
-      return await api.post(
-        reviewData.approved 
-          ? endpoints.matches.matchSheets.validate(id) 
-          : endpoints.matches.matchSheets.invalidate(id), 
-        { comments: reviewData.comments }
-      );
+      return await api.get(`${endpoints.teams.matchSheets(teamId)}`, filters);
     } catch (error) {
       throw error;
     }

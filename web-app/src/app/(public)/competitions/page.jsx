@@ -9,7 +9,7 @@ export default function CompetitionsPage() {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Compétitions</h1>
         
-        <CompetitionList isUserView={false} />
+        <CompetitionList isUserView={true} />
       </div>
     </div>
   );

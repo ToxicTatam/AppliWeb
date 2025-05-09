@@ -4,6 +4,7 @@ import MatchService from '@/services/match-service';
 import TeamService from '@/services/team-service';
 import { useNotification } from '@/hooks/useNotification';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const MatchSheetForm = ({ matchId, teamId = null }) => {
   const router = useRouter();
@@ -101,8 +102,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
       
       setFormErrors({});
     } catch (error) {
-      showNotification('Erreur lors du chargement des données', 'error');
-      console.error('Erreur:', error);
+      showNotification('Erreur lors du chargement des données', error.message, 'error');
       router.push('/dashboard/coach/matches');
     } finally {
       setLoading(false);
@@ -317,7 +317,6 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
         `Erreur lors de la ${isEdit ? 'mise à jour' : 'création'} de la feuille de match`,
         'error'
       );
-      console.error('Erreur:', error);
     } finally {
       setSubmitting(false);
     }
@@ -330,12 +329,9 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
 
   // Afficher un message de chargement
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
+
 
   // Trouver le nom du joueur à partir de son ID
   const getPlayerName = (playerId) => {

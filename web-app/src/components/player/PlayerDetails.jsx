@@ -6,6 +6,8 @@ import PlayerService from '@/services/player-service';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import PlayerStats from '@/components/player/PlayerStats';
 import PlayerMatchList from '@/components/player/PlayerMatchList';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+
 const PlayerDetails = ({ playerId, isUserView = true }) => {
   // États pour les données du joueur
   const [player, setPlayer] = useState(null);
@@ -77,11 +79,7 @@ const PlayerDetails = ({ playerId, isUserView = true }) => {
 
   // Afficher un message de chargement
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Afficher un message d'erreur

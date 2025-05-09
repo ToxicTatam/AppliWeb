@@ -68,7 +68,7 @@ const CompetitionForm = ({ competitionId, onSuccess }) => {
       });
       setApiError(null);
     } catch (err) {
-      console.error(`Erreur lors du chargement de la compétition ${competitionId}:`, err);
+    
       setApiError('Impossible de charger les détails de la compétition. Veuillez réessayer plus tard.');
     } finally {
       setFetchLoading(false);

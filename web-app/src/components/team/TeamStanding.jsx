@@ -34,7 +34,6 @@ const TeamStanding = ({ teamId, competitionId = null }) => {
           setFormItems(formArray);
         }
       } catch (err) {
-        console.error('Erreur lors du chargement du classement:', err);
         setError('Impossible de charger les informations de classement.');
       } finally {
         setLoading(false);

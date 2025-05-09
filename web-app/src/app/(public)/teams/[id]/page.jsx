@@ -14,9 +14,7 @@ import TeamService from '@/services/team-service';
 export default function TeamDetailsPage() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('info');
-  const [team, setTeam] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+  
   // Fonction pour gérer le changement d'onglet
   const handleTabChange = (tab) => {
     setActiveTab(tab);

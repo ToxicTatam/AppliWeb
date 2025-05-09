@@ -74,7 +74,6 @@ const MatchForm = ({ matchId = null, competitionId = null }) => {
         }
       } catch (error) {
         showNotification('Erreur lors du chargement des données', 'error');
-        console.error('Erreur:', error);
       } finally {
         setLoading(false);
       }
@@ -168,7 +167,6 @@ const MatchForm = ({ matchId = null, competitionId = null }) => {
         `Erreur lors de la ${isEdit ? 'mise à jour' : 'création'} du match`,
         'error'
       );
-      console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }

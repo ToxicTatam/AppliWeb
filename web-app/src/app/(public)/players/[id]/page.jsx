@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import PlayerService from '@/services/player-service';
 import PlayerDetails from '@/components/player/PlayerDetails';
-
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 export default function PlayerDetailsPage() {
   const { id } = useParams();
@@ -35,11 +35,7 @@ export default function PlayerDetailsPage() {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
