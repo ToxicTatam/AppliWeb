@@ -3,11 +3,12 @@
 
 export const navigationLinks = [
   { name: 'Tableau de bord', href: '/dashboard', icon: 'dashboard' },
-  { name: 'Compétitions', href: '/dashboard/competitions', icon: 'trophy' },
-  { name: 'Équipes', href: '/dashboard/teams', icon: 'team' },
-  { name: 'Joueurs', href: '/dashboard/players', icon: 'user' },
-  { name: 'Matchs', href: '/dashboard/matches', icon: 'whistle' },
-  { name: 'Médiathèque', href: '/dashboard/media', icon: 'media' },
+  { name: 'Compétitions', href: '/competitions', icon: 'trophy' },
+  { name: 'Équipes', href: '/teams', icon: 'team' },
+  { name: 'Joueurs', href: '/players', icon: 'user' },
+  { name: 'Matchs', href: '/matches', icon: 'whistle' },
+  { name: 'Médiathèque', href: '/media', icon: 'media' },
+  { name: 'Profil', href: '/dashboard/profil', icon: 'profile' }
 ];
 
 // Liens pour la partie publique (accessibles sans authentification)
@@ -20,6 +21,51 @@ export const publicNavigationLinks = [
   { name: 'Médiathèque', href: '/media' },
 ];
 
+// Fonction pour obtenir les liens de navigation en fonction de l'utilisateur et de ses rôles
+export const getNavigationLinks = (user, hasRole, userRoles) => {
+
+  // Initialiser le tableau de liens avec les liens de base
+  let links = [...navigationLinks];
+
+  // Ajouter des liens spécifiques en fonction des rôles
+  if (user && hasRole) {
+    // Liens communs pour PLAYER, COACH, ORGANIZER et ADMIN
+    if (hasRole(userRoles.PLAYER) || hasRole(userRoles.COACH) || hasRole(userRoles.ORGANIZER) || hasRole(userRoles.ADMIN)) {
+      links.push(
+        { name: 'Messagerie', href: '/dashboard/messages', icon: 'message' },
+        { name: 'Notifications', href: '/dashboard/notifications', icon: 'notification' }
+      );
+    }
+    
+    // Liens spécifiques pour COACH
+    if (hasRole(userRoles.COACH)) {
+      links.push(
+        { name: 'Gestion d\'équipe', href: '/dashboard/coach/teams', icon: 'manage-teams' },
+        { name: 'Gestion de joueurs', href: '/dashboard/coach/players', icon: 'manage-players' },
+        { name: 'Gestion de matchs', href: '/dashboard/coach/matches', icon: 'manage-matches' }
+      );
+    }
+    
+    // Liens spécifiques pour ORGANIZER
+    if (hasRole(userRoles.ORGANIZER)) {
+      links.push(
+        { name: 'Gestion de compétitions', href: '/dashboard/organizer/competitions', icon: 'manage-competitions' },
+        { name: 'Gestion de matchs', href: '/dashboard/organizer/matches', icon: 'manage-matches' }
+      );
+    }
+    
+    // Liens spécifiques pour ADMIN
+    if (hasRole(userRoles.ADMIN)) {
+      links.push(
+        { name: 'Administration', href: '/dashboard/admin', icon: 'admin' },
+        { name: 'Gestion d\'utilisateurs', href: '/dashboard/admin/users', icon: 'manage-users' }
+      );
+    }
+  }
+  
+  return links;
+};
+
 // Liens supplémentaires pour les utilisateurs authentifiés selon leur rôle
 export const getAdditionalLinks = (userRole) => {
   const additionalLinks = [];
@@ -29,6 +75,8 @@ export const getAdditionalLinks = (userRole) => {
     additionalLinks.push(
       { name: 'Messagerie', href: '/dashboard/messages', icon: 'message' },
       { name: 'Notifications', href: '/dashboard/notifications', icon: 'notification' }
+
+    
     );
   }
   
@@ -52,7 +100,8 @@ export const getAdditionalLinks = (userRole) => {
   // Liens spécifiques pour ADMIN
   if (userRole === 'ADMIN') {
     additionalLinks.push(
-      { name: 'Administration', href: '/dashboard/admin', icon: 'admin' }
+      { name: 'Administration', href: '/dashboard/admin', icon: 'admin' },
+      { name: 'Gestion d\' utilisateur', href: '/dashboard/admin', icon: 'admin' }
     );
   }
   

@@ -26,26 +26,42 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         // Vérifier si un token existe dans le localStorage
-        const token = localStorage.getItem('auth_token');
+        const token =  localStorage.getItem('authToken');
         
         if (token) {
-          // Récupérer les informations de l'utilisateur depuis le backend
-          const response = await fetch('/api/auth/me', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
+          // Récupérer les informations de l'utilisateur depuis le backend ou localStorage
+          const userStr = localStorage.getItem('user');
+          if (userStr) {
+            try {
+              const userData = JSON.parse(userStr);
+              setUser(userData);
+            } catch (e) {
+              console.error('Erreur lors du parsing de l\'utilisateur:', e);
+              localStorage.removeItem('user');
+      
+              localStorage.removeItem('authToken');
+              setUser(null);
+            }
           } else {
-            // Si la réponse n'est pas OK, le token est probablement expiré
-            localStorage.removeItem('auth_token');
-            setUser(null);
+            // Si pas d'utilisateur en localStorage mais token présent, essayer l'API
+            const response = await fetch('/api/auth/me', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            if (response.ok) {
+              const userData = await response.json();
+              setUser(userData);
+            } else {
+              // Si la réponse n'est pas OK, le token est probablement expiré
+              localStorage.removeItem('authToken');
+              setUser(null);
+            }
           }
         }
       } catch (err) {
+        console.error('Erreur auth:', err);
         setError('Impossible de vérifier votre authentification.');
       } finally {
         setIsLoading(false);
@@ -73,7 +89,7 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('authToken', data.token);
         setUser(data.user);
         
         // Redirection en fonction du rôle
@@ -104,7 +120,8 @@ export const AuthProvider = ({ children }) => {
 
   // Fonction de déconnexion
   const logout = () => {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem('authToken');
+  //  localStorage.removeItem('user');
     setUser(null);
     router.push('/login');
   };
@@ -185,6 +202,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    setUser, // Exposer setUser pour permettre la mise à jour directe de l'utilisateur
     isAuthenticated: !!user,
     isLoading,
     error,

@@ -101,14 +101,14 @@ const matchService = {
         
         // Si le match a des feuilles de match validées, utiliser les données consolidées
         if (match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED') {
-          const consolidatedMatch = consolidatedMatchesData.find(cm => cm.id === Number(id));
+          const consolidatedMatch = consolidatedMatchesData.find(cm => cm.matchId ===Number(id));
           if (consolidatedMatch) {
             return consolidatedMatch;
           }
         }
       }
       
-      return await api.get(endpoints.matches.consolidated(id));
+     // return await api.get(endpoints.matches.consolidated(id));
     } catch (error) {
       throw error;
     }

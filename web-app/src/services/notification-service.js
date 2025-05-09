@@ -203,42 +203,98 @@ const notificationService = {
     }
   },
   
-  // S'abonner à un canal de notifications (WebSocket)
+  // S'abonner à un canal de notifications (WebSocket ou simulation en dev)
   subscribeToNotifications: (userId, onNotificationReceived) => {
     if (typeof window !== 'undefined') {
-      // Vérifier si l'API WebSocket est disponible
+      // En mode développement sans serveur WebSocket, simuler des notifications
+      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        console.log('Mode développement: simulation de notifications activée');
+        
+        // Créer un ID unique pour le timer
+        const timerId = setInterval(() => {
+          // Simuler une nouvelle notification aléatoire toutes les 30 secondes
+          if (Math.random() > 0.7) { // 30% de chance de recevoir une notification
+            // Types de notifications possibles
+            const notificationTypes = ['MESSAGE', 'MATCH_UPDATE', 'TEAM_UPDATE', 'COMPETITION_UPDATE'];
+            const randomType = notificationTypes[Math.floor(Math.random() * notificationTypes.length)];
+            
+            // Construire une notification fictive
+            const mockNotification = {
+              id: Date.now(),
+              recipientId: Number(userId),
+              senderId: 1,
+              notificationType: randomType,
+              title: `Nouvelle notification ${randomType}`,
+              content: `Ceci est une notification de type ${randomType} générée automatiquement.`,
+              isRead: false,
+              createdAt: new Date().toISOString(),
+              relatedEntityId: Math.floor(Math.random() * 100) + 1,
+              relatedEntityType: randomType.split('_')[0]
+            };
+            
+            // Ajouter la notification aux données locales
+            notificationsData.push(mockNotification);
+            
+            // Appeler le callback avec la nouvelle notification
+            onNotificationReceived(mockNotification);
+          }
+        }, 30000); // Toutes les 30 secondes
+        
+        // Retourner un "faux" socket avec une méthode close et l'ID du timer
+        return {
+          timerId,
+          readyState: 1, // Simuler OPEN
+          close: function() {
+            clearInterval(this.timerId);
+            console.log('Simulation de notifications désactivée');
+          }
+        };
+      }
+      
+      // Mode production ou développement avec serveur WebSocket
       if ('WebSocket' in window) {
-        // URL du WebSocket
-        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/ws';
-        const authToken = localStorage.getItem('authToken');
-        
-        // Connexion au WebSocket
-        const socket = new WebSocket(`${wsUrl}/notifications?userId=${userId}&token=${authToken}`);
-        
-        socket.onmessage = (event) => {
-          const notification = JSON.parse(event.data);
-          onNotificationReceived(notification);
-        };
-        
-        socket.onclose = () => {
-          console.log('Connexion WebSocket fermée.');
-        };
-        
-        socket.onerror = (error) => {
-          console.error('Erreur WebSocket:', error);
-        };
-        
-        // Retourner la connexion socket pour pouvoir la fermer plus tard
-        return socket;
+        try {
+          // URL du WebSocket
+          const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/ws';
+          const authToken = localStorage.getItem('authToken');
+          
+          // Connexion au WebSocket
+          const socket = new WebSocket(`${wsUrl}/notifications?userId=${userId}&token=${authToken}`);
+          
+          socket.onmessage = (event) => {
+            const notification = JSON.parse(event.data);
+            onNotificationReceived(notification);
+          };
+          
+          socket.onclose = () => {
+            console.log('Connexion WebSocket fermée.');
+          };
+          
+          socket.onerror = (error) => {
+            console.error('Erreur WebSocket:', error);
+          };
+          
+          // Retourner la connexion socket pour pouvoir la fermer plus tard
+          return socket;
+        } catch (error) {
+          console.error('Erreur lors de la connexion au WebSocket:', error);
+          return null;
+        }
       }
     }
     
     return null;
   },
   
-  // Fermer la connexion WebSocket
+  // Fermer la connexion WebSocket ou arrêter la simulation
   unsubscribeFromNotifications: (socket) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
+    if (!socket) return;
+    
+    if (socket.timerId) {
+      // C'est notre socket simulé
+      socket.close();
+    } else if (socket.readyState === WebSocket.OPEN) {
+      // C'est un vrai WebSocket
       socket.close();
     }
   }

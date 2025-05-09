@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { toast } from 'react-toastify';
 import notificationService from '@/services/notification-service';
 
 export const NotificationContext = createContext();
@@ -128,13 +129,18 @@ export const NotificationProvider = ({ children }) => {
 
   // Function to show a notification to the user (toast)
   const showNotification = useCallback(({ type = 'info', title, message, duration = 5000 }) => {
-    // This function would use a toast library or custom toast component
-    // For example, you might use react-toastify or a custom implementation
-    
-    // For now, let's just log to console
-    console.log(`Notification [${type}]: ${title} - ${message}`);
-    
-    // Implementation will be added when UI components are ready
+    toast[type](<div>
+      <strong>{title}</strong>
+      <p>{message}</p>
+    </div>, {
+      position: "top-right",
+      autoClose: duration,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   }, []);
 
   const value = {

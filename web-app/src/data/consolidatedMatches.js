@@ -2,6 +2,7 @@
 const consolidatedMatches = [
   {
     id: 1,
+    matchId: 1,
     title: "FC Olympique vs Racing Club",
     description: "Match de la première journée du championnat national senior",
     competitionId: 1,
@@ -215,11 +216,28 @@ const consolidatedMatches = [
       coachId: 104,
       coachName: "Eric Martin"
     },
+    statistics: {
+      homeTeamStats: {
+        possession: 58,
+        shotsOnTarget: 6,
+        shotsOffTarget: 4,
+        corners: 5,
+        fouls: 10,
+      },
+      awayTeamStats: {
+        possession: 42,
+        shotsOnTarget: 3,
+        shotsOffTarget: 6,
+        corners: 2,
+        fouls: 13,
+      },
+    },
     createdAt: "2024-09-10T09:00:00Z",
     updatedAt: "2024-09-15T18:30:00Z"
   },
   {
     id: 3,
+    matchId: 3,
     title: "FC Olympique vs FC Métropole",
     description: "Match de la deuxième journée du championnat national senior",
     competitionId: 1,
@@ -433,9 +451,26 @@ const consolidatedMatches = [
       coachId: 107,
       coachName: "Marc Lambert"
     },
+    statistics: {
+      homeTeamStats: {
+        possession: 58,
+        shotsOnTarget: 6,
+        shotsOffTarget: 4,
+        corners: 5,
+        fouls: 10,
+      },
+      awayTeamStats: {
+        possession: 42,
+        shotsOnTarget: 3,
+        shotsOffTarget: 6,
+        corners: 2,
+        fouls: 13,
+      },
+    },
     createdAt: "2024-09-22T10:00:00Z",
     updatedAt: "2024-09-29T18:30:00Z"
-  }
+  },
+  
 ];
 
 export default consolidatedMatches;

@@ -50,11 +50,14 @@ const LoginForm = () => {
     setError('');
     
     try {
+      // Utiliser le service d'authentification pour se connecter
       const response = await authService.login(formData);
       
-      if (response.user) {
-        // Utiliser setUser du context pour mettre à jour globalement l'utilisateur
-        setUser && setUser(response.user);
+      if (response && response.user) {
+        // Important: mettre à jour l'état global de l'utilisateur via le contexte
+        setUser(response.user);
+        
+        console.log('Utilisateur connecté:', response.user);
         
         // Afficher une notification de succès
         showNotification && showNotification({
@@ -63,12 +66,15 @@ const LoginForm = () => {
           message: `Bienvenue, ${response.user.firstName || response.user.userName}!`
         });
         
-        // Rediriger vers la page demandée ou le tableau de bord
-        router.push(returnUrl);
+        // Rediriger l'utilisateur vers le tableau de bord
+        console.log('Redirection vers:', returnUrl);
+      //  window.location.href = returnUrl;
+      router.push(returnUrl);
       } else {
         setError('Une erreur est survenue lors de la connexion.');
       }
     } catch (err) {
+      console.error('Erreur de login:', err);
       setError(err.message || 'Identifiants invalides. Veuillez réessayer.');
     } finally {
       setIsLoading(false);

@@ -19,7 +19,7 @@ const CompetitionDetails = ({ competitionId, isUserView = true }) => {
   const [error, setError] = useState(null);
   
   // Vérifier les droits d'accès selon le rôle
-  const { hasAccess, userRole } = useRoleAccess();
+  const { hasAccess } = useRoleAccess();
   const canEdit = hasAccess(['ORGANIZER', 'ADMIN']);
   
   // Charger les détails de la compétition

@@ -4,23 +4,34 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { navigationLinks } from '@/components/utils/navigationLinks';
+import { getNavigationLinks } from '@/components/utils/navigationLinks';
 import Image from 'next/image';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useTheme } from '@/hooks/useTheme';
+import { getIcon} from '@/components/ui/Icon';
 
 export default function DashboardLayout({ children }) {
-  const { user, logout, hasRole, userRoles } = useAuth();
+  const { user, isLoading, logout, hasRole, userRoles } = useAuth();
   const { theme } = useTheme();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [links, setLinks] = useState([]);
   
   // Protection du layout contre les accès non authentifiés
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       window.location.href = '/login';
     }
-  }, [user]);
+  }, [user, isLoading]);
+
+  // Effet pour charger les liens de navigation une seule fois
+  useEffect(() => {
+    if (user) {
+      // Obtenir les liens en fonction des rôles de l'utilisateur
+      const navLinks = getNavigationLinks(user, hasRole, userRoles);
+      setLinks(navLinks);
+    }
+  }, [user, hasRole, userRoles]);
 
   if (!user) {
     return (
@@ -36,128 +47,6 @@ export default function DashboardLayout({ children }) {
       </div>
     );
   }
-
-  // Ajout des sections spécifiques pour les rôles PLAYER, COACH et ORGANIZER
-  if (hasRole(userRoles.PLAYER) || hasRole(userRoles.COACH) || hasRole(userRoles.ORGANIZER) || hasRole(userRoles.ADMIN)) {
-    navigationLinks.push(
-      { name: 'Messagerie', href: '/messages', icon: 'message' },
-      { name: 'Notifications', href: '/notifications', icon: 'notification' }
-    );
-  }
-
-  // Ajout des sections de gestion pour les COACH et ORGANIZER
-  if (hasRole(userRoles.COACH)) {
-    navigationLinks.push(
-      { name: 'Gestion d\'équipe', href: '/coach/teams', icon: 'manage-teams' },
-      { name: 'Gestion de joueurs', href: '/coach/players', icon: 'manage-players' },
-      { name: 'Gestion de matchs', href: '/coach/matches', icon: 'manage-matches' }
-    );
-  }
-
-  if (hasRole(userRoles.ORGANIZER)) {
-    navigationLinks.push(
-      { name: 'Gestion de compétitions', href: '/organizer/competitions', icon: 'manage-competitions' },
-      { name: 'Gestion de matchs', href: '/organizer/matches', icon: 'manage-matches' }
-    );
-  }
-
-  // Sections pour ADMIN
-  if (hasRole(userRoles.ADMIN)) {
-    navigationLinks.push(
-      { name: 'Administration', href: '/admin', icon: 'admin' }
-    );
-  }
-
-  // Fonction pour récupérer l'icône appropriée
-  const getIcon = (iconName) => {
-    switch (iconName) {
-      case 'dashboard':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-          </svg>
-        );
-      case 'trophy':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-          </svg>
-        );
-      case 'team':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-          </svg>
-        );
-      case 'user':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
-        );
-      case 'whistle':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-          </svg>
-        );
-      case 'media':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-          </svg>
-        );
-      case 'message':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-          </svg>
-        );
-      case 'notification':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-          </svg>
-        );
-      case 'manage-teams':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-          </svg>
-        );
-      case 'manage-players':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-          </svg>
-        );
-      case 'manage-matches':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-          </svg>
-        );
-      case 'manage-competitions':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-          </svg>
-        );
-      case 'admin':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
-          </svg>
-        );
-      default:
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        );
-    }
-  };
 
   // Déterminer les classes CSS en fonction du thème
   const sidebarClasses = theme.isDark 
@@ -192,7 +81,7 @@ export default function DashboardLayout({ children }) {
         
         <nav className="flex-1 overflow-y-auto p-4">
           <div className="space-y-2">
-            {navigationLinks.map((link) => (
+            {links.map((link) => (
               <Link
                 href={link.href}
                 key={link.name}
@@ -326,7 +215,7 @@ export default function DashboardLayout({ children }) {
           <div className={`md:hidden ${theme.isDark ? 'bg-gray-900' : 'bg-green-800'} text-white absolute inset-x-0 top-16 z-20 h-screen`}>
             <nav className="p-4">
               <div className="space-y-2">
-                {navigationLinks.map((link) => (
+                {links.map((link) => (
                   <Link
                     href={link.href}
                     key={link.name}
