@@ -8,7 +8,7 @@ export const navigationLinks = [
   { name: 'Joueurs', href: '/players', icon: 'user' },
   { name: 'Matchs', href: '/matches', icon: 'whistle' },
   { name: 'Médiathèque', href: '/media', icon: 'media' },
-  { name: 'Profil', href: '/dashboard/profil', icon: 'profile' }
+  { name: 'Profil', href: '/dashboard/profile', icon: 'profile' }
 ];
 
 // Liens pour la partie publique (accessibles sans authentification)

@@ -61,7 +61,7 @@ const ForgotPasswordForm = () => {
     <p>
       Vous vous souvenez de votre mot de passe ?{' '}
       <Link 
-        href="/auth/login" 
+        href="/login" 
         className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 font-medium"
       >
         Connectez-vous

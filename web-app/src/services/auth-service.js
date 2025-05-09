@@ -10,10 +10,11 @@ const predefinedUsers = [
     firstName: "Utilisateur",
     lastName: "Simple",
     phone: "+33123456789",
+    address: "123 Rue de Paris, 75001 Paris",
     profilePicture: "/avatars/user.jpg",
     role: "USER",
     createdAt: "2025-01-15T08:30:00Z"
-  },
+  },    
   {
     id: 2,
     userName: "player1",
@@ -21,6 +22,8 @@ const predefinedUsers = [
     firstName: "Pierre",
     lastName: "Joueur",
     phone: "+33987654321",
+    address: "456 Rue de Lyon, 69001 Lyon",
+    dateOfBirth: "1992-08-20",
     profilePicture: "/avatars/player.jpg",
     role: "PLAYER",
     position: "MIDFIELDER",
@@ -41,7 +44,11 @@ const predefinedUsers = [
     licenseNumber: "CO54321",
     yearsOfExperience: 8,
     numberOfTeams: 2,
-    createdAt: "2025-01-25T09:45:00Z"
+    createdAt: "2025-01-25T09:45:00Z",
+    address: "dans le 8ème arrondissement de Lyon",
+    contactDetails: "contact@coach.com",
+    specialization: "tranquillement",
+    organization: "lycee"
   },
   {
     id: 4,
@@ -54,7 +61,9 @@ const predefinedUsers = [
     role: "ORGANIZER",
     organization: "Ligue Régionale de Football",
     activeCompetitionsCount: 3,
-    createdAt: "2025-02-01T11:30:00Z"
+    createdAt: "2025-02-01T11:30:00Z",
+    address: "456 Rue de Lyon, 69001 Lyon",
+    contactDetails: "contact@organizer.com"
   },
   {
     id: 5,
@@ -65,7 +74,9 @@ const predefinedUsers = [
     phone: "+33456789012",
     profilePicture: "/avatars/admin.jpg",
     role: "ADMIN",
-    createdAt: "2025-01-10T08:00:00Z"
+    createdAt: "2025-01-10T08:00:00Z",
+     address: "456 Rue de Lyon, 69001 Lyon",
+    contactDetails: "contact@admin.com"
   }
 ];
 
