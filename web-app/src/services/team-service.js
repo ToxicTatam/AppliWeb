@@ -3,6 +3,7 @@ import endpoints from '../lib/api/endpoints';
 import teamsData from '../data/teams';
 import standingsData from '../data/standings';
 import matchesData from '../data/matches';
+import playersData from '../data/players';
 import competitionsData from '../data/competitions';
 
 // Service pour les équipes
