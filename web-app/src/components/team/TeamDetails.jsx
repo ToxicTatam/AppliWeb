@@ -132,7 +132,7 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
           {team.coachId && (
             <div className="mt-4">
               <Link 
-                href={`/coach/${team.coachId}`}
+                href={`/profile/${team.coachId}`}
                 className="text-green-600 hover:text-green-800 text-sm font-medium"
               >
                 Voir le profil du coach

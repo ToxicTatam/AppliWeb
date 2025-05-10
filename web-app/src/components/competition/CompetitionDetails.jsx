@@ -272,7 +272,7 @@ const CompetitionDetails = ({ competitionId, isUserView = true }) => {
                   <h4 className="font-medium text-gray-800">{competition.organizerName}</h4>
                   <p className="text-sm text-gray-600">Organisateur</p>
                   <Link 
-                    href={`/dashboard/profile/${competition.organizerId}`}
+                    href={`/profile/${competition.organizerId}`}
                     className="text-sm text-blue-600 hover:text-blue-800 mt-1 inline-block"
                   >
                     Voir le profil
