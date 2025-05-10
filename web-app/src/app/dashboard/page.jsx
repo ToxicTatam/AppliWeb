@@ -128,25 +128,25 @@ export default function DashboardPage() {
           title="Compétitions" 
           count={stats.competitions} 
           icon="🏆" 
-          href="/dashboard/competitions" 
+          href="/competitions" 
         />
         <CardInfo 
           title="Équipes" 
           count={stats.teams} 
           icon="👥" 
-          href="/dashboard/teams" 
+          href="/teams" 
         />
         <CardInfo 
           title="Joueurs" 
           count={stats.players} 
           icon="👤" 
-          href="/dashboard/players" 
+          href="/players" 
         />
         <CardInfo 
           title="Matchs" 
           count={stats.matches} 
           icon="⚽" 
-          href="/dashboard/matches" 
+          href="/matches" 
         />
       </div>
 
