@@ -6,12 +6,10 @@ const messages = [
     senderId: 1,
     senderName: "Martin Dupont",
     senderRole: "COACH",
-    recipientId: [1, 2, 3, 4],
-    recipientName: ["Pierre Martin", "Thomas Dupont", "Nicolas Durand", "Alexandre Petit"],
-    recipientRole: "PLAYER",
-    teamId: 1,
-    teamName: "FC Olympique",
-    messageType: "TEAM",
+    recipientIds: [101, 102, 103, 104], // IDs des joueurs de l'équipe
+    recipientCategory: "TEAM", // Message à toute l'équipe sans le coach
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-10T10:15:00Z",
     readAt: "2024-09-10T11:30:00Z",
     isRead: true
@@ -22,12 +20,10 @@ const messages = [
     senderId: 1,
     senderName: "Martin Dupont",
     senderRole: "COACH",
-    recipientId: [2],
-    recipientName: ["Thomas Dupont"],
-    recipientRole: "PLAYER",
-    teamId: 1,
-    teamName: "FC Olympique",
-    messageType: "INDIVIDUAL",
+    recipientIds: [102], // ID de Thomas Dupont
+    recipientCategory: "INDIVIDUAL", // Message individuel
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-12T08:45:00Z",
     readAt: "2024-09-12T09:20:00Z",
     isRead: true
@@ -35,15 +31,13 @@ const messages = [
   {
     id: 3,
     content: "Coach, merci de vous inquiéter. J'ai fait quelques étirements et ça va mieux. Je serai en forme pour le match de dimanche.",
-    senderId: 2,
+    senderId: 102, // ID de Thomas Dupont
     senderName: "Thomas Dupont",
     senderRole: "PLAYER",
-    recipientId: [1],
-    recipientName: ["Martin Dupont"],
-    recipientRole: "COACH",
-    teamId: 1,
-    teamName: "FC Olympique",
-    messageType: "INDIVIDUAL",
+    recipientIds: [1], // ID du coach Martin Dupont
+    recipientCategory: "INDIVIDUAL",
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-12T09:30:00Z",
     readAt: "2024-09-12T10:15:00Z",
     isRead: true
@@ -51,15 +45,13 @@ const messages = [
   {
     id: 4,
     content: "Chers coachs, nous organisons une réunion technique le 15 octobre à 19h00 pour discuter des modifications de règlement pour la saison en cours. Votre présence est indispensable.",
-    senderId: 1,
+    senderId: 201,
     senderName: "Fédération Nationale de Football",
     senderRole: "ORGANIZER",
-    recipientId: [1, 4, 5, 6, 7, 8, 9, 10],
-    recipientName: ["Martin Dupont", "Alexandre Blanc", "Marie Legrand", "Paul Dubois", "Thomas Richard", "Camille Bernard", "Michel Lambert", "Julien Moreau"],
-    recipientRole: "COACH",
-    teamId: null,
-    teamName: null,
-    messageType: "GLOBAL",
+    recipientIds: [], // Liste vide car on utilise une catégorie
+    recipientCategory: "ALL_COACHES", // Message à tous les coachs
+    relatedEntityId: null,
+    relatedEntityType: null,
     sentAt: "2024-09-20T14:00:00Z",
     readAt: null,
     isRead: false
@@ -70,12 +62,10 @@ const messages = [
     senderId: 1,
     senderName: "Martin Dupont",
     senderRole: "COACH",
-    recipientId: [1],
-    recipientName: ["Pierre Martin"],
-    recipientRole: "PLAYER",
-    teamId: 1,
-    teamName: "FC Olympique",
-    messageType: "INDIVIDUAL",
+    recipientIds: [101], // ID de Pierre Martin
+    recipientCategory: "INDIVIDUAL",
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-25T11:20:00Z",
     readAt: "2024-09-25T12:05:00Z",
     isRead: true
@@ -83,15 +73,13 @@ const messages = [
   {
     id: 6,
     content: "Bien sûr coach, je suis tout à fait d'accord. C'est un point que je souhaite améliorer également.",
-    senderId: 1,
+    senderId: 101, // ID de Pierre Martin
     senderName: "Pierre Martin",
     senderRole: "PLAYER",
-    recipientId: [1],
-    recipientName: ["Martin Dupont"],
-    recipientRole: "COACH",
-    teamId: 1,
-    teamName: "FC Olympique",
-    messageType: "INDIVIDUAL",
+    recipientIds: [1], // ID du coach Martin Dupont
+    recipientCategory: "INDIVIDUAL",
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-25T12:10:00Z",
     readAt: "2024-09-25T13:30:00Z",
     isRead: true
@@ -99,15 +87,13 @@ const messages = [
   {
     id: 7,
     content: "Félicitations pour votre victoire! N'oubliez pas de compléter la feuille de match dans l'application avant ce soir.",
-    senderId: 2,
+    senderId: 202, // ID de la Ligue Régionale Sud
     senderName: "Ligue Régionale Sud",
     senderRole: "ORGANIZER",
-    recipientId: [6],
-    recipientName: ["Paul Dubois"],
-    recipientRole: "COACH",
-    teamId: 6,
-    teamName: "United Veterans",
-    messageType: "INDIVIDUAL",
+    recipientIds: [6], // ID du coach Paul Dubois
+    recipientCategory: "INDIVIDUAL",
+    relatedEntityId: 301, // ID de la compétition concernée
+    relatedEntityType: "COMPETITION",
     sentAt: "2024-09-15T18:45:00Z",
     readAt: "2024-09-15T19:30:00Z",
     isRead: true
@@ -115,15 +101,13 @@ const messages = [
   {
     id: 8,
     content: "Rappel à tous les joueurs: le photographe du club sera présent jeudi pour les photos officielles de l'équipe. Tenue officielle requise.",
-    senderId: 4,
+    senderId: 4, // ID du coach Alexandre Blanc
     senderName: "Alexandre Blanc",
     senderRole: "COACH",
-    recipientId: [5, 6, 7, 8],
-    recipientName: ["Lucas Moreau", "Maxime Leroy", "Julien Simon", "Antoine Michel"],
-    recipientRole: "PLAYER",
-    teamId: 4,
-    teamName: "Racing Club",
-    messageType: "TEAM",
+    recipientIds: [], // Liste vide car on utilise une catégorie
+    recipientCategory: "TEAM", 
+    relatedEntityId: 4, // ID de l'équipe Racing Club
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-28T09:00:00Z",
     readAt: null,
     isRead: false
@@ -134,12 +118,10 @@ const messages = [
     senderId: 1,
     senderName: "Martin Dupont",
     senderRole: "COACH",
-    recipientId: [3],
-    recipientName: ["Nicolas Durand"],
-    recipientRole: "PLAYER",
-    teamId: 1,
-    teamName: "FC Olympique",
-    messageType: "INDIVIDUAL",
+    recipientIds: [103], // ID de Nicolas Durand
+    recipientCategory: "INDIVIDUAL",
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
     sentAt: "2024-09-30T16:20:00Z",
     readAt: null,
     isRead: false
@@ -147,18 +129,58 @@ const messages = [
   {
     id: 10,
     content: "Chers participants au Tournoi Régional Vétéran, nous vous rappelons que la cérémonie de remise des trophées aura lieu le 30 juin à 18h00 au Club House. Un cocktail suivra la remise des prix.",
-    senderId: 2,
+    senderId: 202, // ID de la Ligue Régionale Sud
     senderName: "Ligue Régionale Sud",
     senderRole: "ORGANIZER",
-    recipientId: [3, 6, 9],
-    recipientName: ["Jean Leroy", "Paul Dubois", "Michel Lambert"],
-    recipientRole: "COACH",
-    teamId: null,
-    teamName: null,
-    messageType: "GLOBAL",
+    recipientIds: [], // Liste vide car on utilise une catégorie
+    recipientCategory: "COMPETITION_COACHES", // Tous les coachs d'une compétition spécifique
+    relatedEntityId: 302, // ID du Tournoi Régional Vétéran
+    relatedEntityType: "COMPETITION",
     sentAt: "2024-06-20T10:15:00Z",
     readAt: "2024-06-20T11:45:00Z",
     isRead: true
+  },
+  {
+    id: 11,
+    content: "Bonjour à tous les joueurs et au coach. Notre équipe a une séance photos demain à 17h avant l'entraînement. Merci d'être ponctuels.",
+    senderId: 101, // ID de Pierre Martin (capitaine)
+    senderName: "Pierre Martin",
+    senderRole: "PLAYER",
+    recipientIds: [], // Liste vide car on utilise une catégorie
+    recipientCategory: "TEAM_WITH_COACH", // Message à toute l'équipe et au coach
+    relatedEntityId: 1,
+    relatedEntityType: "TEAM",
+    sentAt: "2024-10-01T08:30:00Z",
+    readAt: null,
+    isRead: false
+  },
+  {
+    id: 12,
+    content: "Attention à tous les organisateurs: la mise à jour de la plateforme est programmée pour ce soir à 23h. Le système sera indisponible pendant environ 2 heures.",
+    senderId: 301, // ID de l'administrateur
+    senderName: "Admin Système",
+    senderRole: "ADMIN",
+    recipientIds: [], // Liste vide car on utilise une catégorie
+    recipientCategory: "ALL_ORGANIZERS", // Message à tous les organisateurs
+    relatedEntityId: null,
+    relatedEntityType: null,
+    sentAt: "2024-10-05T15:00:00Z",
+    readAt: null,
+    isRead: false
+  },
+  {
+    id: 13,
+    content: "Message global à tous les utilisateurs de la plateforme: nous sommes heureux de vous annoncer le lancement de notre nouvelle fonctionnalité de statistiques avancées!",
+    senderId: 301, // ID de l'administrateur
+    senderName: "Admin Système",
+    senderRole: "ADMIN",
+    recipientIds: [], // Liste vide car on utilise une catégorie
+    recipientCategory: "GLOBAL", // Message à tout le monde
+    relatedEntityId: null,
+    relatedEntityType: null,
+    sentAt: "2024-10-10T09:15:00Z",
+    readAt: null,
+    isRead: false
   }
 ];
 

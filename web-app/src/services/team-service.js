@@ -322,6 +322,53 @@ const teamService = {
       throw error;
     }
   },
+
+  // Récupérer les équipes d'un utilisateur selon son rôle
+  getUserTeams: async (userId) => {
+    try {
+      // En mode développement, utiliser les données fictives
+      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        // Récupérer le rôle de l'utilisateur depuis le localStorage
+        const userStr = localStorage.getItem('user');
+        const user = userStr ? JSON.parse(userStr) : null;
+        const userRole = user?.role;
+        
+        if (!userRole) {
+          throw new Error('Utilisateur non connecté ou rôle non défini');
+        }
+        
+        let userTeams = [];
+        
+        // Si c'est un coach, récupérer ses équipes
+        if (userRole === 'COACH') {
+          userTeams = teamsData.filter(team => team.coachId === Number(userId));
+        }
+        // Si c'est un joueur, récupérer son équipe
+        else if (userRole === 'PLAYER') {
+          // Trouver d'abord le joueur dans les données
+          const player = playersData.find(player => player.id === Number(userId));
+          if (player && player.teamId) {
+            const team = teamsData.find(team => team.id === Number(player.teamId));
+            if (team) {
+              userTeams = [team];
+            }
+          }
+        }
+        
+        return {
+          data: userTeams,
+          total: userTeams.length,
+          page: 1,
+          pageSize: userTeams.length
+        };
+      }
+      
+      // En production, appel à l'API réelle
+      return await api.get(endpoints.users.teams(userId));
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default teamService;

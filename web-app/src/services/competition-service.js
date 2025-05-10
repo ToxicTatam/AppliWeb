@@ -1,6 +1,8 @@
 import api from '../lib/api/client';
 import endpoints from '../lib/api/endpoints';
 import competitionsData from '../data/competitions';
+import teamsData from '../data/teams';
+import standingsData from '../data/standings';
 
 // Service pour les compétitions
 const competitionService = {
@@ -239,6 +241,65 @@ const competitionService = {
       }
       
       return await api.get(`${endpoints.organizers.competitions(organizerId)}`, filters);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Récupérer les compétitions d'un utilisateur selon son rôle
+  getUserCompetitions: async (userId) => {
+    try {
+      // En mode développement, utiliser les données fictives
+      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        // Récupérer le rôle de l'utilisateur depuis le localStorage
+        const userStr = localStorage.getItem('user');
+        const user = userStr ? JSON.parse(userStr) : null;
+        const userRole = user?.role;
+        
+        if (!userRole) {
+          throw new Error('Utilisateur non connecté ou rôle non défini');
+        }
+        
+        let userCompetitions = [];
+        
+        // Si c'est un organisateur, récupérer ses compétitions
+        if (userRole === 'ORGANIZER') {
+          userCompetitions = competitionsData.filter(comp => comp.organizerId === Number(userId));
+        }
+        // Si c'est un coach, récupérer les compétitions de ses équipes
+        else if (userRole === 'COACH') {
+          // D'abord, trouver les équipes de ce coach
+          const coachTeams = teamsData.filter(team => team.coachId === Number(userId));
+          
+          if (coachTeams.length > 0) {
+            // Récupérer les ID d'équipes
+            const teamIds = coachTeams.map(team => team.id);
+            
+            // Récupérer les compétitions pour chaque équipe à partir des classements
+            const competitionIds = standingsData
+              .filter(standing => teamIds.includes(standing.teamId))
+              .map(standing => standing.competitionId);
+            
+            // Éliminer les doublons
+            const uniqueCompetitionIds = [...new Set(competitionIds)];
+            
+            // Récupérer les informations complètes des compétitions
+            userCompetitions = competitionsData.filter(competition => 
+              uniqueCompetitionIds.includes(competition.id)
+            );
+          }
+        }
+        
+        return {
+          data: userCompetitions,
+          total: userCompetitions.length,
+          page: 1,
+          pageSize: userCompetitions.length
+        };
+      }
+      
+      // En production, appel à l'API réelle
+      return await api.get(endpoints.users.competitions(userId));
     } catch (error) {
       throw error;
     }
