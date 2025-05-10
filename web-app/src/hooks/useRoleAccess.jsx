@@ -66,7 +66,7 @@ export const useRoleAccess = () => {
         '/dashboard/notifications',
         '/dashboard/organizer'
       ],
-      [USER_ROLES.ADMIN]: ['/dashboard/admin', '/dashboard/profile'],
+      [USER_ROLES.ADMIN]: ['/dashboard/admin', '/dashboard/profile', '/dashboard/messages', '/dashboard/notifications'],
     };
     
     // Vérifier si l'utilisateur a accès à la route en fonction de son rôle
