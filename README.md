@@ -15,7 +15,7 @@ ASTUCE POUR LE LANCEMENT D'UN COUP
 
 faite juste depuis le repertoire contenant les projets
 
-SI VOUS N AVEZ PAS INSTALLER LES DEPENDANCES, SI OUI VOUS POUVEZ SAUTER ET ALLER À L ETAPE SUIVANTE
+SI VOUS N AVEZ PAS INSTALLE LES DEPENDANCES, SI OUI VOUS POUVEZ SAUTER ET ALLER À L ETAPE SUIVANTE
 
 source dependance.sh  (si un probleme est rencontré, faite d abord chmod +x dependance.sh)
 
