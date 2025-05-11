@@ -152,7 +152,7 @@ const RegisterForm = ({ userType = 'USER' }) => {
         });
         
         // Rediriger vers la page de connexion avec un paramètre indiquant le succès de l'inscription
-        router.push('/auth/login?registered=true');
+        router.push('/auth/login');
       } else {
         setError('Une erreur est survenue lors de l\'inscription.');
       }

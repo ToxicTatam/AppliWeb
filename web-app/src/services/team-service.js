@@ -1,374 +1,190 @@
 import api from '../lib/api/client';
 import endpoints from '../lib/api/endpoints';
-import teamsData from '../data/teams';
-import standingsData from '../data/standings';
-import matchesData from '../data/matches';
-import playersData from '../data/players';
-import competitionsData from '../data/competitions';
 
-// Service pour les équipes
-const teamService = {
-  // Récupérer toutes les équipes avec filtres optionnels
-  getAllTeams: async (filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Filtrage côté client pour les données fictives
-        let filteredTeams = [...teamsData];
-        
-        // Appliquer les filtres
-        if (filters.name) {
-          filteredTeams = filteredTeams.filter(team => 
-            team.name.toLowerCase().includes(filters.name.toLowerCase())
-          );
-        }
-        
-        if (filters.category) {
-          filteredTeams = filteredTeams.filter(team => team.category === filters.category);
-        }
-        
-        if (filters.coachId) {
-          filteredTeams = filteredTeams.filter(team => team.coachId === Number(filters.coachId));
-        }
-        
-        if (filters.coachName) {
-          filteredTeams = filteredTeams.filter(team => 
-            team.coachName.toLowerCase().includes(filters.coachName.toLowerCase())
-          );
-        }
-        
-        return {
-          data: filteredTeams,
-          total: filteredTeams.length,
-          page: 1,
-          pageSize: filteredTeams.length,
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.teams.base, filters);
-    } catch (error) {
-      throw error;
-    }
-  },
+/**
+ * Service pour la gestion des équipes
+ */
 
-  // Récupérer une équipe par son ID
-  getTeamById: async (id) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const team = teamsData.find(team => team.id === Number(id));
-        if (!team) {
-          throw new Error('Équipe non trouvée');
-        }
-        return team;
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.teams.byId(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les joueurs d'une équipe
-  getTeamPlayers: async (id) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler une requête pour obtenir les joueurs d'une équipe
-        const teamPlayers = playersData.filter(player => player.teamId === Number(id));
-        return {
-          data: teamPlayers,
-          total: teamPlayers.length,
-          page: 1,
-          pageSize: teamPlayers.length
-        };
-      }
-      
-      return await api.get(endpoints.teams.players(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les matchs d'une équipe
-  getTeamMatches: async (id, filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Filtrer les matchs où l'équipe est impliquée (domicile ou extérieur)
-        let filteredMatches = matchesData.filter(match => 
-          match.homeTeamId === Number(id) || match.awayTeamId === Number(id)
-        );
-        
-        // Appliquer les filtres additionnels
-        if (filters.status) {
-          filteredMatches = filteredMatches.filter(match => match.status === filters.status);
-        }
-        
-        if (filters.competitionId) {
-          filteredMatches = filteredMatches.filter(match => match.competitionId === Number(filters.competitionId));
-        }
-        
-        // Trier par date
-        filteredMatches.sort((a, b) => new Date(a.scheduledDateTime) - new Date(b.scheduledDateTime));
-        
-        return {
-          data: filteredMatches,
-          total: filteredMatches.length,
-          page: 1,
-          pageSize: filteredMatches.length
-        };
-      }
-      
-      return await api.get(endpoints.teams.matches(id), filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les compétitions d'une équipe
-  getTeamCompetitions: async (id) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Récupérer les compétitions à partir des classements
-        const competitionIds = standingsData
-          .filter(standing => standing.teamId === Number(id))
-          .map(standing => standing.competitionId);
-        
-        // Éliminer les doublons
-        const uniqueCompetitionIds = [...new Set(competitionIds)];
-        
-        // Récupérer les informations complètes des compétitions
-        const teamCompetitions = competitionsData.filter(competition => 
-          uniqueCompetitionIds.includes(competition.id)
-        );
-        
-        return {
-          data: teamCompetitions,
-          total: teamCompetitions.length,
-          page: 1,
-          pageSize: teamCompetitions.length
-        };
-      }
-      
-      return await api.get(endpoints.teams.competitions(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Créer une nouvelle équipe (Coach uniquement)
-  createTeam: async (teamData) => {
-    try {
-      return await api.post(endpoints.teams.base, teamData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Mettre à jour une équipe (Coach uniquement)
-  updateTeam: async (id, teamData) => {
-    try {
-      return await api.put(endpoints.teams.byId(id), teamData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Supprimer une équipe (Coach uniquement)
-  deleteTeam: async (id) => {
-    try {
-      return await api.delete(endpoints.teams.byId(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Ajouter un joueur à une équipe (Coach uniquement)
-  addPlayerToTeam: async (teamId, playerId) => {
-    try {
-      return await api.post(`${endpoints.teams.players(teamId)}/add`, { playerId });
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Retirer un joueur d'une équipe (Coach uniquement)
-  removePlayerFromTeam: async (teamId, playerId) => {
-    try {
-      return await api.delete(`${endpoints.teams.players(teamId)}/remove/${playerId}`);
-    } catch (error) {
-      throw error;
-    }
-  },
-  
-  // Récupérer les équipes d'un coach
-  getCoachTeams: async (coachId, filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        let filteredTeams = teamsData.filter(team => team.coachId === Number(coachId));
-        
-        // Appliquer les filtres additionnels
-        if (filters.category) {
-          filteredTeams = filteredTeams.filter(team => team.category === filters.category);
-        }
-        
-        if (filters.name) {
-          filteredTeams = filteredTeams.filter(team => 
-            team.name.toLowerCase().includes(filters.name.toLowerCase())
-          );
-        }
-        
-        return {
-          data: filteredTeams,
-          total: filteredTeams.length,
-          page: 1,
-          pageSize: filteredTeams.length
-        };
-      }
-      
-      return await api.get(`${endpoints.coaches.teams(coachId)}`, filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les classements d'une équipe (tous ou par défaut le plus récent)
-  getTeamStandings: async (teamId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const teamStandings = standingsData.filter(standing => standing.teamId === Number(teamId));
-        
-        if (!teamStandings || teamStandings.length === 0) {
-          return null;
-        }
-        
-        // Trier par date de mise à jour (du plus récent au plus ancien)
-        teamStandings.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-        
-        return teamStandings;
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.teams.standings(teamId));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer le classement d'une équipe dans une compétition spécifique
-  getTeamStandingInCompetition: async (teamId, competitionId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const standing = standingsData.find(
-          s => s.teamId === Number(teamId) && s.competitionId === Number(competitionId)
-        );
-        
-        if (!standing) {
-          throw new Error('Classement non trouvé pour cette équipe dans cette compétition');
-        }
-        
-        return standing;
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(`${endpoints.teams.standings(teamId)}/${competitionId}`);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les équipes d'une compétition spécifique
-  getTeamsByCompetition: async (competitionId, filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Récupérer les équipes à partir des classements
-        const teamsInStandings = standingsData
-          .filter(standing => standing.competitionId === Number(competitionId))
-          .map(standing => standing.teamId);
-        
-        // Récupérer les informations complètes des équipes
-        let competitionTeams = teamsData.filter(team => teamsInStandings.includes(team.id));
-        
-        // Appliquer les filtres additionnels
-        if (filters.name) {
-          competitionTeams = competitionTeams.filter(team => 
-            team.name.toLowerCase().includes(filters.name.toLowerCase())
-          );
-        }
-        
-        if (filters.category) {
-          competitionTeams = competitionTeams.filter(team => team.category === filters.category);
-        }
-        
-        return {
-          data: competitionTeams,
-          total: competitionTeams.length,
-          page: 1,
-          pageSize: competitionTeams.length
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.competitions.teams(competitionId), filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les équipes d'un utilisateur selon son rôle
-  getUserTeams: async (userId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Récupérer le rôle de l'utilisateur depuis le localStorage
-        const userStr = localStorage.getItem('user');
-        const user = userStr ? JSON.parse(userStr) : null;
-        const userRole = user?.role;
-        
-        if (!userRole) {
-          throw new Error('Utilisateur non connecté ou rôle non défini');
-        }
-        
-        let userTeams = [];
-        
-        // Si c'est un coach, récupérer ses équipes
-        if (userRole === 'COACH') {
-          userTeams = teamsData.filter(team => team.coachId === Number(userId));
-        }
-        // Si c'est un joueur, récupérer son équipe
-        else if (userRole === 'PLAYER') {
-          // Trouver d'abord le joueur dans les données
-          const player = playersData.find(player => player.id === Number(userId));
-          if (player && player.teamId) {
-            const team = teamsData.find(team => team.id === Number(player.teamId));
-            if (team) {
-              userTeams = [team];
-            }
-          }
-        }
-        
-        return {
-          data: userTeams,
-          total: userTeams.length,
-          page: 1,
-          pageSize: userTeams.length
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.users.teams(userId));
-    } catch (error) {
-      throw error;
-    }
-  },
+/**
+ * Récupère toutes les équipes
+ * @param {Object} filter - Filtres pour les équipes
+ * @returns {Promise<Array>} - Liste des équipes
+ */
+export const getAllTeams = async (filter = {}) => {
+  const response = await api.get(endpoints.teams.base, { params: filter });
+  return response.data;
 };
 
-export default teamService;
+/**
+ * Récupère une équipe par son ID
+ * @param {number} teamId - ID de l'équipe
+ * @returns {Promise<Object>} - Équipe trouvée
+ */
+export const getTeamById = async (teamId) => {
+  const response = await api.get(endpoints.teams.byId(teamId));
+  return response.data;
+};
+
+/**
+ * Récupère les équipes d'un coach
+ * @param {number} coachId - ID du coach
+ * @returns {Promise<Array>} - Liste des équipes
+ */
+export const getTeamsByCoach = async (coachId) => {
+  const response = await api.get(endpoints.teams.byCoach(coachId));
+  return response.data;
+};
+
+/**
+ * Récupère les équipes participant à une compétition
+ * @param {number} competitionId - ID de la compétition
+ * @returns {Promise<Array>} - Liste des équipes
+ */
+export const getTeamsByCompetition = async (competitionId) => {
+  const response = await api.get(endpoints.teams.byCompetition(competitionId));
+  return response.data;
+};
+
+/**
+ * Récupère les équipes d'un joueur
+ * @param {number} playerId - ID du joueur
+ * @returns {Promise<Array>} - Liste des équipes
+ */
+export const getTeamsByPlayer = async (playerId) => {
+  const response = await api.get(endpoints.teams.byPlayer(playerId));
+  return response.data;
+};
+
+/**
+ * Récupère les classements d'une équipe
+ * @param {number} teamId - ID de l'équipe
+ * @returns {Promise<Array>} - Classements de l'équipe
+ */
+export const getTeamStandings = async (teamId) => {
+  const response = await api.get(endpoints.teams.standings(teamId));
+  return response.data;
+};
+
+/**
+ * Récupère les classements d'une compétition
+ * @param {number} competitionId - ID de la compétition
+ * @returns {Promise<Array>} - Classements de la compétition
+ */
+export const getCompetitionStandings = async (competitionId) => {
+  const response = await api.get(endpoints.teams.competitionStandings(competitionId));
+  return response.data;
+};
+
+/**
+ * Récupère le classement d'une équipe dans une compétition
+ * @param {number} competitionId - ID de la compétition
+ * @param {number} teamId - ID de l'équipe
+ * @returns {Promise<Object>} - Classement de l'équipe dans la compétition
+ */
+export const getTeamCompetitionStanding = async (competitionId, teamId) => {
+  const response = await api.get(endpoints.teams.teamCompetitionStanding(competitionId, teamId));
+  return response.data;
+};
+
+/**
+ * [COACH] Crée une nouvelle équipe
+ * @param {number} coachId - ID du coach
+ * @param {Object} teamDTO - Données de l'équipe
+ * @returns {Promise<Object>} - Équipe créée
+ */
+export const createTeam = async (coachId, teamDTO) => {
+  const response = await api.post(endpoints.teams.coach.create(coachId), teamDTO);
+  return response.data;
+};
+
+/**
+ * [COACH] Met à jour une équipe
+ * @param {number} coachId - ID du coach
+ * @param {Object} teamDTO - Nouvelles données de l'équipe
+ * @returns {Promise<Object>} - Équipe mise à jour
+ */
+export const updateTeam = async (coachId, teamDTO) => {
+  const response = await api.put(endpoints.teams.coach.update(coachId), teamDTO);
+  return response.data;
+};
+
+/**
+ * [COACH] Supprime une équipe
+ * @param {number} coachId - ID du coach
+ * @param {number} teamId - ID de l'équipe à supprimer
+ * @returns {Promise<void>}
+ */
+export const deleteTeam = async (coachId, teamId) => {
+  await api.delete(endpoints.teams.coach.delete(coachId, teamId));
+};
+
+/**
+ * [COACH] Récupère toutes les équipes d'un coach
+ * @param {number} coachId - ID du coach
+ * @returns {Promise<Array>} - Liste des équipes
+ */
+export const getAllCoachTeams = async (coachId) => {
+  const response = await api.get(endpoints.teams.coach.all(coachId));
+  return response.data;
+};
+
+/**
+ * [COACH] Ajoute un joueur à une équipe
+ * @param {number} coachId - ID du coach
+ * @param {number} teamId - ID de l'équipe
+ * @param {Object} playerDTO - Données du joueur à ajouter
+ * @returns {Promise<Object>} - Joueur ajouté
+ */
+export const addPlayerToTeam = async (coachId, teamId, playerDTO) => {
+  const response = await api.post(endpoints.teams.coach.addPlayer(coachId, teamId), playerDTO);
+  return response.data;
+};
+
+/**
+ * [COACH] Retire un joueur d'une équipe
+ * @param {number} coachId - ID du coach
+ * @param {number} teamId - ID de l'équipe
+ * @param {number} playerId - ID du joueur à retirer
+ * @returns {Promise<void>}
+ */
+export const removePlayerFromTeam = async (coachId, teamId, playerId) => {
+  await api.delete(endpoints.teams.coach.removePlayer(coachId, teamId, playerId));
+};
+
+/**
+ * [COACH] Transfère un joueur d'une équipe à une autre
+ * @param {number} coachId - ID du coach
+ * @param {number} sourceTeamId - ID de l'équipe source
+ * @param {number} targetTeamId - ID de l'équipe cible
+ * @param {number} playerId - ID du joueur à transférer
+ * @returns {Promise<Object>} - Résultat du transfert
+ */
+export const transferPlayer = async (coachId, sourceTeamId, targetTeamId, playerId) => {
+  const response = await api.post(
+    endpoints.teams.coach.transferPlayer(coachId, sourceTeamId, targetTeamId, playerId)
+  );
+  return response.data;
+};
+
+/**
+ * [ORGANIZER] Récupère les équipes d'une compétition
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {number} competitionId - ID de la compétition
+ * @returns {Promise<Array>} - Liste des équipes
+ */
+export const getCompetitionTeamsByOrganizer = async (organizerId, competitionId) => {
+  const response = await api.get(endpoints.teams.organizer.byCompetition(organizerId, competitionId));
+  return response.data;
+};
+
+/**
+ * [ORGANIZER] Récupère les coachs d'une compétition
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {number} competitionId - ID de la compétition
+ * @returns {Promise<Array>} - Liste des coachs
+ */
+export const getCompetitionCoaches = async (organizerId, competitionId) => {
+  const response = await api.get(endpoints.teams.organizer.coaches(organizerId, competitionId));
+  return response.data;
+};
+

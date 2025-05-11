@@ -86,39 +86,39 @@ const authService = {
   login: async (credentials) => {
     try {
       // En mode développement, utiliser les utilisateurs prédéfinis
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler un délai réseau
-        await new Promise(resolve => setTimeout(resolve, 800));
+      // if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+      //   // Simuler un délai réseau
+      //   await new Promise(resolve => setTimeout(resolve, 800));
         
-        // Rechercher l'utilisateur correspondant
-        const user = predefinedUsers.find(
-          u => (u.email === credentials.email || u.userName === credentials.email) && 
-               // Dans un environnement réel, le mot de passe serait haché
-               // Pour le développement, acceptons n'importe quel mot de passe qui a au moins 6 caractères
-               credentials.password && credentials.password.length >= 6
-        );
+      //   // Rechercher l'utilisateur correspondant
+      //   const user = predefinedUsers.find(
+      //     u => (u.email === credentials.email || u.userName === credentials.email) && 
+      //          // Dans un environnement réel, le mot de passe serait haché
+      //          // Pour le développement, acceptons n'importe quel mot de passe qui a au moins 6 caractères
+      //          credentials.password && credentials.password.length >= 6
+      //   );
         
-        if (!user) {
-          throw new Error("Identifiants invalides");
-        }
+      //   if (!user) {
+      //     throw new Error("Identifiants invalides");
+      //   }
         
-        // Générer un token fictif (dans un environnement réel, ce serait un JWT)
-        const token = `mock-token-${user.id}-${Date.now()}`;
+      //   // Générer un token fictif (dans un environnement réel, ce serait un JWT)
+      //   const token = `mock-token-${user.id}-${Date.now()}`;
         
-        // Simuler la réponse de l'API
-        const response = {
-          token,
-          user,
-          success: true,
-          message: "Connexion réussie"
-        };
+      //   // Simuler la réponse de l'API
+      //   const response = {
+      //     token,
+      //     user,
+      //     success: true,
+      //     message: "Connexion réussie"
+      //   };
         
-        // Stocker dans localStorage comme avec l'API réelle
-        localStorage.setItem('authToken', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+      //   // Stocker dans localStorage comme avec l'API réelle
+      //   localStorage.setItem('authToken', response.token);
+      //   localStorage.setItem('user', JSON.stringify(response.user));
         
-        return response;
-      }
+      //   return response;
+      // }
       
       // En production, appel à l'API réelle
       const response = await api.post(endpoints.auth.login, credentials);
@@ -136,32 +136,32 @@ const authService = {
   register: async (userData) => {
     try {
       // En mode développement, simuler l'inscription
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler un délai réseau
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      // if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+      //   // Simuler un délai réseau
+      //   await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Vérifier si l'email ou le nom d'utilisateur existe déjà
-        const userExists = predefinedUsers.some(
-          u => u.email === userData.email || u.userName === userData.userName
-        );
+      //   // Vérifier si l'email ou le nom d'utilisateur existe déjà
+      //   const userExists = predefinedUsers.some(
+      //     u => u.email === userData.email || u.userName === userData.userName
+      //   );
         
-        if (userExists) {
-          throw new Error("Cet email ou nom d'utilisateur est déjà utilisé");
-        }
+      //   if (userExists) {
+      //     throw new Error("Cet email ou nom d'utilisateur est déjà utilisé");
+      //   }
         
-        // Simuler la création d'un utilisateur (sans réellement l'ajouter à la liste)
-        const newUser = {
-          id: predefinedUsers.length + 1,
-          ...userData,
-          createdAt: new Date().toISOString()
-        };
+      //   // Simuler la création d'un utilisateur (sans réellement l'ajouter à la liste)
+      //   const newUser = {
+      //     id: predefinedUsers.length + 1,
+      //     ...userData,
+      //     createdAt: new Date().toISOString()
+      //   };
         
-        return {
-          success: true,
-          message: "Inscription réussie",
-          user: newUser
-        };
-      }
+      //   return {
+      //     success: true,
+      //     message: "Inscription réussie",
+      //     user: newUser
+      //   };
+      // }
       
       // En production, appel à l'API réelle
       return await api.post(endpoints.auth.register, userData);

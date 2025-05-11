@@ -1,42 +1,50 @@
 package com.web.n7.model;
 
-
-import com.web.n7.model.enumeration.NotificationType;
+import com.web.n7.model.users.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "notifications")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "notifications")
 @Builder
 public class Notification {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
+    
+    @Column(nullable = false, columnDefinition = "LONGVARCHAR")
     private String message;
-
-    @Column(name = "is_read")
+    
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
+    
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private User recipient;
+    
+    @Column(name = "is_read", nullable = false)
     private boolean isRead;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "notification_type", nullable = false)
-    private NotificationType type;
-
-    @Column(name = "created_at")
+    
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
-
-
+    
+    @Column(name = "read_at")
+    private LocalDateTime readAt;
+    
+    // Champ optionnel pour lier la notification à une entité (match, compétition, etc.)
+    @Column(name = "entity_type")
+    private String entityType;
+    
+    @Column(name = "entity_id")
+    private Long entityId;
 }

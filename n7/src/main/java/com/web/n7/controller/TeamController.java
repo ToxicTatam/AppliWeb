@@ -1,140 +1,170 @@
 package com.web.n7.controller;
-import com.web.n7.model.Player;
-import com.web.n7.model.Team;
-import com.web.n7.service.PlayerService;
-import com.web.n7.service.TeamService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
+import com.web.n7.service.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import com.web.n7.dto.coach.CreateTeamDTO;
+import com.web.n7.dto.coach.RegisterPlayerDTO;
+import com.web.n7.dto.coach.UpdateTeamDTO;
+import com.web.n7.dto.organizer.OrganizerTeamSummaryDTO;
+import com.web.n7.dto.users.CoachDTO;
+import com.web.n7.dto.teams.StandingDTO;
+import com.web.n7.dto.teams.TeamDTO;
+import com.web.n7.filter.TeamFilter;
+import com.web.n7.serviceInterface.TeamService;
 
 @RestController
 @RequestMapping("/api/teams")
-//@PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZER', 'COACH')")
+@RequiredArgsConstructor
 public class TeamController {
 
-    private final TeamService teamService;
 
-    private final PlayerService playerService;
-
-    public TeamController(TeamService teamService,PlayerService playerService) {
-        this.teamService = teamService;
-        this.playerService = playerService;
+    private final UserServiceImpl userService;
+    private final  TeamService teamService;
 
 
-    }
 
-    /**
-     * Creates a new team and associates it with a coach.
-     *
-     * @param team the team to be created
-     * @param coachId the ID of the coach to be associated with the team
-     * @return a ResponseEntity containing the created team
-     */
-    @PostMapping
-    public ResponseEntity<Team> createTeam(@RequestBody Team team, @RequestParam Long coachId) {
-        Team createdTeam = teamService.create(team, coachId);
-        return ResponseEntity.ok(createdTeam);
-    }
-
-    /**
-     * Retrieves the details of a team based on its ID.
-     *
-     * @param id the ID of the team to be retrieved
-     * @return a ResponseEntity containing the team details if found, or a not found response if the team does not exist
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable Long id) {
-        Optional<Team> team = teamService.findById(id);
-        return team.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Retrieves a list of all teams.
-     *
-     * @return a ResponseEntity containing a list of all teams
-     */
+    // Endpoints pour tous les utilisateurs
     @GetMapping
-    public ResponseEntity<List<Team>> getAllTeams() {
-        List<Team> teams = teamService.findAll();
-        return ResponseEntity.ok(teams);
+    public ResponseEntity<List<TeamDTO>> getAllTeams(TeamFilter filter) {
+        return ResponseEntity.ok(teamService.getAllTeams(filter));
     }
 
-    /**
-     * Retrieves a list of teams associated with a specific coach.
-     *
-     * @param coachId the ID of the coach whose teams are to be retrieved
-     * @return a ResponseEntity containing a list of teams associated with the specified coach
-     */
+    @GetMapping("/{teamId}")
+    public ResponseEntity<TeamDTO> getTeamById(@PathVariable Long teamId) {
+        return ResponseEntity.ok(teamService.getTeamById(teamId));
+    }
+
     @GetMapping("/coach/{coachId}")
-    public ResponseEntity<List<Team>> getTeamsByCoach(@PathVariable Long coachId) {
-        List<Team> teams = teamService.findByCoachId(coachId);
-        return ResponseEntity.ok(teams);
+    public ResponseEntity<List<TeamDTO>> getTeamsByCoachId(
+            @PathVariable Long coachId, TeamFilter filter) {
+        return ResponseEntity.ok(teamService.getTeamsByCoachId(coachId, filter));
     }
 
-    /**
-     * Updates the details of an existing team based on the provided team ID and updated team details.
-     *
-     * @param teamId the ID of the team to be updated
-     * @param team the updated details of the team
-     * @return a ResponseEntity containing the updated team
-     */
-    @PutMapping("/{teamId}")
-    public ResponseEntity<Team> updateTeam(@PathVariable Long teamId, @RequestBody Team team) {
-        team.setId(teamId);
-        Team updatedTeam = teamService.update(team);
-        return ResponseEntity.ok(updatedTeam);
+    @GetMapping("/competition/{competitionId}")
+    public ResponseEntity<List<TeamDTO>> getTeamsByCompetitionId(
+            @PathVariable Long competitionId, TeamFilter filter) {
+        return ResponseEntity.ok(teamService.getTeamsByCompetitionId(competitionId, filter));
     }
 
-    /**
-     * Deletes a team based on its ID.
-     *
-     * @param teamId the ID of the team to be deleted
-     * @return a ResponseEntity with no content status indicating successful deletion
-     */
-    @DeleteMapping("/{teamId}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable Long teamId) {
-        teamService.delete(teamId);
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<List<TeamDTO>> getTeamsByPlayerId(
+            @PathVariable Long playerId, TeamFilter filter) {
+        return ResponseEntity.ok(teamService.getTeamsByPlayerId(playerId, filter));
+    }
+
+    @GetMapping("/{teamId}/standings")
+    public ResponseEntity<List<StandingDTO>> getTeamStandingsByTeamId(@PathVariable Long teamId) {
+        return ResponseEntity.ok(teamService.getTeamStandingsByTeamId(teamId));
+    }
+
+    @GetMapping("/competition/{competitionId}/standings")
+    public ResponseEntity<List<StandingDTO>> getTeamStandingsByCompetitionId(
+            @PathVariable Long competitionId) {
+        return ResponseEntity.ok(teamService.getTeamStandingsByCompetitionId(competitionId));
+    }
+
+    @GetMapping("/competition/{competitionId}/team/{teamId}/standing")
+    public ResponseEntity<StandingDTO> getTeamStandingByCompetitionIdAndTeamId(
+            @PathVariable Long competitionId,
+            @PathVariable Long teamId) {
+        return ResponseEntity.ok(teamService.getTeamStandingByCompetitionIdAndTeamId(competitionId, teamId));
+    }
+
+    // Endpoints pour les coachs
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}")
+    public ResponseEntity<TeamDTO> createTeam(
+            @PathVariable Long coachId,
+            @RequestBody CreateTeamDTO createTeamDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(teamService.createTeam(coachId, createTeamDTO));
+    }
+
+    @PreAuthorize("hasRole('COACH')")
+    @PutMapping("/coach/{coachId}")
+    public ResponseEntity<TeamDTO> updateTeam(
+            @PathVariable Long coachId,
+            @RequestBody UpdateTeamDTO updateTeamDTO) {
+        return ResponseEntity.ok(teamService.updateTeam(coachId, updateTeamDTO));
+    }
+
+    @PreAuthorize("hasRole('COACH')")
+    @DeleteMapping("/coach/{coachId}/team/{teamId}")
+    public ResponseEntity<Void> deleteTeam(
+            @PathVariable Long coachId,
+            @PathVariable Long teamId) {
+        teamService.deleteTeam(coachId, teamId);
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Get all players in a team
-     * Endpoint: GET /api/teams/{teamId}/players
-     */
-    @GetMapping("/{teamId}/players")
-    public ResponseEntity<List<Player>> getPlayersByTeam(@PathVariable Long teamId) {
-        List<Player> players = playerService.findByTeamId(teamId);
-        return ResponseEntity.ok(players);
+    @PreAuthorize("hasRole('COACH')")
+    @GetMapping("/coach/{coachId}/all")
+    public ResponseEntity<List<TeamDTO>> getAllTeamsByCoach(@PathVariable Long coachId) {
+        return ResponseEntity.ok(teamService.getAllTeamsByCoach(coachId));
     }
 
-    /**
-     * Add a player to a team
-     * Endpoint: POST /api/teams/{teamId}/players
-     */
-    @PostMapping("/add/{teamId}/players")
-    public ResponseEntity<Player> addPlayerToTeam(@RequestBody Player player, @PathVariable Long teamId) {
-        Player createdPlayer = playerService.create(player, teamId);
-        return ResponseEntity.ok(createdPlayer);
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}/team/{teamId}/player")
+    public ResponseEntity<TeamDTO> addPlayerToTeam(
+            @PathVariable Long coachId,
+            @PathVariable Long teamId,
+            @RequestBody RegisterPlayerDTO playerDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(teamService.addPlayerToTeam(coachId, teamId, playerDTO));
     }
 
-    /**
-     * Retrieves a list of teams participating in a specific competition.
-     *
-     * @param competitionId the ID of the competition for which the teams are to be retrieved
-     * @return a ResponseEntity containing a list of teams if found, or a no content response if no teams are associated with the given competition ID
-     */
-    @GetMapping("/competition/{competitionId}")
-    public ResponseEntity<List<Team>> getTeamsByCompetition(@PathVariable Long competitionId) {
-        List<Team> teams = teamService.findByCompetition(competitionId);
-        if (teams.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(teams);
+    @PreAuthorize("hasRole('COACH')")
+    @DeleteMapping("/coach/{coachId}/team/{teamId}/player/{playerId}")
+    public ResponseEntity<TeamDTO> removePlayerFromTeam(
+            @PathVariable Long coachId,
+            @PathVariable Long teamId,
+            @PathVariable Long playerId) {
+        return ResponseEntity.ok(teamService.removePlayerFromTeam(coachId, teamId, playerId));
     }
 
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}/transfer/from/{sourceTeamId}/to/{targetTeamId}/player/{playerId}")
+    public ResponseEntity<Void> transferPlayer(
+            @PathVariable Long coachId,
+            @PathVariable Long sourceTeamId,
+            @PathVariable Long targetTeamId,
+            @PathVariable Long playerId) {
+        teamService.transferPlayer(coachId, sourceTeamId, targetTeamId, playerId);
+        return ResponseEntity.ok().build();
+    }
 
+    // Endpoints pour les organisateurs
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @GetMapping("/organizer/{organizerId}/competition/{competitionId}")
+    public ResponseEntity<List<OrganizerTeamSummaryDTO>> getTeamsByCompetition(
+            @PathVariable Long organizerId,
+            @PathVariable Long competitionId) {
+        return ResponseEntity.ok(teamService.getTeamsByCompetition(organizerId, competitionId));
+    }
 
-
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @GetMapping("/organizer/{organizerId}/competition/{competitionId}/coaches")
+    public ResponseEntity<List<CoachDTO>> getCoachesByCompetition(
+            @PathVariable Long organizerId,
+            @PathVariable Long competitionId) {
+        return ResponseEntity.ok(teamService.getCoachesByCompetition(organizerId, competitionId));
+    }
+    
+    // Endpoints pour les profils coach et organisateur
+    @GetMapping("/coach/{coachId}/profile")
+    public ResponseEntity<CoachDTO> getCoachById(@PathVariable Long coachId) {
+        return ResponseEntity.ok(userService.getCoachById(coachId));
+    }
+    
+    @PutMapping("/coach/profile")
+    public ResponseEntity<CoachDTO> updateCoach(@RequestBody CoachDTO coachDTO) {
+        return ResponseEntity.ok(userService.updateCoach(coachDTO));
+    }
 }

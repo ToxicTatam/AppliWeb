@@ -1,5 +1,6 @@
 package com.web.n7.util;
 
+import com.web.n7.model.users.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,34 +13,29 @@ import java.util.List;
 @Data
 public class CustomUserDetails implements UserDetails {
 
-    private Long id;
-    private String email;
-    private String password;
-    private String role;
+
+    private User userEntity;
 
 
-    public CustomUserDetails(Long id, String email, String password, String role) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
+    public CustomUserDetails(User userEntity) {
+        this.userEntity=userEntity;
     }
 
 
     @Override
     public String getUsername() {
-        return email;
+        return  userEntity.getEmail();
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return  userEntity.getPassword();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +  userEntity.getRole().name() ));
 
     }
 

@@ -1,97 +1,103 @@
 package com.web.n7.controller;
 
-import com.web.n7.dto.PlayerPerformanceResponse;
-import com.web.n7.model.Player;
-import com.web.n7.model.PlayerHistory;
-import com.web.n7.service.PlayerPerformanceService;
-import com.web.n7.service.PlayerService;
+import java.util.List;
+
+import com.web.n7.service.PlayerServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import com.web.n7.dto.coach.RegisterPlayerDTO;
+import com.web.n7.dto.coach.UpdatePlayerDTO;
+import com.web.n7.dto.organizer.OrganizerPlayerPerformanceDTO;
+import com.web.n7.dto.player.PlayerPerformanceDTO;
+import com.web.n7.dto.users.PlayerDTO;
+import com.web.n7.filter.PlayerFilters;
+import com.web.n7.serviceInterface.PlayerService;
 
 @RestController
 @RequestMapping("/api/players")
+@RequiredArgsConstructor
 public class PlayerController {
 
-    private final PlayerPerformanceService playerHistoryService;
-    private final PlayerService playerService;
+    private final PlayerServiceImpl playerService;
 
 
-    public PlayerController(PlayerPerformanceService playerHistoryService,PlayerService playerService) {
-        this.playerHistoryService = playerHistoryService;
-        this.playerService=playerService;
+    // Endpoints pour tous les utilisateurs
+    @GetMapping
+    public ResponseEntity<List<PlayerDTO>> getAllPlayers(PlayerFilters filter) {
+        return ResponseEntity.ok(playerService.getAllPlayers(filter));
     }
 
-    /**
-     * Retrieves the history of a specific player by their ID.
-     *
-     * @param playerId the ID of the player whose history is to be retrieved
-     * @return a ResponseEntity containing a list of PlayerHistory objects representing the history of the specified player
-     */
-    @GetMapping("/{playerId}/history")
-    public ResponseEntity<List<PlayerHistory>> getPlayerHistory(@PathVariable Long playerId) {
-        List<PlayerHistory> history = playerHistoryService.getPlayerHistory(playerId);
-        return ResponseEntity.ok(history);
+    @GetMapping("/{playerId}")
+    public ResponseEntity<PlayerDTO> getPlayerById(@PathVariable Long playerId) {
+        return ResponseEntity.ok(playerService.getPlayerById(playerId));
     }
 
-    /**
-     * Retrieves the history of all players for a given match.
-     *
-     * @param matchId the ID of the match for which player histories are to be retrieved
-     * @return a ResponseEntity containing a list of PlayerHistory objects that represent the history of players in the specified match
-     */
-    @GetMapping("/matches/{matchId}/history")
-    public ResponseEntity<List<PlayerHistory>> getMatchPlayerHistory(@PathVariable Long matchId) {
-        List<PlayerHistory> history = playerHistoryService.getMatchHistory(matchId);
-        return ResponseEntity.ok(history);
+    @GetMapping("/{playerId}/performance")
+    public ResponseEntity<List<PlayerPerformanceDTO>> getPlayerPerformance(
+            @PathVariable Long playerId, PlayerFilters filter) {
+        return ResponseEntity.ok(playerService.getPlayerPerformance(playerId, filter));
     }
 
-    /**
-     * Update a player's information
-     * Endpoint: PUT /api/players/{playerId}
-     */
-    @PutMapping("/players/{playerId}")
-    public ResponseEntity<Player> updatePlayer(@PathVariable Long playerId, @RequestBody Player player) {
-        player.setId(playerId);
-        Player updatedPlayer = playerService.update(player);
-        return ResponseEntity.ok(updatedPlayer);
+    // Endpoints pour les coachs
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}/team/{teamId}")
+    public ResponseEntity<PlayerDTO> registerPlayer(
+            @PathVariable Long coachId,
+            @PathVariable Long teamId,
+            @RequestBody RegisterPlayerDTO playerDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(playerService.registerPlayer(coachId, teamId, playerDTO));
     }
 
-    /**
-     * Get profile/statistics of a specific player
-     * Endpoint: GET /api/players/{playerId}
-     */
-    @GetMapping("/players/{playerId}")
-   // public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId)
-    public ResponseEntity<PlayerPerformanceResponse> getPlayerProfile(@PathVariable Long playerId, @RequestParam(required = false)  Long competitionId) {
-      PlayerPerformanceResponse   playerStats= playerHistoryService.getPlayerPerformances(playerId,competitionId);
-        return ResponseEntity.ok(playerStats);
+    @PreAuthorize("hasRole('COACH')")
+    @PutMapping("/coach/{coachId}")
+    public ResponseEntity<PlayerDTO> updatePlayer(
+            @PathVariable Long coachId,
+            @RequestBody UpdatePlayerDTO playerDTO) {
+        return ResponseEntity.ok(playerService.updatePlayer(coachId, playerDTO));
     }
 
-    /**
-     * Delete a player
-     * Endpoint: DELETE /api/players/{playerId}
-     */
-    @DeleteMapping("/players/{playerId}")
-    public ResponseEntity<Void> deletePlayer(@PathVariable Long playerId) {
-        playerService.delete(playerId);
+    @PreAuthorize("hasRole('COACH')")
+    @DeleteMapping("/coach/{coachId}/player/{playerId}")
+    public ResponseEntity<Void> removePlayer(
+            @PathVariable Long coachId,
+            @PathVariable Long playerId) {
+        playerService.removePlayer(coachId, playerId);
         return ResponseEntity.noContent().build();
     }
 
-
-    /**
-     * Retrieves a list of all players.
-     *
-     * @return a ResponseEntity containing a list of Player objects
-     */
-    @GetMapping("/players/all")
-    public ResponseEntity<List<Player>> find() {
-       return ResponseEntity.ok(playerService.findAll());
-
+    @PreAuthorize("hasRole('COACH')")
+    @GetMapping("/coach/{coachId}")
+    public ResponseEntity<List<PlayerDTO>> getPlayersByCoach(@PathVariable Long coachId) {
+        return ResponseEntity.ok(playerService.getPlayersByCoach(coachId));
     }
 
+    @PreAuthorize("hasRole('COACH')")
+    @GetMapping("/coach/{coachId}/team/{teamId}")
+    public ResponseEntity<List<PlayerDTO>> getPlayersByTeam(
+            @PathVariable Long coachId,
+            @PathVariable Long teamId) {
+        return ResponseEntity.ok(playerService.getPlayersByTeam(coachId, teamId));
+    }
 
+    // Endpoints pour les organisateurs
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @GetMapping("/organizer/{organizerId}/competition/{competitionId}")
+    public ResponseEntity<List<PlayerDTO>> getPlayersByCompetition(
+            @PathVariable Long organizerId,
+            @PathVariable Long competitionId) {
+        return ResponseEntity.ok(playerService.getPlayersByCompetition(organizerId, competitionId));
+    }
 
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @PutMapping("/organizer/{organizerId}/performance")
+    public ResponseEntity<OrganizerPlayerPerformanceDTO> updatePlayerMatchPerformance(
+            @PathVariable Long organizerId,
+            @RequestBody OrganizerPlayerPerformanceDTO playerPerformanceDTO) {
+        return ResponseEntity.ok(playerService.updatePlayerMatchPerformance(organizerId, playerPerformanceDTO));
+    }
 }

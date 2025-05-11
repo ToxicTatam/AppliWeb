@@ -1,6 +1,8 @@
 package com.web.n7.model;
 
-import com.web.n7.model.enumeration.PlayerStatus;
+import com.web.n7.model.enumeration.player.PlayerPosition;
+import com.web.n7.model.users.Player;
+import com.web.n7.model.enumeration.player.PlayerStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,7 +10,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "player_participations")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"matchSheet", "player"})
+@EqualsAndHashCode(exclude = {"matchSheet", "player"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -33,7 +38,7 @@ public class PlayerParticipation {
     private PlayerStatus status;
 
     @Column(name = "position")
-    private String position;
+    private PlayerPosition position;
 
     @Column(name = "goals_scored")
     private Integer goalsScored;
@@ -47,10 +52,10 @@ public class PlayerParticipation {
     @Column(name = "minutes_played")
     private Integer minutesPlayed;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "substitution_in_time")
@@ -60,19 +65,6 @@ public class PlayerParticipation {
     private Integer substitutionOutTime; // Minute de sortie du jeu, pas obligatoire
 
 
-    public PlayerHistory toHistory(Match match) {
-        return PlayerHistory.builder()
-                .player(this.getPlayer())
-                .match(match)
-                .goalsScored(this.getGoalsScored())
-                .assists(0)
-                .minutesPlayed(this.getMinutesPlayed())
-                .yellowCards(this.getYellowCards())
-                .redCards(this.getRedCards())
-                .status(this.getStatus())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-    }
+
 
 }

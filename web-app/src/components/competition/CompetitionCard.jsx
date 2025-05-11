@@ -21,6 +21,8 @@ const CompetitionCard = ({ competition, isUserView = true }) => {
     switch (status) {
       case 'UPCOMING':
         return 'bg-blue-100 text-blue-800';
+      case 'REGISTRATION':
+          return 'bg-green-100 text-yellow-800';
       case 'IN_PROGRESS':
         return 'bg-green-100 text-green-800';
       case 'COMPLETED':
@@ -37,6 +39,8 @@ const CompetitionCard = ({ competition, isUserView = true }) => {
     switch (status) {
       case 'UPCOMING':
         return 'À venir';
+      case 'REGISTRATION':
+        return 'Inscription ouverte';
       case 'IN_PROGRESS':
         return 'En cours';
       case 'COMPLETED':

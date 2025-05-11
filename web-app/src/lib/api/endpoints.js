@@ -21,83 +21,144 @@ const authEndpoints = {
 // Endpoints pour les utilisateurs
 const usersEndpoints = {
   base: `${baseUrl}/users`,
+
+
+  //l utilisateur peut voir son propre profil
   byId: (id) => `${baseUrl}/users/${id}`,
-  profile: `${baseUrl}/users/profile`,
+  //l utilisateur peut modifier son propre profil
   updateProfile: `${baseUrl}/users/profile`,
   changePassword: `${baseUrl}/users/change-password`,
   uploadProfilePicture: `${baseUrl}/users/profile-picture`,
+
+
+  //pour que d'autres utilisateurs puisse voir le profil des coaches et organisateurs
+    profile: {
+      coach: (coachId) => `${baseUrl}/users/coach/${coachId}/profile`,
+      updateCoach: `${baseUrl}/users/coach/profile`, //uniquement pour le coach
+      organizer: (organizerId) => `${baseUrl}/users/organizer/${organizerId}/profile`,
+      updateOrganizer: `${baseUrl}/users/organizer/profile`, //uniquement pour l'organisateur
+    } 
 };
 
 // Endpoints pour les compétitions
 const competitionsEndpoints = {
   base: `${baseUrl}/competitions`,
   byId: (id) => `${baseUrl}/competitions/${id}`,
-  standings: (id) => `${baseUrl}/competitions/${id}/standings`,
-  teams: (id) => `${baseUrl}/competitions/${id}/teams`,
-  matches: (id) => `${baseUrl}/competitions/${id}/matches`,
-  register: (id) => `${baseUrl}/competitions/${id}/register-team`,
-  unregister: (id, teamId) => `${baseUrl}/competitions/${id}/unregister-team/${teamId}`,
-  upcoming: `${baseUrl}/competitions/upcoming`,
-  ongoing: `${baseUrl}/competitions/ongoing`,
-  completed: `${baseUrl}/competitions/completed`,
-  byOrganizer: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}`,
+  byTeam: (teamId) => `${baseUrl}/competitions/team/${teamId}`,
+  byUser: (userId) => `${baseUrl}/competitions/user/${userId}`,
+  
+  // Endpoints pour les organisateurs
+  organizer: {
+    base: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}`,
+   // byId: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
+    create: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}`,
+    update: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
+    delete: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
+    updateStatus: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}/status`,
+    updateTeamStatus: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}/team-status`,
+    processRequest: (organizerId, requestId) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}`,
+  },
+  
+  // Endpoints pour les coachs
+  coach: {
+    register: (coachId, teamId, competitionId) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/register/${competitionId}`,
+    withdraw: (coachId, teamId, competitionId) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/withdraw/${competitionId}`,
+    withdrawAll: (coachId, teamId) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/withdraw-all`,
+    requests: (coachId) => `${baseUrl}/competitions/coach/${coachId}/requests`,
+  }
 };
 
 // Endpoints pour les équipes
 const teamsEndpoints = {
   base: `${baseUrl}/teams`,
   byId: (id) => `${baseUrl}/teams/${id}`,
-  players: (id) => `${baseUrl}/teams/${id}/players`,
-  matches: (id) => `${baseUrl}/teams/${id}/matches`,
-  competitions: (id) => `${baseUrl}/teams/${id}/competitions`,
-  standings: (id) => `${baseUrl}/teams/${id}/standings`,
-  coaches: (id) => `${baseUrl}/teams/${id}/coaches`,
-  addPlayer: (id) => `${baseUrl}/teams/${id}/add-player`,
-  removePlayer: (id, playerId) => `${baseUrl}/teams/${id}/remove-player/${playerId}`,
   byCoach: (coachId) => `${baseUrl}/teams/coach/${coachId}`,
+  byCompetition: (competitionId) => `${baseUrl}/teams/competition/${competitionId}`,
+  byPlayer: (playerId) => `${baseUrl}/teams/player/${playerId}`,
+  standings: (teamId) => `${baseUrl}/teams/${teamId}/standings`,
+  competitionStandings: (competitionId) => `${baseUrl}/teams/competition/${competitionId}/standings`,
+  teamCompetitionStanding: (competitionId, teamId) => `${baseUrl}/teams/competition/${competitionId}/team/${teamId}/standing`,
+  
+  // Endpoints pour les coachs
+  coach: {
+    create: (coachId) => `${baseUrl}/teams/coach/${coachId}`,
+    update: (coachId) => `${baseUrl}/teams/coach/${coachId}`,
+    delete: (coachId, teamId) => `${baseUrl}/teams/coach/${coachId}/team/${teamId}`,
+    all: (coachId) => `${baseUrl}/teams/coach/${coachId}/all`,
+    addPlayer: (coachId, teamId) => `${baseUrl}/teams/coach/${coachId}/team/${teamId}/player`,
+    removePlayer: (coachId, teamId, playerId) => `${baseUrl}/teams/coach/${coachId}/team/${teamId}/player/${playerId}`,
+    transferPlayer: (coachId, sourceTeamId, targetTeamId, playerId) => 
+      `${baseUrl}/teams/coach/${coachId}/transfer/from/${sourceTeamId}/to/${targetTeamId}/player/${playerId}`,
+  },
+  
+  // Endpoints pour les organisateurs
+  organizer: {
+    byCompetition: (organizerId, competitionId) => `${baseUrl}/teams/organizer/${organizerId}/competition/${competitionId}`,
+    coaches: (organizerId, competitionId) => `${baseUrl}/teams/organizer/${organizerId}/competition/${competitionId}/coaches`,
+  },
+  
+
 };
 
 // Endpoints pour les joueurs
 const playersEndpoints = {
   base: `${baseUrl}/players`,
   byId: (id) => `${baseUrl}/players/${id}`,
-  performances: (id) => `${baseUrl}/players/${id}/performances`,
-  byTeam: (teamId) => `${baseUrl}/players/team/${teamId}`,
-  byCompetition: (competitionId) => `${baseUrl}/players/competition/${competitionId}`,
-  performanceByCompetition: (playerId, competitionId) => `${baseUrl}/players/${playerId}/competitions/${competitionId}/performance`,
+  performance: (playerId) => `${baseUrl}/players/${playerId}/performance`,
+  
+  // Endpoints pour les coachs
+  coach: {
+    register: (coachId, teamId) => `${baseUrl}/players/coach/${coachId}/team/${teamId}`,
+    update: (coachId) => `${baseUrl}/players/coach/${coachId}`,
+    remove: (coachId, playerId) => `${baseUrl}/players/coach/${coachId}/player/${playerId}`,
+    all: (coachId) => `${baseUrl}/players/coach/${coachId}`,
+    byTeam: (coachId, teamId) => `${baseUrl}/players/coach/${coachId}/team/${teamId}`,
+  },
+  
+  // Endpoints pour les organisateurs
+  organizer: {
+    byCompetition: (organizerId, competitionId) => `${baseUrl}/players/organizer/${organizerId}/competition/${competitionId}`,
+    updatePerformance: (organizerId) => `${baseUrl}/players/organizer/${organizerId}/performance`,
+  }
 };
 
 // Endpoints pour les matchs
 const matchesEndpoints = {
-  base: `${baseUrl}/matches`,
-  byId: (id) => `${baseUrl}/matches/${id}`,
-  consolidated: (id) => `${baseUrl}/matches/${id}/consolidated`,
-  byCompetition: (competitionId) => `${baseUrl}/matches/competition/${competitionId}`,
   byTeam: (teamId) => `${baseUrl}/matches/team/${teamId}`,
-  upcoming: `${baseUrl}/matches/upcoming`,
-  completed: `${baseUrl}/matches/completed`,
-  live: `${baseUrl}/matches/live`,
+  byCompetition: (competitionId) => `${baseUrl}/matches/competition/${competitionId}`,
+  sheets: (matchId) => `${baseUrl}/matches/${matchId}/sheets`,
+  bySheet: (matchSheetId) => `${baseUrl}/matches/sheets/${matchSheetId}`,
+  consolidated: (matchId) => `${baseUrl}/matches/${matchId}/consolidated`,
+  teamMatch: (teamId, matchId) => `${baseUrl}/matches/team/${teamId}/match/${matchId}`,
+  byPlayer: (playerId) => `${baseUrl}/matches/player/${playerId}`,
   
-  // Endpoints pour les feuilles de match
-  matchSheets: {
-    base: `${baseUrl}/match-sheets`,
-    byId: (id) => `${baseUrl}/match-sheets/${id}`,
-    byMatch: (matchId) => `${baseUrl}/match-sheets/match/${matchId}`,
-    submit: (id) => `${baseUrl}/match-sheets/${id}/submit`,
-    validate: (id) => `${baseUrl}/match-sheets/${id}/validate`,
-    byTeam: (teamId) => `${baseUrl}/match-sheets/team/${teamId}`,
+  // Endpoints pour les organisateurs
+  organizer: {
+    schedule: (organizerId) => `${baseUrl}/matches/organizer/${organizerId}`,
+    updateStatus: (organizerId) => `${baseUrl}/matches/organizer/${organizerId}/status`,
+    update: (organizerId) => `${baseUrl}/matches/organizer/${organizerId}`,
+    updateScore: (organizerId) => `${baseUrl}/matches/organizer/${organizerId}/score`,
+    updateParticipants: (organizerId, matchId) => `${baseUrl}/matches/organizer/${organizerId}/match/${matchId}/participants`,
+    validateSheet: (organizerId) => `${baseUrl}/matches/organizer/${organizerId}/validate-sheet`,
   },
+  
+  // Endpoints pour les coachs
+  coach: {
+    sheets: (coachId, teamId) => `${baseUrl}/matches/coach/${coachId}/team/${teamId}/sheets`,
+    allSheets: (coachId) => `${baseUrl}/matches/coach/${coachId}/sheets`,
+    sheet: (coachId, matchSheetId) => `${baseUrl}/matches/coach/${coachId}/sheet/${matchSheetId}`,
+    updateSheet: (coachId, matchSheetId) => `${baseUrl}/matches/coach/${coachId}/sheet/${matchSheetId}`,
+  }
 };
 
 // Endpoints pour les médias
 const mediaEndpoints = {
   base: `${baseUrl}/media`,
   byId: (id) => `${baseUrl}/media/${id}`,
-  upload: `${baseUrl}/media/upload`,
-  byCompetition: (competitionId) => `${baseUrl}/media/competition/${competitionId}`,
-  byTeam: (teamId) => `${baseUrl}/media/team/${teamId}`,
-  byMatch: (matchId) => `${baseUrl}/media/match/${matchId}`,
-  byUser: (userId) => `${baseUrl}/media/user/${userId}`,
+  create: `${baseUrl}/media`,
+  update: (id) => `${baseUrl}/media/${id}`,
+  delete: (userId, mediaId) => `${baseUrl}/media/${userId}/${mediaId}`,
+  report: (userId) => `${baseUrl}/media/${userId}/report`,
 };
 
 // Endpoints pour les messages
@@ -106,44 +167,12 @@ const messagesEndpoints = {
   byId: (id) => `${baseUrl}/messages/${id}`,
   inbox: `${baseUrl}/messages/inbox`,
   sent: `${baseUrl}/messages/sent`,
-  send: `${baseUrl}/messages/send`,
+  send: `${baseUrl}/messages`,
   read: (id) => `${baseUrl}/messages/${id}/read`,
-  conversation: (userId) => `${baseUrl}/messages/conversation/${userId}`,
-  unreadCount: `${baseUrl}/messages/unread-count`,
-  potentialRecipients: `${baseUrl}/messages/potential-recipients`,
-};
-
-// Endpoints pour les notifications
-const notificationsEndpoints = {
-  base: `${baseUrl}/notifications`,
-  byId: (id) => `${baseUrl}/notifications/${id}`,
-  read: (id) => `${baseUrl}/notifications/${id}/read`,
-  readAll: `${baseUrl}/notifications/read-all`,
-  count: `${baseUrl}/notifications/unread-count`,
-};
-
-// Endpoints pour les organisateurs
-const organizersEndpoints = {
-  base: `${baseUrl}/organizers`,
-  byId: (id) => `${baseUrl}/organizers/${id}`,
-  competitions: (id) => `${baseUrl}/organizers/${id}/competitions`,
-};
-
-// Endpoints pour les coachs
-const coachesEndpoints = {
-  base: `${baseUrl}/coaches`,
-  byId: (id) => `${baseUrl}/coaches/${id}`,
-  teams: (id) => `${baseUrl}/coaches/${id}/teams`,
-  players: (id) => `${baseUrl}/coaches/${id}/players`,
-};
-
-// Endpoints pour les statistiques
-const statsEndpoints = {
-  topScorers: (competitionId) => `${baseUrl}/stats/top-scorers${competitionId ? `?competitionId=${competitionId}` : ''}`,
-  topAssists: (competitionId) => `${baseUrl}/stats/top-assists${competitionId ? `?competitionId=${competitionId}` : ''}`,
-  teamStats: (teamId) => `${baseUrl}/stats/team/${teamId}`,
-  playerStats: (playerId) => `${baseUrl}/stats/player/${playerId}`,
-  competitionStats: (competitionId) => `${baseUrl}/stats/competition/${competitionId}`,
+  readAll: `${baseUrl}/messages/read-all`,
+  delete: (messageId, userId) => `${baseUrl}/messages/${messageId}/${userId}`,
+  recipients: `${baseUrl}/messages/recipients`,
+  recipientCategories: (userRole) => `${baseUrl}/messages/recipient-categories/${userRole}`,
 };
 
 // Regroupement de tous les endpoints
@@ -156,10 +185,6 @@ const endpoints = {
   matches: matchesEndpoints,
   media: mediaEndpoints,
   messages: messagesEndpoints,
-  notifications: notificationsEndpoints,
-  organizers: organizersEndpoints,
-  coaches: coachesEndpoints,
-  stats: statsEndpoints,
 };
 
 export default endpoints;

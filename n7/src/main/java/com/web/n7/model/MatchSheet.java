@@ -1,16 +1,20 @@
 package com.web.n7.model;
 
-import com.web.n7.model.enumeration.MatchSheetStatus;
+import com.web.n7.model.enumeration.match.MatchSheetStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "match_sheets")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"match", "playerParticipations"})
+@EqualsAndHashCode(exclude = {"match", "playerParticipations"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -19,9 +23,14 @@ public class MatchSheet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "match_id", nullable = false)
     private Match match;
+
+        
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 
 
     @Column(name = "match_sheet_status", nullable = false)
@@ -30,6 +39,10 @@ public class MatchSheet {
 
     @Column(name = "validation_date")
     private LocalDateTime validationDate;
+
+
+    @Column(name = "submission_deadline")
+    private LocalDate submissionDeadline;
 
     @OneToMany(mappedBy = "matchSheet", cascade = CascadeType.ALL)
     private List<PlayerParticipation> playerParticipations = new ArrayList<>();
@@ -40,11 +53,6 @@ public class MatchSheet {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="home_strategy")
-    private String homeStrategy;
-
-    @Column(name="away_strategy")
-    private String awayStrategy;
-
-
+    @Column(name="strategy")
+    private String strategy;
 }

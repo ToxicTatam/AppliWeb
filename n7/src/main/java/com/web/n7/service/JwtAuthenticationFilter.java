@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter implements Filter {
         // Check if the Authorization header has a valid Bearer token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7); // Extract token
-            String email = jwtUtil.extractEmail(token); // Extract email from token
+            String email = jwtUtil.extractUsername(token); // Extract email from token
 
             // Ensure the user is not already authenticated
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -1,27 +1,24 @@
 package com.web.n7.model;
 
-
-import com.web.n7.model.enumeration.CompetitionStatus;
-import com.web.n7.model.enumeration.CompetitionType;
+import com.web.n7.model.enumeration.competition.CompetitionType;
+import com.web.n7.model.enumeration.competition.CompetitionStatus;
+import com.web.n7.model.users.Organizer;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 
 @Entity
 @Table(name = "competitions")
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString(exclude = {"competitionTeams", "matches"})
+@EqualsAndHashCode(exclude = {"competitionTeams", "matches"})
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Competition {
     @Id
@@ -33,10 +30,22 @@ public class Competition {
 
     @Column(nullable = false)
     private String description;
-    @Column(name = "start_date", nullable = false)
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "competition_type", nullable = false)
+    private CompetitionType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "competition_status", nullable = false)
+    private CompetitionStatus status;
+
+    @Column(name = "start_date")
     private LocalDate startDate;
 
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     @Column(name = "registration_deadline")
@@ -48,25 +57,12 @@ public class Competition {
     @Column(name = "max_teams")
     private Integer maxTeams;
 
-    @Column(name = "competition_type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CompetitionType competitionType;
-
-    @Column(name = "competition_status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CompetitionStatus status;
-
     @ManyToOne
     @JoinColumn(name = "organizer_id", nullable = false)
-    private User organizer;
+    private Organizer organizer;
 
-    @ManyToMany
-    @JoinTable(
-            name = "competition_teams",
-            joinColumns = @JoinColumn(name = "competition_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id")
-    )
-    private Set<Team> teams = new HashSet<>();
+    @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompetitionTeam> competitionTeams = new ArrayList<>();
 
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL)
     private List<Match> matches = new ArrayList<>();

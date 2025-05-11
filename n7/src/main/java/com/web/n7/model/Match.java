@@ -1,16 +1,17 @@
 package com.web.n7.model;
-import com.web.n7.model.enumeration.MatchStatus;
+import com.web.n7.model.enumeration.match.MatchStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-
+import java.util.*;
 
 @Entity
 @Table(name = "matches")
-@Data
 @Getter
 @Setter
+@ToString(exclude = {"competition", "participants", "matchSheets"})
+@EqualsAndHashCode(exclude = {"competition", "participants", "matchSheets"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -19,17 +20,15 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String title;// Barca vs Real Madrid
+    private String description;// El clasico
+    
     @ManyToOne
     @JoinColumn(name = "competition_id", nullable = false)
     private Competition competition;
 
-    @ManyToOne
-    @JoinColumn(name = "home_team_id", nullable = false)
-    private Team homeTeam;
-
-    @ManyToOne
-    @JoinColumn(name = "away_team_id", nullable = false)
-    private Team awayTeam;
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchParticipant> participants = new ArrayList<>();
 
     @Column(name = "match_date", nullable = false)
     private LocalDateTime matchDate;
@@ -47,8 +46,10 @@ public class Match {
     @Column(name = "match_status", nullable = false)
     private MatchStatus status;
 
-    @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
-    private MatchSheet matchSheet;
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    List<MatchSheet> matchSheets = new ArrayList<>();
+
+    private int round;// Round number in the competition
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

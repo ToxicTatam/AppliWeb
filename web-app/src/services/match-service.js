@@ -1,635 +1,207 @@
 import api from '../lib/api/client';
 import endpoints from '../lib/api/endpoints';
-import matchesData from '../data/matches';
-import matchSheetsData from '../data/matchSheets';
-import consolidatedMatchesData from '../data/consolidatedMatches';
 
-// Service pour les matchs
-const matchService = {
-  // Récupérer tous les matchs avec filtres optionnels
-  getAllMatches: async (filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Filtrage côté client pour les données fictives
-        let filteredMatches = [...matchesData];
-        
-        // Appliquer les filtres
-        if (filters.status) {
-          filteredMatches = filteredMatches.filter(match => match.status === filters.status);
-        }
-        
-        if (filters.title) {
-          filteredMatches = filteredMatches.filter(match => 
-            match.title.toLowerCase().includes(filters.title.toLowerCase())
-          );
-        }
-        
-        if (filters.competitionId) {
-          filteredMatches = filteredMatches.filter(match => match.competitionId === Number(filters.competitionId));
-        }
-        
-        if (filters.teamId) {
-          filteredMatches = filteredMatches.filter(match => 
-            match.homeTeamId === Number(filters.teamId) || match.awayTeamId === Number(filters.teamId)
-          );
-        }
-        
-        if (filters.teamName) {
-          filteredMatches = filteredMatches.filter(match => 
-            match.homeTeamName.toLowerCase().includes(filters.teamName.toLowerCase()) || 
-            match.awayTeamName.toLowerCase().includes(filters.teamName.toLowerCase())
-          );
-        }
-        
-        // Filtrage par date
-        if (filters.startDate) {
-          filteredMatches = filteredMatches.filter(match => 
-            new Date(match.scheduledDateTime) >= new Date(filters.startDate)
-          );
-        }
-        
-        if (filters.endDate) {
-          filteredMatches = filteredMatches.filter(match => 
-            new Date(match.scheduledDateTime) <= new Date(filters.endDate)
-          );
-        }
-        
-        return {
-          data: filteredMatches,
-          total: filteredMatches.length,
-          page: 1,
-          pageSize: filteredMatches.length,
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.matches.base, filters);
-    } catch (error) {
-      throw error;
-    }
-  },
+/**
+ * Service pour la gestion des matchs
+ */
 
-  // Récupérer un match par son ID
-  getMatchById: async (id) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const match = matchesData.find(match => match.id === Number(id));
-        if (!match) {
-          throw new Error('Match non trouvé');
-        }
-        return match;
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.matches.byId(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les informations consolidées d'un match (avec feuilles de match)
-  getConsolidatedMatch: async (id) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const match = matchesData.find(match => match.id === Number(id));
-        if (!match) {
-          throw new Error('Match non trouvé');
-        }
-        
-        // Si le match a des feuilles de match validées, utiliser les données consolidées
-        if (match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED') {
-          const consolidatedMatch = consolidatedMatchesData.find(cm => cm.matchId ===Number(id));
-          if (consolidatedMatch) {
-            return consolidatedMatch;
-          }
-        }
-      }
-      
-     // return await api.get(endpoints.matches.consolidated(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les feuilles de match d'un match
-  getMatchSheets: async (matchId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const matchSheets = matchSheetsData.filter(sheet => sheet.matchId === Number(matchId));
-        
-        if (!matchSheets || matchSheets.length === 0) {
-          return { data: [], total: 0 };
-        }
-        
-        return {
-          data: matchSheets,
-          total: matchSheets.length
-        };
-      }
-      
-      return await api.get(endpoints.matches.matchSheets.byMatch(matchId));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer une feuille de match par son ID
-  getMatchSheetById: async (matchSheetId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const matchSheet = matchSheetsData.find(sheet => sheet.id === Number(matchSheetId));
-        
-        if (!matchSheet) {
-          throw new Error('Feuille de match non trouvée');
-        }
-        
-        return matchSheet;
-      }
-      
-      return await api.get(endpoints.matches.matchSheets.byId(matchSheetId));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Créer un nouveau match (Organisateur uniquement)
-  createMatch: async (matchData) => {
-    try {
-      // En mode développement, simuler la création
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler un délai réseau
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Créer un nouveau match (sans réellement l'ajouter aux données)
-        const newMatch = {
-          id: matchesData.length + 1,
-          ...matchData,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        
-        return newMatch;
-      }
-      
-      return await api.post(endpoints.matches.base, matchData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Mettre à jour un match (Organisateur uniquement)
-  updateMatch: async (id, matchData) => {
-    try {
-      // En mode développement, simuler la mise à jour
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler un délai réseau
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Vérifier si le match existe
-        const matchIndex = matchesData.findIndex(match => match.id === Number(id));
-        if (matchIndex === -1) {
-          throw new Error('Match non trouvé');
-        }
-        
-        // Créer un objet mis à jour (sans réellement modifier les données)
-        const updatedMatch = {
-          ...matchesData[matchIndex],
-          ...matchData,
-          updatedAt: new Date().toISOString()
-        };
-        
-        return updatedMatch;
-      }
-      
-      return await api.put(endpoints.matches.byId(id), matchData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Supprimer un match (Organisateur uniquement)
-  deleteMatch: async (id) => {
-    try {
-      return await api.delete(endpoints.matches.byId(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Créer une feuille de match (Coach uniquement)
-  createMatchSheet: async (matchSheetData) => {
-    try {
-      return await api.post(endpoints.matches.matchSheets.base, matchSheetData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Mettre à jour une feuille de match (Coach uniquement)
-  updateMatchSheet: async (id, matchSheetData) => {
-    try {
-      return await api.put(endpoints.matches.matchSheets.byId(id), matchSheetData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Soumettre une feuille de match pour validation (Coach uniquement)
-  submitMatchSheet: async (id) => {
-    try {
-      return await api.post(endpoints.matches.matchSheets.submit(id));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Valider une feuille de match (Organisateur uniquement)
-  validateMatchSheet: async (id, validationData) => {
-    try {
-      return await api.post(endpoints.matches.matchSheets.validate(id), validationData);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les matchs d'une compétition
-  getCompetitionMatches: async (competitionId, filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        let filteredMatches = matchesData.filter(match => match.competitionId === Number(competitionId));
-        
-        // Appliquer les filtres additionnels
-        if (filters.status) {
-          filteredMatches = filteredMatches.filter(match => match.status === filters.status);
-        }
-        
-        if (filters.teamId) {
-          filteredMatches = filteredMatches.filter(match => 
-            match.homeTeamId === Number(filters.teamId) || match.awayTeamId === Number(filters.teamId)
-          );
-        }
-        
-        if (filters.round) {
-          filteredMatches = filteredMatches.filter(match => match.round === filters.round);
-        }
-        
-        if (filters.phase) {
-          filteredMatches = filteredMatches.filter(match => match.phase === filters.phase);
-        }
-        
-        // Trier par date
-        filteredMatches.sort((a, b) => new Date(a.scheduledDateTime) - new Date(b.scheduledDateTime));
-        
-        return {
-          data: filteredMatches,
-          total: filteredMatches.length,
-          page: 1,
-          pageSize: filteredMatches.length
-        };
-      }
-      
-      return await api.get(endpoints.competitions.matches(competitionId), filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les matchs d'une équipe
-  getTeamMatches: async (teamId, filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        let filteredMatches = matchesData.filter(match => 
-          match.homeTeamId === Number(teamId) || match.awayTeamId === Number(teamId)
-        );
-        
-        // Appliquer les filtres additionnels
-        if (filters.status) {
-          filteredMatches = filteredMatches.filter(match => match.status === filters.status);
-        }
-        
-        if (filters.competitionId) {
-          filteredMatches = filteredMatches.filter(match => match.competitionId === Number(filters.competitionId));
-        }
-        
-        // Trier par date
-        filteredMatches.sort((a, b) => new Date(a.scheduledDateTime) - new Date(b.scheduledDateTime));
-        
-        return {
-          data: filteredMatches,
-          total: filteredMatches.length,
-          page: 1,
-          pageSize: filteredMatches.length
-        };
-      }
-      
-      return await api.get(endpoints.teams.matches(teamId), filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les matchs par équipe et avec filtres (date, compétition, etc.)
-  getFilteredMatches: async (filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Filtrage côté client pour les données fictives
-        let filteredMatches = [...matchesData];
-        
-        // Filtrage par équipe (domicile ou extérieur)
-        if (filters.teamIds && filters.teamIds.length > 0) {
-          filteredMatches = filteredMatches.filter(match => 
-            filters.teamIds.includes(match.homeTeamId) || filters.teamIds.includes(match.awayTeamId)
-          );
-        }
-        
-        // Filtrage par compétitions
-        if (filters.competitionIds && filters.competitionIds.length > 0) {
-          filteredMatches = filteredMatches.filter(match => 
-            filters.competitionIds.includes(match.competitionId)
-          );
-        }
-        
-        // Filtrage par résultat (victoire, défaite, match nul)
-        if (filters.result) {
-          filteredMatches = filteredMatches.filter(match => {
-            if (match.status !== 'COMPLETED') return false;
-            
-            const teamId = filters.teamId;
-            const isHomeTeam = match.homeTeamId === Number(teamId);
-            const isAwayTeam = match.awayTeamId === Number(teamId);
-            
-            if (!isHomeTeam && !isAwayTeam) return false;
-            
-            if (filters.result === 'WIN') {
-              return (isHomeTeam && match.homeTeamScore > match.awayTeamScore) || 
-                     (isAwayTeam && match.awayTeamScore > match.homeTeamScore);
-            } else if (filters.result === 'LOSS') {
-              return (isHomeTeam && match.homeTeamScore < match.awayTeamScore) || 
-                     (isAwayTeam && match.awayTeamScore < match.homeTeamScore);
-            } else if (filters.result === 'DRAW') {
-              return match.homeTeamScore === match.awayTeamScore;
-            }
-            
-            return true;
-          });
-        }
-        
-        return {
-          data: filteredMatches,
-          total: filteredMatches.length,
-          page: 1,
-          pageSize: filteredMatches.length,
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.matches.filtered, filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-  
-  // Récupérer la feuille de match d'une équipe spécifique pour un match donné
-  getMatchSheetByTeam: async (matchId, teamId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const matchSheets = matchSheetsData || [];
-        const matchSheet = matchSheets.find(
-          sheet => sheet.matchId === Number(matchId) && sheet.teamId === Number(teamId)
-        );
-        
-        if (!matchSheet) {
-          throw new Error('Feuille de match non trouvée pour cette équipe');
-        }
-        
-        return matchSheet;
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(`${endpoints.matches.matchSheets.byMatch(matchId)}/team/${teamId}`);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Vérifier si un match a des feuilles de match validées
-  hasValidatedMatchSheets: async (matchId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        const match = matchesData.find(m => m.id === Number(matchId));
-        if (!match) throw new Error('Match non trouvé');
-        
-        return match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED';
-      }
-      
-      const match = await api.get(endpoints.matches.byId(matchId));
-      return match.hasMatchSheet && match.matchSheetStatus === 'VALIDATED';
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer une feuille de match consolidée (réunissant les deux équipes)
-  getConsolidatedMatchSheet: async (matchId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Vérifier d'abord si les feuilles de match sont validées
-        const match = matchesData.find(m => m.id === Number(matchId));
-        if (!match) throw new Error('Match non trouvé');
-        
-        if (!match.hasMatchSheet || match.matchSheetStatus !== 'VALIDATED') {
-          throw new Error('Ce match n\'a pas de feuilles de match validées');
-        }
-        
-        const consolidatedMatch = consolidatedMatchesData.find(cm => cm.id === Number(matchId));
-        if (!consolidatedMatch) {
-          throw new Error('Feuille de match consolidée non trouvée');
-        }
-        
-        return consolidatedMatch;
-      }
-      
-      return await api.get(endpoints.matches.consolidatedMatchSheet(matchId));
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer toutes les feuilles de match d'une équipe à travers plusieurs matchs
-  getTeamMatchSheets: async (teamId, filters = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        let teamMatchSheets = matchSheetsData.filter(sheet => sheet.teamId === Number(teamId));
-        
-        // Filtrage par statut
-        if (filters.status) {
-          teamMatchSheets = teamMatchSheets.filter(sheet => sheet.status === filters.status);
-        }
-        
-        // Filtrage par compétition
-        if (filters.competitionId) {
-          teamMatchSheets = teamMatchSheets.filter(sheet => sheet.competitionId === Number(filters.competitionId));
-        }
-        
-        // Trier par date (plus récent d'abord)
-        teamMatchSheets.sort((a, b) => new Date(b.matchDateTime) - new Date(a.matchDateTime));
-        
-        return {
-          data: teamMatchSheets,
-          total: teamMatchSheets.length,
-          page: 1,
-          pageSize: teamMatchSheets.length
-        };
-      }
-      
-      return await api.get(`${endpoints.teams.matchSheets(teamId)}`, filters);
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Récupérer les statistiques des joueurs pour un match
-  getMatchPlayerStats: async (matchId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler des statistiques de joueurs (à remplacer par une vraie source de données)
-        const playerStats = [];
-        
-        return {
-          data: playerStats,
-          total: playerStats.length
-        };
-      }
-      
-      return await api.get(endpoints.matches.playerStats(matchId));
-    } catch (error) {
-      throw error;
-    }
-  },
-  
-  // Récupérer les évènements d'un match (buts, cartons, etc.)
-  getMatchEvents: async (matchId) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        // Simuler des événements de match (à remplacer par une vraie source de données)
-        const matchEvents = [];
-        
-        // Trier par minute
-        matchEvents.sort((a, b) => a.minute - b.minute);
-        
-        return {
-          data: matchEvents,
-          total: matchEvents.length
-        };
-      }
-      
-      return await api.get(endpoints.matches.events(matchId));
-    } catch (error) {
-      throw error;
-    }
-  },
-  
-  // Rechercher des matchs à venir (prochains matchs)
-  getUpcomingMatches: async (options = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        let upcomingMatches = matchesData.filter(match => match.status === 'SCHEDULED');
-        
-        // Filtrer par équipe si spécifié
-        if (options.teamId) {
-          upcomingMatches = upcomingMatches.filter(match => 
-            match.homeTeamId === Number(options.teamId) || match.awayTeamId === Number(options.teamId)
-          );
-        }
-        
-        // Filtrer par compétition si spécifié
-        if (options.competitionId) {
-          upcomingMatches = upcomingMatches.filter(match => 
-            match.competitionId === Number(options.competitionId)
-          );
-        }
-        
-        // Limiter le nombre de résultats si spécifié
-        if (options.limit) {
-          upcomingMatches = upcomingMatches.slice(0, options.limit);
-        }
-        
-        // Trier par date (du plus proche au plus loin)
-        upcomingMatches.sort((a, b) => new Date(a.scheduledDateTime) - new Date(b.scheduledDateTime));
-        
-        return {
-          data: upcomingMatches,
-          total: upcomingMatches.length,
-          page: 1,
-          pageSize: upcomingMatches.length
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.matches.upcoming, options);
-    } catch (error) {
-      throw error;
-    }
-  },
-  
-  // Rechercher des matchs récents (terminés récemment)
-  getRecentMatches: async (options = {}) => {
-    try {
-      // En mode développement, utiliser les données fictives
-      if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        let recentMatches = matchesData.filter(match => match.status === 'COMPLETED');
-        
-        // Filtrer par équipe si spécifié
-        if (options.teamId) {
-          recentMatches = recentMatches.filter(match => 
-            match.homeTeamId === Number(options.teamId) || match.awayTeamId === Number(options.teamId)
-          );
-        }
-        
-        // Filtrer par compétition si spécifié
-        if (options.competitionId) {
-          recentMatches = recentMatches.filter(match => 
-            match.competitionId === Number(options.competitionId)
-          );
-        }
-        
-        // Limiter le nombre de résultats si spécifié
-        if (options.limit) {
-          recentMatches = recentMatches.slice(0, options.limit);
-        }
-        
-        // Trier par date (du plus récent au plus ancien)
-        recentMatches.sort((a, b) => new Date(b.scheduledDateTime) - new Date(a.scheduledDateTime));
-        
-        return {
-          data: recentMatches,
-          total: recentMatches.length,
-          page: 1,
-          pageSize: recentMatches.length
-        };
-      }
-      
-      // En production, appel à l'API réelle
-      return await api.get(endpoints.matches.recent, options);
-    } catch (error) {
-      throw error;
-    }
-  }
+// Méthodes génériques pour les matchs
+/**
+ * Récupère les matchs d'une équipe
+ * @param {number} teamId - ID de l'équipe
+ * @param {Object} filter - Filtres pour les matchs
+ * @returns {Promise<Array>} - Liste des matchs
+ */
+export const getMatchesByTeamId = async (teamId, filter = {}) => {
+  const response = await api.get(endpoints.matches.byTeam(teamId), { params: filter });
+  return response.data;
 };
 
-export default matchService;
+/**
+ * Récupère les matchs d'une compétition
+ * @param {number} competitionId - ID de la compétition
+ * @param {Object} filter - Filtres pour les matchs
+ * @returns {Promise<Array>} - Liste des matchs
+ */
+export const getMatchesByCompetitionId = async (competitionId, filter = {}) => {
+  const response = await api.get(endpoints.matches.byCompetition(competitionId), { params: filter });
+  return response.data;
+};
+
+/**
+ * Récupère les feuilles de match d'un match
+ * @param {number} matchId - ID du match
+ * @returns {Promise<Array>} - Liste des feuilles de match
+ */
+export const getMatchSheetByMatchId = async (matchId) => {
+  const response = await api.get(endpoints.matches.sheets(matchId));
+  return response.data;
+};
+
+/**
+ * Récupère une feuille de match spécifique
+ * @param {number} matchSheetId - ID de la feuille de match
+ * @returns {Promise<Object>} - Feuille de match
+ */
+export const getMatchSheetBy = async (matchSheetId) => {
+  const response = await api.get(endpoints.matches.bySheet(matchSheetId));
+  return response.data;
+};
+
+/**
+ * Récupère les informations consolidées d'un match
+ * @param {number} matchId - ID du match
+ * @returns {Promise<Object>} - Informations consolidées du match
+ */
+export const getConsolidatedMatchSheetByMatchId = async (matchId) => {
+  const response = await api.get(endpoints.matches.consolidated(matchId));
+  return response.data;
+};
+
+/**
+ * Récupère un match pour une équipe spécifique
+ * @param {number} teamId - ID de l'équipe
+ * @param {number} matchId - ID du match
+ * @returns {Promise<Object>} - Feuille de match
+ */
+export const getMatchByTeamId = async (teamId, matchId) => {
+  const response = await api.get(endpoints.matches.teamMatch(teamId, matchId));
+  return response.data;
+};
+
+/**
+ * Récupère les matchs d'un joueur
+ * @param {number} playerId - ID du joueur
+ * @returns {Promise<Array>} - Liste des matchs
+ */
+export const getMatchesByPlayerId = async (playerId) => {
+  const response = await api.get(endpoints.matches.byPlayer(playerId));
+  return response.data;
+};
+
+// Méthodes pour les organisateurs
+/**
+ * Planifie un nouveau match (organisateur)
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {Object} matchDTO - Données du match
+ * @returns {Promise<Object>} - Match créé
+ */
+export const scheduleMatch = async (organizerId, matchDTO) => {
+  const response = await api.post(endpoints.matches.organizer.schedule(organizerId), matchDTO);
+  return response.data;
+};
+
+/**
+ * Met à jour le statut d'un match (organisateur)
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {Object} matchStatusUpdateDTO - Données de mise à jour du statut
+ * @param {string} reason - Raison du changement de statut
+ * @returns {Promise<Object>} - Match mis à jour
+ */
+export const updateMatchStatus = async (organizerId, matchStatusUpdateDTO, reason) => {
+  const response = await api.put(
+    endpoints.matches.organizer.updateStatus(organizerId), 
+    { ...matchStatusUpdateDTO, reason }
+  );
+  return response.data;
+};
+
+/**
+ * Met à jour les informations d'un match (organisateur)
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {Object} matchDTO - Données du match
+ * @returns {Promise<Object>} - Match mis à jour
+ */
+export const updateMatchInfo = async (organizerId, matchDTO) => {
+  const response = await api.put(endpoints.matches.organizer.update(organizerId), matchDTO);
+  return response.data;
+};
+
+/**
+ * Met à jour le score d'un match (organisateur)
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {Object} matchScoreUpdateDTO - Données de mise à jour du score
+ * @returns {Promise<Object>} - Match mis à jour
+ */
+export const updateMatchScore = async (organizerId, matchScoreUpdateDTO) => {
+  const response = await api.put(endpoints.matches.organizer.updateScore(organizerId), matchScoreUpdateDTO);
+  return response.data;
+};
+
+/**
+ * Met à jour les participants d'un match (organisateur)
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {number} matchId - ID du match
+ * @param {Array} participants - Liste des participants
+ * @returns {Promise<Array>} - Liste des participants mis à jour
+ */
+export const updateMatchParticipants = async (organizerId, matchId, participants) => {
+  const response = await api.put(
+    endpoints.matches.organizer.updateParticipants(organizerId, matchId), 
+    participants
+  );
+  return response.data;
+};
+
+/**
+ * Valide une feuille de match (organisateur)
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {Object} matchSheetValidationDTO - Données de validation
+ * @param {string} comments - Commentaires sur la validation
+ * @returns {Promise<Object>} - Feuille de match validée
+ */
+export const validateMatchSheet = async (organizerId, matchSheetValidationDTO, comments) => {
+  const response = await api.put(
+    endpoints.matches.organizer.validateSheet(organizerId), 
+    { ...matchSheetValidationDTO, comments }
+  );
+  return response.data;
+};
+
+// Méthodes pour les coachs
+/**
+ * Récupère les feuilles de match d'une équipe pour un coach
+ * @param {number} coachId - ID du coach
+ * @param {number} teamId - ID de l'équipe
+ * @returns {Promise<Object>} - Réponse contenant les feuilles de match
+ */
+export const getMatchSheetsByTeamAndCoach = async (coachId, teamId) => {
+  const response = await api.get(endpoints.matches.coach.sheets(coachId, teamId));
+  return response.data;
+};
+
+/**
+ * Récupère toutes les feuilles de match d'un coach
+ * @param {number} coachId - ID du coach
+ * @returns {Promise<Object>} - Réponse contenant les feuilles de match
+ */
+export const getMatchSheetsByCoach = async (coachId) => {
+  const response = await api.get(endpoints.matches.coach.allSheets(coachId));
+  return response.data;
+};
+
+/**
+ * Récupère une feuille de match spécifique pour un coach
+ * @param {number} coachId - ID du coach
+ * @param {number} matchSheetId - ID de la feuille de match
+ * @returns {Promise<Object>} - Feuille de match pour gestion
+ */
+export const getMatchSheet = async (coachId, matchSheetId) => {
+  const response = await api.get(endpoints.matches.coach.sheet(coachId, matchSheetId));
+  return response.data;
+};
+
+/**
+ * Met à jour une feuille de match (coach)
+ * @param {number} coachId - ID du coach
+ * @param {number} matchSheetId - ID de la feuille de match
+ * @param {Object} matchSheetDTO - Données de la feuille de match
+ * @returns {Promise<Object>} - Feuille de match mise à jour
+ */
+export const updateMatchSheet = async (coachId, matchSheetId, matchSheetDTO) => {
+  const response = await api.put(
+    endpoints.matches.coach.updateSheet(coachId, matchSheetId), 
+    matchSheetDTO
+  );
+  return response.data;
+};

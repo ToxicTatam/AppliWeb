@@ -19,9 +19,11 @@
 
    @Component
    @Data
-   @AllArgsConstructor
    @RequiredArgsConstructor
    public class JwtUtil {
+
+       private final TokenBlacklistService tokenBlacklistService;
+
 
        @Value("${security.jwt.secret}")
        private String secretKey;
@@ -44,6 +46,10 @@
 
 
 
+       public void addTokenToBlacklist(String token, Date expiryDate) {
+           tokenBlacklistService.addToBlacklist(token, expiryDate);
+       }
+
        public String generateToken(String email,Long userId ,String role) {
            return Jwts.builder()
                    .setSubject(email)
@@ -65,15 +71,6 @@
                    .getSubject();
        }
 
-       public String extractEmail(String token) {
-           return Jwts.parserBuilder()
-                   .setSigningKey(key)
-                   .build()
-                   .parseClaimsJws(token)
-                   .getBody()
-                   .getSubject();
-       }
-
 
        public boolean validateToken(String token) {
            try {
@@ -81,12 +78,52 @@
                        .setSigningKey(key)
                        .build()
                        .parseClaimsJws(token);
-               return true;
+               //return true;
+               return !tokenBlacklistService.isBlacklisted(token);
            } catch (JwtException | IllegalArgumentException e) {
                return false;
            }
        }
 
+
+       public String refreshToken(String refreshToken) {
+           if (validateToken(refreshToken)) {
+               String username = extractUsername(refreshToken);
+               Long userId = extractUserId(refreshToken);
+               String role = extractUserRole(refreshToken);
+               return generateToken(username, userId, role);
+           } else {
+               throw new IllegalArgumentException("Invalid or expired refresh token.");
+           }
+       }
+
+
+       private String extractUserRole(String token) {
+           Claims claims = Jwts.parserBuilder()
+                   .setSigningKey(key)
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody();
+           return (String) claims.get("role");
+       }
+
+       private Long extractUserId(String token) {
+           Claims claims = Jwts.parserBuilder()
+                   .setSigningKey(key)
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody();
+           return ((Number) claims.get("id")).longValue();
+       }
+
+       public Date getExpirationDateFromToken(String token) {
+           Claims claims = Jwts.parserBuilder()
+                   .setSigningKey(key)
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody();
+           return claims.getExpiration();
+       }
 
 
    }

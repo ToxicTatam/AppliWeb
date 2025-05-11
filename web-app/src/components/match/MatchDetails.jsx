@@ -8,7 +8,7 @@ import MatchStatistics from './MatchStatistics';
 import MatchSheetTab from './MatchSheetTab';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
-const MatchDetails = ({ matchId, isUserView = true }) => {
+const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
   // États pour les données et le chargement
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);

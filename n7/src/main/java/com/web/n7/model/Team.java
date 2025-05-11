@@ -1,19 +1,22 @@
 package com.web.n7.model;
 
 
+import com.web.n7.model.users.Coach;
+import com.web.n7.model.users.Player;
 import jakarta.persistence.*;
 
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "teams")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"coach", "players", "competitionTeams"})
+@EqualsAndHashCode(exclude = {"coach", "players", "competitionTeams"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -29,17 +32,17 @@ public class Team {
     private String logo;
 
     @Column(nullable = false)
-    private String category; // Par exemple: Juniors, Seniors, ou n'importe quoi du genre juste extension pas besoin d'implementer ca pour le moment.
+    private String category; // Par exemple: JUNIOR, SENIOR, VETERAN, ou n'importe quoi du genre juste extension pas besoin d'implementer ca pour le moment.
 
     @ManyToOne
     @JoinColumn(name = "coach_id", nullable = false)
-    private User coach;
+    private Coach coach;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Player> players = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "teams")
-    private Set<Competition> competitions = new HashSet<>();
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompetitionTeam> competitionTeams = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

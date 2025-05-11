@@ -1,147 +1,172 @@
 package com.web.n7.controller;
 
+import java.util.List;
 
-
-import com.web.n7.model.Competition;
-import com.web.n7.model.Match;
-import com.web.n7.model.Team;
-import com.web.n7.service.CompetitionService;
+import com.web.n7.service.CompetitionServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import com.web.n7.dto.coach.CoachCompetitionRequestDTO;
+import com.web.n7.dto.common.CompetitionDTO;
+import com.web.n7.dto.organizer.OrganizerCompetitionDTO;
+import com.web.n7.dto.organizer.OrganizerCompetitionStatusUpdateDTO;
+import com.web.n7.dto.organizer.OrganizerCompetitionsResponseDTO;
+import com.web.n7.dto.organizer.TeamCompetitionStatusUpdateDTO;
+import com.web.n7.filter.CompetitionFilter;
+import com.web.n7.serviceInterface.CompetitionService;
 
 @RestController
 @RequestMapping("/api/competitions")
+ @RequiredArgsConstructor
 public class CompetitionController {
 
-    private final CompetitionService competitionService;
 
-    public CompetitionController(CompetitionService competitionService) {
-        this.competitionService = competitionService;
+    private final CompetitionServiceImpl competitionService;
+
+
+    // Endpoints pour tous les utilisateurs
+    @GetMapping
+    public ResponseEntity<List<CompetitionDTO>> getAllCompetitions(CompetitionFilter filter) {
+        return ResponseEntity.ok(competitionService.getAllCompetitions(filter));
     }
 
-    /**
-     * Creates a new competition and assigns it to an organizer.
-     *
-     * @param competition the competition entity containing details about the competition to be created
-     * @param organizerId the ID of the user proposed as the organizer of the competition
-     * @return a response entity containing the created competition object
-     */
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
-    public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition, @RequestParam Long organizerId) {
-        Competition createdCompetition = competitionService.create(competition, organizerId);
-        return ResponseEntity.ok(createdCompetition);
+    @GetMapping("/{competitionId}")
+    public ResponseEntity<CompetitionDTO> getCompetitionById(@PathVariable Long competitionId) {
+        return ResponseEntity.ok(competitionService.getCompetitionById(competitionId));
     }
 
-    /**
-     * Retrieves a competition by its unique identifier.
-     *
-     * @param id the unique identifier of the competition to be retrieved
-     * @return a ResponseEntity containing the competition if found, or a not found response if not available
-     */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Competition> getCompetitionById(@PathVariable Long id) {
-        Optional<Competition> competition = competitionService.findById(id);
-        return competition.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<CompetitionDTO>> getCompetitionsByTeamId(
+            @PathVariable Long teamId, CompetitionFilter filter) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByTeamId(teamId, filter));
     }
 
-    /**
-     * Retrieves a list of all competitions available in the system.
-     *
-     * @return a {@code ResponseEntity} containing a list of {@code Competition} objects
-     */
-    @GetMapping("/all")
-    public ResponseEntity<List<Competition>> getAllCompetitions() {
-        List<Competition> competitions = competitionService.findAll();
-        return ResponseEntity.ok(competitions);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CompetitionDTO>> getCompetitionsByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByUserId(userId));
     }
 
-    /**
-     * Updates an existing competition with new details.
-     * The competition to be updated is identified by the provided ID,
-     * and the updated details are provided in the request body.
-     *
-     * @param id the ID of the competition to be updated
-     * @param competition the competition object containing updated details
-     * @return a {@code ResponseEntity} containing the updated competition if the update
-     *         was successful, or an appropriate HTTP response if not
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<Competition> updateCompetition(@PathVariable Long id, @RequestBody Competition competition) {
-        competition.setId(id);
-        Competition updatedCompetition = competitionService.update(competition);
-        return ResponseEntity.ok(updatedCompetition);
+    // Endpoints pour les organisateurs
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @PostMapping("/organizer/{organizerId}")
+    public ResponseEntity<OrganizerCompetitionDTO> createCompetition(
+            @PathVariable Long organizerId, @RequestBody OrganizerCompetitionDTO competitionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(competitionService.createCompetition(organizerId, competitionDTO));
     }
 
-    /**
-     * Deletes a competition identified by its unique ID.
-     *
-     * @param id the unique identifier of the competition to be deleted
-     * @return a ResponseEntity with no content, indicating the competition was successfully deleted
-     */
-    @DeleteMapping("/deletion/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
-    public ResponseEntity<Void> deleteCompetition(@PathVariable Long id) {
-        competitionService.delete(id);
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @PutMapping("/organizer/{organizerId}/{competitionId}")
+    public ResponseEntity<OrganizerCompetitionDTO> updateCompetition(
+            @PathVariable Long organizerId, 
+            @PathVariable Long competitionId, 
+            @RequestBody OrganizerCompetitionDTO competitionDTO) {
+        return ResponseEntity.ok(competitionService.updateCompetition(organizerId, competitionId, competitionDTO));
+    }
+
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @DeleteMapping("/organizer/{organizerId}/{competitionId}")
+    public ResponseEntity<Void> deleteCompetition(
+            @PathVariable Long organizerId, 
+            @PathVariable Long competitionId) {
+        competitionService.deleteCompetition(organizerId, competitionId);
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Registers a team to a competition identified by its ID. The competition must be open for registration
-     * and must not have reached its maximum number of allowed teams. If successful, the updated competition
-     * object is returned.
-     *
-     * @param competitionId the ID of the competition to which the team should be registered
-     * @param teamId the ID of the team to be registered
-     * @return a ResponseEntity containing the updated competition object
-     */
-    @PostMapping("/{competitionId}/register-team")
-    public ResponseEntity<Competition> registerTeamToCompetition(@PathVariable Long competitionId, @RequestParam Long teamId) {
-        Competition competition = competitionService.registerTeam(competitionId, teamId);
-        return ResponseEntity.ok(competition);
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @GetMapping("/organizer/{organizerId}")
+    public ResponseEntity<OrganizerCompetitionsResponseDTO> getCompetitionsByOrganizer(
+            @PathVariable Long organizerId, CompetitionFilter filter) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByOrganizer(organizerId, filter));
     }
 
-    /**
-     * Unregisters a team from a specific competition. The competition must be in the registration phase
-     * for the removal to be allowed. The team is removed from the competition's list of registered teams.
-     *
-     * @param competitionId the unique identifier of the competition from which the team is unregistered
-     * @param teamId the unique identifier of the team to be unregistered from the competition
-     * @return a ResponseEntity containing the updated Competition object after the team has been unregistered
-     */
-    @PostMapping("/{competitionId}/unregister-team")
-    public ResponseEntity<Competition> unregisterTeamFromCompetition(@PathVariable Long competitionId, @RequestParam Long teamId) {
-        Competition competition = competitionService.unregisterTeam(competitionId, teamId);
-        return ResponseEntity.ok(competition);
+//    @PreAuthorize("hasRole('ORGANIZER')")
+//    @GetMapping("/organizer/{organizerId}/{competitionId}")
+//    public ResponseEntity<OrganizerCompetitionDTO> getCompetitionByIdForOrganizer(
+//            @PathVariable Long organizerId,
+//            @PathVariable Long competitionId) {
+//        return ResponseEntity.ok(competitionService.getCompetitionById(organizerId, competitionId));
+//    }
+
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @PutMapping("/organizer/{organizerId}/status")
+    public ResponseEntity<OrganizerCompetitionDTO> updateCompetitionStatus(
+            @PathVariable Long organizerId, 
+            @RequestBody OrganizerCompetitionStatusUpdateDTO statusUpdateDTO,
+            @RequestParam String reason) {
+        return ResponseEntity.ok(competitionService.updateCompetitionStatus(organizerId, statusUpdateDTO, reason));
     }
 
-
-
-    /**
-     * Retrieves the list of teams registered for a specific competition.
-     *
-     * @param id the unique identifier of the competition for which the registered teams are to be retrieved
-     * @return a {@code ResponseEntity} containing a list of {@code Team} objects registered in the competition
-     */
-    @GetMapping("/{id}/teams")
-    public ResponseEntity<List<Team>> getRegisteredTeams(@PathVariable Long id) {
-        List<Team> teams = competitionService.getTeamsByCompetitionId(id);
-        return ResponseEntity.ok(teams);
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @PutMapping("/organizer/{organizerId}/team-status")
+    public ResponseEntity<Void> updateTeamCompetitionStatus(
+            @PathVariable Long organizerId, 
+            @RequestBody TeamCompetitionStatusUpdateDTO statusUpdateDTO,
+            @RequestParam String reason) {
+        competitionService.updateTeamCompetitionStatus(organizerId, statusUpdateDTO, reason);
+        return ResponseEntity.ok().build();
     }
 
-    /**
-     * Retrieves a list of matches associated with a specific competition.
-     *
-     * @param id the unique identifier of the competition for which the matches are to be retrieved
-     * @return a {@code ResponseEntity} containing a list of {@code Match} objects associated with the competition
-     */
-    @GetMapping("/{id}/matches")
-    public ResponseEntity<List<Match>> getMatchesByCompetition(@PathVariable Long id) {
-        List<Match> matches = competitionService.getMatchesByCompetition(id);
-        return ResponseEntity.ok(matches);
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @PutMapping("/organizer/{organizerId}/request/{requestId}")
+    public ResponseEntity<Void> processCompetitionRequest(
+            @PathVariable Long organizerId, 
+            @PathVariable Long requestId,
+            @RequestParam boolean approved,
+            @RequestParam String reason) {
+        competitionService.processCompetitionRequest(organizerId, requestId, approved, reason);
+        return ResponseEntity.ok().build();
+    }
+
+    // Endpoints pour les coachs
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}/team/{teamId}/register/{competitionId}")
+    public ResponseEntity<CoachCompetitionRequestDTO> requestTeamRegistration(
+            @PathVariable Long coachId, 
+            @PathVariable Long teamId, 
+            @PathVariable Long competitionId,
+            @RequestParam String reason) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(competitionService.requestTeamRegistration(coachId, teamId, competitionId, reason));
+    }
+
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}/team/{teamId}/withdraw/{competitionId}")
+    public ResponseEntity<CoachCompetitionRequestDTO> requestTeamWithdrawal(
+            @PathVariable Long coachId, 
+            @PathVariable Long teamId, 
+            @PathVariable Long competitionId,
+            @RequestParam String reason) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(competitionService.requestTeamWithdrawal(coachId, teamId, competitionId, reason));
+    }
+
+    @PreAuthorize("hasRole('COACH')")
+    @PostMapping("/coach/{coachId}/team/{teamId}/withdraw-all")
+    public ResponseEntity<Void> requestTeamsWithdrawalIntoAllCompetition(
+            @PathVariable Long coachId, 
+            @PathVariable Long teamId,
+            @RequestParam String reason) {
+        competitionService.requestTeamsWithdrawalIntoAllCompetition(coachId, teamId, reason);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('COACH')")
+    @GetMapping("/coach/{coachId}/requests")
+    public ResponseEntity<List<CoachCompetitionRequestDTO>> getCompetitionRequestsByCoach(
+            @PathVariable Long coachId) {
+        return ResponseEntity.ok(competitionService.getCompetitionRequestsByCoach(coachId));
     }
 }

@@ -1,4 +1,5 @@
 #!/bin/bash
+kill -9 $(sudo lsof -t -i :9001)
 
 hsqldb_home=./hsqldb
 rc_file=auth.rc

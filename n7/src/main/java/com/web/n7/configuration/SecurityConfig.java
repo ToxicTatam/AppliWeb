@@ -4,6 +4,7 @@ import com.web.n7.service.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,11 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
-)
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
@@ -41,13 +37,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Login/register endpoints
-                        .requestMatchers("/api/organizer/**").hasRole("ORGANIZER")
-                        .requestMatchers("/api/coach/**").hasRole("COACH")
-                        .requestMatchers("/api/teams/**").hasAnyRole("ADMIN", "ORGANIZER", "COACH")
-                        .requestMatchers("/api/competitions/**").hasAnyRole("ADMIN", "ORGANIZER", "COACH")
-                        .requestMatchers("/api/users/**").hasAnyRole("PLAYER", "ADMIN", "ORGANIZER", "COACH")
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add the JWT filter
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -74,18 +67,5 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        UrlBasedCorsConfigurationSource source =
-//                new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.addAllowedOrigin("*");
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("*");
-//        source.registerCorsConfiguration("/**", config);
-//        return new CorsFilter(source);
-//    }
 
 }
