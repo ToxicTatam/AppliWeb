@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class MatchFilter {
     private String status;
     private String title;
-    private Long competitionName;
+    private String competitionName;
     private String teamName;
     private LocalDate startDate;
     private LocalDate endDate;

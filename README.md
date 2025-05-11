@@ -1,42 +1,82 @@
-ENVIRONNEMENT : NODE JS  VERSION 22.10 (la mienne) , peut etre qu'une version inferieure peut marcher mais pas moins de la 19 je pense.
-Tout ce qui va suivre ne marche que sur LINUX et testé sur UBUNTU.
+# AppliWeb N7 - Documentation
 
-EXPLICATION DU CONTENU 
+## Environnement requis
 
-Le repertoire db ---> pour la base de donnée, (c'est un fork de ce qui nous a été donnée en TP) . db.sql est un script de creation du modele conforme à notre schema
-remarque: je n ai pas testé db.sql, car je laisse springboot le creer pour moi.
+- **Node.js** : Version 22.10 recommandée (version minimale 19)
+- **Système d'exploitation** : Linux (testé sur Ubuntu)
 
-Le repertoire web-app c'est pour le frontend(interfca web)
-Le repertoire n7 ---> le backend
-Le repertoire LIRE contient les relations entre les entités, et toutes les informations sur celles-ci. Il est conseillé de le lire (au moins les dtos)
+## Structure du projet
 
+### Organisation des répertoires
 
-ASTUCE POUR LE LANCEMENT D'UN COUP
+- **db/** : Contient les fichiers pour la base de données
+  - `db.sql` : Script de création du modèle conforme au schéma (non testé car SpringBoot s'en charge)
 
-faite juste depuis le repertoire contenant les projets
+- **web-app/** : Contient le frontend (interface web)
 
-SI VOUS N AVEZ PAS INSTALLE LES DEPENDANCES, SI OUI VOUS POUVEZ SAUTER ET ALLER À L ETAPE SUIVANTE
+- **n7/** : Contient le backend
 
-source dependance.sh  (si un probleme est rencontré, faite d abord chmod +x dependance.sh)
+- **LIRE/** : Documentation importante sur les relations entre entités et autres informations
+  - Il est fortement recommandé de lire au moins les DTOs
 
----------------------------------------
-source start.sh (si un probleme est rencontré, faite d abord chmod +x start.sh)
+## Démarrage rapide
 
+### Installation des dépendances (si non installées)
 
+```bash
+# Rendre le script exécutable si nécessaire
+chmod +x dependance.sh
 
+# Exécuter le script d'installation
+source dependance.sh
+```
 
-SI L ETAPE PRECEDENTE NE MARCHE PAS , VOUS POUVEZ FAIRE
-Pour lancer le projet, 
-demarrer d'abord la base de donnée(hsqldb), en tapant source.sh 
+### Lancement de l'application
 
-puis vous pouvez lancer independament le back ou le front
-(je recommande de lancer le back mais libre à vous)
-vous pouvez le lancer depuis votre ide ou tout simplement en vous placant dans le repertoire et tapez la commande : mvn spring-boot:run (si maven installé glovalement) 
-ou ./mvnw spring-boot:run sinon
+```bash
+# Rendre le script exécutable si nécessaire
+chmod +x start.sh
 
+# Lancer l'application complète
+source start.sh
+```
 
+## Démarrage manuel (si le lancement automatique échoue)
 
-puis le frontend , depuis le terminal (dans le repertoire racine et apres avoir installé les dependances via npm install): npm run dev
+### 1. Démarrer la base de données HSQLDB
 
+```bash
+source source.sh
+```
 
+### 2. Lancer le backend (SpringBoot)
+
+Deux options :
+- **Via IDE** : Ouvrir et lancer le projet dans votre IDE
+- **Via ligne de commande** :
+  ```bash
+  # Si Maven est installé globalement
+  cd n7
+  mvn spring-boot:run
+  
+  # Si Maven n'est pas installé globalement
+  cd n7
+  ./mvnw spring-boot:run
+  ```
+
+### 3. Lancer le frontend
+
+```bash
+cd web-app
+
+# Installer les dépendances (si première fois)
+npm install
+
+# Lancer le serveur de développement
+npm run dev
+```
+
+---
+
+**Note** : Pour une compréhension complète des modèles et relations, consultez les fichiers dans le répertoire LIRE/.
 
