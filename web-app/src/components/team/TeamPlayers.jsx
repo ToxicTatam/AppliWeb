@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import * as TeamService from '@/services/team-service';
+import * as PlayerService from '@/services/player-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamPlayers = ({ teamId }) => {
@@ -16,7 +16,7 @@ const TeamPlayers = ({ teamId }) => {
     setLoading(true);
     try {
       // Utiliser la fonction correcte du PlayerService au lieu de TeamService
-      const response = await TeamService.getTeamsByPlayerId(teamId);
+      const response = await PlayerService.getPlayersByTeam(teamId);
       setPlayers(response || []);
       setError(null);
     } catch (err) {
