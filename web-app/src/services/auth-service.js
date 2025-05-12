@@ -81,7 +81,7 @@ const predefinedUsers = [
 ];
 
 // Service d'authentification
-const authService = {
+const AuthService = {
   // Connexion utilisateur
   login: async (credentials) => {
     try {
@@ -266,4 +266,4 @@ const authService = {
   },
 };
 
-export default authService;
+export default AuthService;

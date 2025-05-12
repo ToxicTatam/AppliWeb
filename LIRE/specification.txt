@@ -1,5 +1,5 @@
 application de gestion sportive (football)
-
+REGARDER DANS DTO, CERTAINES INFIRMATIONS (ATTRIBUTS) DE DTO NE SONT PLUS VALIDES ICI
 
 le projet est à realise en next js pour le frontned et le backend en sprngboot entierement
 le backend est terlminé

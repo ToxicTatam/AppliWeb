@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserForm from './UserForm';
-import authService from '@/services/auth-service';
+import AuthService from '@/services/auth-service';
 import { useNotification } from '@/hooks/useNotification';
 
 /**
@@ -141,7 +141,7 @@ const RegisterForm = ({ userType = 'USER' }) => {
         delete userData.confirmPassword;
       }
       
-      const response = await authService.register(userData);
+      const response = await AuthService.register(userData);
       
       if (response) {
         // Afficher une notification de succès

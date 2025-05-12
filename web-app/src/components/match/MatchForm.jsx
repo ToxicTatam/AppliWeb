@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import MatchService from '@/services/match-service';
+import Matchservice from '@/services/match-service';
 import * as CompetitionService from '@/services/competition-service';
 import   * as TeamService from '@/services/team-service';
 import { useNotification } from '@/hooks/useNotification';
@@ -47,7 +47,7 @@ const MatchForm = ({ matchId = null, competitionId = null }) => {
         // Si on est en mode édition, charger les données du match
         if (matchId) {
           setIsEdit(true);
-          const matchData = await MatchService.getMatchById(matchId);
+          const matchData = await Matchservice.getMatchById(matchId);
           
           // Formater la date pour l'input datetime-local
           const dateObj = matchData.scheduledDateTime 
@@ -148,11 +148,11 @@ const MatchForm = ({ matchId = null, competitionId = null }) => {
     try {
       if (isEdit) {
         // Mettre à jour un match existant
-        await MatchService.updateMatch(matchId, match);
+        await Matchservice.updateMatch(matchId, match);
         showNotification('Match mis à jour avec succès', 'success');
       } else {
         // Créer un nouveau match
-        await MatchService.createMatch(match);
+        await Matchservice.createMatch(match);
         showNotification('Match créé avec succès', 'success');
       }
       

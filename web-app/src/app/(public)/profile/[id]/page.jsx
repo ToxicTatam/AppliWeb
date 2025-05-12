@@ -6,8 +6,13 @@ import { USER_ROLES } from '@/context/AuthContext';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, Typography, Box, Chip, Avatar, Button, Grid, Divider, Container, CircularProgress } from '@mui/material';
 import { Email, Phone, Sports, LocationOn, WorkOutline, CalendarToday, Groups } from '@mui/icons-material';
+import  UserService  from '@/services/user-service';
+import * as TeamService from '@/services/team-service';
+import * as CompetitionService from '@/services/competition-service';
 
-const PublicProfilePage = ({ params }) => {
+//lorsqu'il clique sur voir le profil d'un utilisateur  (coach , ou organisateur )
+//les informations publiques de l'utilisateur sont affichées
+const PublicProfilePage = () => {
   const router = useRouter();
   const userId = useParams().id;
   const [user, setUser] = useState(null);
@@ -20,80 +25,35 @@ const PublicProfilePage = ({ params }) => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        // Dans une app réelle, on utiliserait une API pour récupérer le profil public
-        // Pour la démo, on utilise les utilisateurs prédéfinis
         
-        // Simuler l'appel API
-        await new Promise(resolve => setTimeout(resolve, 800));
+        // Appel au service utilisateur pour récupérer les données
+        const userData = await UserService.getUserById(userId);
         
-        // Récupérer les utilisateurs de la démo
-        const predefinedUsers = [
-          {
-            id: 1,
-            userName: "coach1",
-            firstName: "Claude",
-            lastName: "Entraîneur",
-            phone: "+33678901234",
-            profilePicture: "/avatars/coach.jpg",
-            role: "COACH",
-            licenseNumber: "CO54321",
-            yearsOfExperience: 8,
-            numberOfTeams: 2,
-            createdAt: "2025-01-25T09:45:00Z",
-            address: "Dans le 8ème arrondissement de Lyon",
-            contactDetails: "contact@coach.com",
-            specialization: "Entraînement technique et tactique",
-            organization: "Lycée Jean Moulin",
-            biography: "Entraîneur passionné avec plus de 8 ans d'expérience. Spécialisé dans le développement des jeunes talents et la tactique de jeu moderne. Diplômé de l'Institut National du Sport avec une certification UEFA B."
-          },
-          {
-            id: 2,
-            userName: "organizer1",
-            firstName: "Olivier",
-            lastName: "Organisateur",
-            phone: "+33567890123",
-            profilePicture: "/avatars/organizer.jpg",
-            role: "ORGANIZER",
-            organization: "Ligue Régionale de Football",
-            activeCompetitionsCount: 3,
-            createdAt: "2025-02-01T11:30:00Z",
-            address: "456 Rue de Lyon, 69001 Lyon",
-            contactDetails: "contact@organizer.com",
-            biography: "Responsable de l'organisation des compétitions régionales depuis 2020. Expérience dans la gestion d'événements sportifs de grande envergure et dans la coordination de plus de 50 clubs. Passionné par le développement du sport local."
-          }
-        ];
-        
-        // Trouver l'utilisateur par ID
-        const foundUser = predefinedUsers.find(u => u.id === Number(userId));
-        
-        if (!foundUser) {
+        // Vérifier si l'utilisateur existe
+        if (!userData) {
+          
           setError("Profil non trouvé");
           return;
         }
         
-        // Vérifier si c'est un coach ou un organisateur
-        if (foundUser.role !== USER_ROLES.COACH && foundUser.role !== USER_ROLES.ORGANIZER) {
+        // Vérifier si c'est un coach ou un organisateur (seuls ces profils sont accessibles publiquement)
+        if (userData.role !== USER_ROLES.COACH && userData.role !== USER_ROLES.ORGANIZER) {
+          console.log("USER_ROLE", userData.role);
+          console.log(userData);
           setError("Ce profil n'est pas accessible publiquement");
           return;
         }
         
-        setUser(foundUser);
+        setUser(userData);
         
         // Charger les données supplémentaires selon le rôle
-        if (foundUser.role === USER_ROLES.COACH) {
-          // Simuler la récupération des équipes du coach
-          const coachTeams = [
-            { id: 1, name: "Équipe Senior A", category: "Senior", players: 22, competitions: 2 },
-            { id: 2, name: "Équipe U19", category: "Junior", players: 18, competitions: 1 }
-          ];
+        if (userData.role === USER_ROLES.COACH) {
+          // Récupérer les équipes du coach depuis l'API
+          const coachTeams = await TeamService.getTeamsByCoach(userId);
           setTeams(coachTeams);
-        } else if (foundUser.role === USER_ROLES.ORGANIZER) {
-          // Simuler la récupération des compétitions de l'organisateur
-          const organizerCompetitions = [
-            { id: 101, name: "Championnat Régional Senior", teams: 14, startDate: "2025-09-01", endDate: "2026-05-30", status: "À venir" },
-            { id: 102, name: "Coupe Junior", teams: 32, startDate: "2025-10-15", endDate: "2026-04-20", status: "À venir" },
-            { id: 103, name: "Tournoi d'Été", teams: 8, startDate: "2025-07-20", endDate: "2025-07-25", status: "À venir" }
-          ];
+        } else if (userData.role === USER_ROLES.ORGANIZER) {
+          // Récupérer les compétitions de l'organisateur depuis l'API
+          const organizerCompetitions = await CompetitionService.getCompetitionsByUserId(userId);
           setCompetitions(organizerCompetitions);
         }
       } catch (err) {
@@ -202,7 +162,7 @@ const PublicProfilePage = ({ params }) => {
             {/* Biographie et informations détaillées */}
             <Grid item xs={12} md={8}>
               <Typography variant="h6" gutterBottom>Biographie</Typography>
-              <Typography variant="body1" paragraph>
+              <Typography variant="body1">
                 {user.biography || "Aucune biographie disponible."}
               </Typography>
               

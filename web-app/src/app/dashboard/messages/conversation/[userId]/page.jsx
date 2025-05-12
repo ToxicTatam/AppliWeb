@@ -23,7 +23,7 @@ import MessageComposer from '@/components/messages/MessageComposer';
 import DashboardHeader from '@/components/dashboard/common/DashboardHeader';
 import { useNotification } from '@/hooks/useNotification';
 import { useAuth } from '@/hooks/useAuth';
-import messageService from '@/services/message-service';
+import MessageService from '@/services/message-service';
 
 export default function ConversationPage({ params }) {
   const router = useRouter();
@@ -45,7 +45,7 @@ export default function ConversationPage({ params }) {
       setLoading(true);
       try {
         // Récupérer l'historique de conversation
-        const conversationData = await messageService.getConversationHistory(userId);
+        const conversationData = await MessageService.getConversationHistory(userId);
         setMessages(conversationData.messages || []);
         
         // Récupérer les infos sur le destinataire
@@ -122,7 +122,7 @@ export default function ConversationPage({ params }) {
   // Marquer un message comme lu
   const handleMarkAsRead = async (messageId) => {
     try {
-      await messageService.markAsRead(messageId);
+      await MessageService.markAsRead(messageId);
       
       // Mettre à jour l'état local
       setMessages(prevMessages => 
@@ -149,7 +149,7 @@ export default function ConversationPage({ params }) {
   // Supprimer un message
   const handleDelete = async (messageId) => {
     try {
-      await messageService.deleteMessage(messageId);
+      await MessageService.deleteMessage(messageId);
       
       // Mettre à jour l'état local
       setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));

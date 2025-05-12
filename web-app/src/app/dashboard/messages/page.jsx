@@ -18,7 +18,7 @@ import MessageComposer from '@/components/messages/MessageComposer';
 import DashboardHeader from '@/components/dashboard/common/DashboardHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
-import * as messageService from '@/services/message-service';
+import * as MessageService from '@/services/message-service';
 
 const MessagesPage = () => {
   const { user } = useAuth();
@@ -34,7 +34,7 @@ const MessagesPage = () => {
     let isMounted = true;
     const fetchUnreadCount = async () => {
       try {
-        const response = await messageService.getUnreadCount();
+        const response = await MessageService.getUnreadCount();
         if (isMounted) {
           setUnreadCount(response.count || 0);
         }
@@ -82,7 +82,7 @@ const MessagesPage = () => {
       message: 'Message envoyé avec succès'
     });
     // Rafraîchir le nombre de messages non lus après l'envoi
-    messageService.getUnreadCount().then(response => {
+    MessageService.getUnreadCount().then(response => {
       setUnreadCount(response.count || 0);
     });
   };

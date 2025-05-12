@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
 import { USER_ROLES } from '@/context/AuthContext';
-import authService from '@/services/auth-service';
+import AuthService from '@/services/auth-service';
 
 const ProfileForm = ({ user, onCancel, onSuccess }) => {
   const { setUser } = useAuth();
@@ -177,7 +177,7 @@ const ProfileForm = ({ user, onCancel, onSuccess }) => {
       }, 1000);
       
       // Pour un environnement de production:
-      // const response = await authService.updateProfile(profileData);
+      // const response = await AuthService.updateProfile(profileData);
       // if (response && response.success) {
       //   // Mise à jour du context user
       //   setUser(response.user);

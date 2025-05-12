@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import * as MatchService from '@/services/match-service';
+import * as Matchservice from '@/services/match-service';
 import * as TeamService from '@/services/team-service';
 import * as PlayerService from '@/services/player-service';
 import { useNotification } from '@/hooks/useNotification';
@@ -50,7 +50,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
     setLoading(true);
     try {
       // Récupérer les informations du match
-      const match = await MatchService.getMatchById(matchId);
+      const match = await Matchservice.getMatchById(matchId);
       setMatchData(match);
       
       // Déterminer l'équipe pour laquelle l'utilisateur crée la feuille de match
@@ -82,7 +82,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
       // Vérifier si une feuille de match existe déjà
       try {
         // Utilisons getMatchSheetByMatchId au lieu de getMatchSheetByTeam qui n'existe pas
-        const matchSheets = await MatchService.getMatchSheetByMatchId(matchId);
+        const matchSheets = await Matchservice.getMatchSheetByMatchId(matchId);
         // Filtrer pour trouver la feuille de match de l'équipe spécifique
         const existingSheet = matchSheets?.find(sheet => sheet.teamId === userTeamId);
         
@@ -312,13 +312,13 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
       if (isEdit) {
         // Mettre à jour une feuille de match existante
         // On utilise updateMatchSheet de match-service.js qui attend coachId, matchSheetId et matchSheetDTO
-        await MatchService.updateMatchSheet(coachId, matchSheet.id, matchSheet);
+        await Matchservice.updateMatchSheet(coachId, matchSheet.id, matchSheet);
         showNotification('Feuille de match mise à jour avec succès', 'success');
       } else {
         // Créer une nouvelle feuille de match
         // Comme il n'y a pas de méthode createMatchSheet définie, utilisons updateMatchSheet
         // avec les paramètres appropriés
-        await MatchService.updateMatchSheet(coachId, matchId, matchSheet);
+        await Matchservice.updateMatchSheet(coachId, matchId, matchSheet);
         showNotification('Feuille de match créée avec succès', 'success');
       }
       

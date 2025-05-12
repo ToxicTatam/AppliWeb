@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RoleMapDTO {
-    public Object ToDTO(User user){
+    public static Object ToDTO(User user){
 
         Object userEntity;
 
@@ -32,6 +32,7 @@ public class RoleMapDTO {
                             .contactDetails(coach.getContactDetails())
                             .specialization(coach.getSpecialization())
                             .organization(coach.getOrganization())
+                            .role(coach.getRole().name())
                             .createdAt(String.valueOf(coach.getCreatedAt()))
                             .updatedAt(String.valueOf(coach.getUpdatedAt()))
                             .biography(coach.getBiography())
@@ -52,6 +53,7 @@ public class RoleMapDTO {
                             .lastName(player.getLastName())
                             .address(player.getAddress())
                             .profilePicture(player.getProfilePicture())
+                            .role(player.getRole().name())
                             .createdAt(String.valueOf(player.getCreatedAt()))
                             .updatedAt(String.valueOf(player.getUpdatedAt()))
                             .licenseNumber(player.getLicenseNumber())
@@ -81,6 +83,7 @@ public class RoleMapDTO {
                             .activeCompetitionsCount(organizer.getCompetitions() != null ? organizer.getCompetitions().size() : 0)
                             .contactDetails(organizer.getContactDetails())
                             .address(organizer.getAddress())
+                            .role(organizer.getRole().name())
                             .createdAt(String.valueOf(organizer.getCreatedAt()))
                             .updatedAt(String.valueOf(organizer.getUpdatedAt()))
                             .build();
@@ -100,6 +103,7 @@ public class RoleMapDTO {
                             .address(admin.getAddress())
                             .profilePicture(admin.getProfilePicture())
                             .contactDetails(admin.getContactDetails())
+                            .role(admin.getRole().name())
                             .createdAt(String.valueOf(admin.getCreatedAt()))
                             .updatedAt(String.valueOf(admin.getUpdatedAt()))
                             .build();
@@ -116,7 +120,7 @@ public class RoleMapDTO {
         return userEntity ;
     }
 
-    public UserDTO createDefaultUserDTO(User user) {
+    public static UserDTO createDefaultUserDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .email(user.getEmail())

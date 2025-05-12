@@ -3,7 +3,7 @@ import endpoints from '../lib/api/endpoints';
 import notificationsData from '../data/notifications';
 
 // Service pour les notifications
-const notificationService = {
+const NotificationService = {
   // Récupérer toutes les notifications de l'utilisateur
   getAllNotifications: async (filters = {}) => {
     try {
@@ -300,4 +300,4 @@ const notificationService = {
   }
 };
 
-export default notificationService;
+export default NotificationService;

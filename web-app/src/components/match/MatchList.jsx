@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MatchCard from './MatchCard';
 import MatchFilters from './MatchFilters';
-import * as MatchService from '@/services/match-service';
+import * as Matchservice from '@/services/match-service';
 import { usePagination } from '@/hooks/usePagination';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import Link from 'next/link';
@@ -32,13 +32,13 @@ const MatchList = ({ isUserView = true, initialFilters = {}, teamId = null, comp
       // Récupérer les matchs selon le contexte
       if (competitionId) {
         // Matchs d'une compétition spécifique
-        response = await MatchService.getMatchesByCompetitionId(competitionId, filters);
+        response = await Matchservice.getMatchesByCompetitionId(competitionId, filters);
       } else if (teamId) {
         // Matchs d'une équipe spécifique
-        response = await MatchService.getMatchesByTeamId(teamId, filters);
+        response = await Matchservice.getMatchesByTeamId(teamId, filters);
       } else {
         // Tous les matchs
-        response = await MatchService.getAllMatches(filters);
+        response = await Matchservice.getAllMatches(filters);
       }
       
     

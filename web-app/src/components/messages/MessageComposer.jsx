@@ -22,9 +22,9 @@ import {
   Person,
   MeetingRoom
 } from '@mui/icons-material';
-import   * as  messageService from '../../services/message-service';
-import  * as  teamService from '../../services/team-service';
-import  * as  competitionService from '../../services/competition-service';
+import   * as  MessageService from '../../services/message-service';
+import  * as  TeamService from '../../services/team-service';
+import  * as  CompetitionService from '../../services/competition-service';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotification } from '../../hooks/useNotification';
 
@@ -69,7 +69,7 @@ const MessageComposer = ({
       setLoading(true);
       try {
         // Récupérer les catégories de destinataires disponibles pour ce rôle
-        const availableCategories = await messageService.getAvailableRecipientCategories(user.role);
+        const availableCategories = await MessageService.getAvailableRecipientCategories(user.role);
         setRecipientCategories(availableCategories || []);
         
         // Charger les destinataires potentiels
@@ -77,13 +77,13 @@ const MessageComposer = ({
         
         // Charger les équipes si l'utilisateur est un joueur ou un coach
         if (user.role === 'PLAYER' || user.role === 'COACH') {
-          const teamsResponse = await teamService.getUserTeams(user.id);
+          const teamsResponse = await TeamService.getUserTeams(user.id);
           setTeams(teamsResponse.data || []);
         }
         
         // Charger les compétitions si l'utilisateur est un organisateur
         if (user.role === 'ORGANIZER') {
-          const competitionsResponse = await competitionService.getUserCompetitions(user.id);
+          const competitionsResponse = await CompetitionService.getUserCompetitions(user.id);
           setCompetitions(competitionsResponse.data || []);
         }
       } catch (err) {
@@ -124,7 +124,7 @@ const MessageComposer = ({
       }
       
       // Récupérer les destinataires potentiels
-      const response = await messageService.getPotentialRecipients({
+      const response = await MessageService.getPotentialRecipients({
         ...roleSpecificFilters,
         ...filters
       });
@@ -257,7 +257,7 @@ const MessageComposer = ({
       };
       
       // Envoi du message
-      const response = await messageService.sendMessage(messageData);
+      const response = await MessageService.sendMessage(messageData);
       
       // Notification de succès
       showNotification({

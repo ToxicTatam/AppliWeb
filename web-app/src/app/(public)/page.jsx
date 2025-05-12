@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import * as matchService from '@/services/match-service';
-import * as competitionService from '@/services/competition-service';
+import * as Matchservice from '@/services/match-service';
+import * as CompetitionService from '@/services/competition-service';
 
 export default function HomePage() {
   // États pour stocker les données
@@ -18,14 +18,14 @@ export default function HomePage() {
         setLoading(true);
         
         // Récupérer les matchs à venir (les 3 prochains)
-        const matchResponse = await matchService.getAllMatches({ 
+        const matchResponse = await Matchservice.getAllMatches({ 
           status: 'SCHEDULED',
           // Trier par date pour avoir les prochains matchs
           limit: 3
         });
         
         // Récupérer les compétitions à la une (3 premières)
-        const competitionResponse = await competitionService.getAllCompetitions({
+        const competitionResponse = await CompetitionService.getAllCompetitions({
           limit: 3
         });
         

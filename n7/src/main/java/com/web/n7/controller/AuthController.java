@@ -34,7 +34,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserServiceImpl userService;
     private final CustomUserDetailsService userDetailsService;
-    private final RoleMapDTO roleMapDTO;
+  
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>  login(@Valid  @RequestBody LoginRequest loginRequest) {
@@ -47,7 +47,7 @@ public class AuthController {
 
             LoginResponse response = new LoginResponse();
             response.setToken(token);
-            response.setUser(roleMapDTO.ToDTO(userDetails.getUserEntity()));
+            response.setUser(RoleMapDTO.ToDTO(userDetails.getUserEntity()));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class AuthController {
     public ResponseEntity<Object> getCurrentUser() {
         try {
             CustomUserDetails userDetails = userService.getCurrentUserDetails();
-            Object userDTO = roleMapDTO.ToDTO(userDetails.getUserEntity());
+            Object userDTO = RoleMapDTO.ToDTO(userDetails.getUserEntity());
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Unauthorized or error fetching user details.");

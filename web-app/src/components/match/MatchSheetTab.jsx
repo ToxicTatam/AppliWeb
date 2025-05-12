@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import  * as  MatchService from '@/services/match-service';
+import  * as  Matchservice from '@/services/match-service';
 import MatchSheetViewer from './MatchSheetViewer';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
@@ -24,7 +24,7 @@ const MatchSheetTab = ({ matchId, match, isUserView = true }) => {
     
     setLoading(true);
     try {
-      const sheetsResponse = await MatchService.getMatchSheetByMatchId(matchId);
+      const sheetsResponse = await Matchservice.getMatchSheetByMatchId(matchId);
       setMatchSheets(sheetsResponse || []);
       setError(null);
     } catch (err) {

@@ -30,7 +30,7 @@ public class UserServiceImpl implements com.web.n7.serviceInterface.UserService 
 
     @Override
     public User getUserById(Long id) {
-        return null;
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -45,6 +45,7 @@ public class UserServiceImpl implements com.web.n7.serviceInterface.UserService 
 
     @Override
     public List<User> searchUsers(String keyword) {
+        //fera offfice de getAllUsers si keyword est vide, ou admin, coach, organizer , user ,palyer selon le roles
         return List.of();
     }
 
@@ -54,7 +55,7 @@ public class UserServiceImpl implements com.web.n7.serviceInterface.UserService 
     }
 
     @Override
-    public void changePassword(Long userId, String newPassword) {
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
 
     }
 
@@ -129,20 +130,12 @@ public class UserServiceImpl implements com.web.n7.serviceInterface.UserService 
         return null;
     }
 
-    @Override
-    public CoachDTO getCoachById(Long coachId) {
-        return null;
-    }
 
     @Override
     public CoachDTO updateCoach(CoachDTO coachDTO) {
         return null;
     }
 
-    @Override
-    public OrganizerDTO getOrganizerById(Long OrganizerId) {
-        return null;
-    }
 
     @Override
     public OrganizerDTO updateOrganizer(OrganizerDTO organizerDTO) {

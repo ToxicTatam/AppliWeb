@@ -713,7 +713,8 @@ public class CompetitionServiceImpl implements CompetitionService {
                     .collect(Collectors.toList());
         } else {
             // Si c'est un autre type d'utilisateur, retourner une liste vide
-            competitions = new ArrayList<>();
+            // competitions = new ArrayList<>();
+            competitions = competitionRepository.findByOrganizerId(userId);
         }
         
         // Convertir les entités en DTOs

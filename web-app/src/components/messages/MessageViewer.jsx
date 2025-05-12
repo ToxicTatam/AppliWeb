@@ -28,7 +28,7 @@ import {
   SupervisorAccount,
   Public
 } from '@mui/icons-material';
-import   * as  messageService from '../../services/message-service';
+import   * as  MessageService from '../../services/message-service';
 import { useNotification } from '../../hooks/useNotification';
 
 /**
@@ -59,12 +59,12 @@ const MessageViewer = ({
       
       setLoading(true);
       try {
-        const messageData = await messageService.getMessageById(messageId);
+        const messageData = await MessageService.getMessageById(messageId);
         setMessage(messageData);
         
         // Si le message n'est pas encore lu, le marquer comme lu
         if (!messageData.isRead) {
-          await messageService.markAsRead(messageId);
+          await MessageService.markAsRead(messageId);
         }
       } catch (err) {
         console.error('Erreur lors du chargement du message:', err);
@@ -103,7 +103,7 @@ const MessageViewer = ({
     if (!messageId) return;
     
     try {
-      await messageService.deleteMessage(messageId);
+      await MessageService.deleteMessage(messageId);
       
       showNotification({
         type: 'success',
@@ -218,7 +218,7 @@ const MessageViewer = ({
     if (!messageId || (message && message.isRead)) return;
     
     try {
-      await messageService.markAsRead(messageId);
+      await MessageService.markAsRead(messageId);
       
       // Mettre à jour l'état local
       setMessage(prev => prev ? { ...prev, isRead: true, readAt: new Date().toISOString() } : null);

@@ -25,6 +25,6 @@
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/service/teamService.js", "src/app/service/playerService.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/service/TeamService.js", "src/app/service/PlayerService.js"],
   "exclude": ["node_modules"]
 }

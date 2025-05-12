@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import UserForm from './UserForm';
-import authService from '@/services/auth-service';
+import AuthService from '@/services/auth-service';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
 
@@ -51,7 +51,7 @@ const LoginForm = () => {
     
     try {
       // Utiliser le service d'authentification pour se connecter
-      const response = await authService.login(formData);
+      const response = await AuthService.login(formData);
       
       if (response && response.user) {
         // Important: mettre à jour l'état global de l'utilisateur via le contexte

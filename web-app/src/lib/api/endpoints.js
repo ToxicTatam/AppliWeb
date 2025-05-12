@@ -20,22 +20,20 @@ const authEndpoints = {
 
 // Endpoints pour les utilisateurs
 const usersEndpoints = {
+
+  //l administrateur peut voir tous les utilisateurs
   base: `${baseUrl}/users`,
-
-
-  //l utilisateur peut voir son propre profil
+  // l objet user retourné depend de l utilisateur trouvé(user, coach, organisateur)
   byId: (id) => `${baseUrl}/users/${id}`,
+
   //l utilisateur peut modifier son propre profil
   updateProfile: `${baseUrl}/users/profile`,
   changePassword: `${baseUrl}/users/change-password`,
   uploadProfilePicture: `${baseUrl}/users/profile-picture`,
 
 
-  //pour que d'autres utilisateurs puisse voir le profil des coaches et organisateurs
     profile: {
-      coach: (coachId) => `${baseUrl}/users/coach/${coachId}/profile`,
       updateCoach: `${baseUrl}/users/coach/profile`, //uniquement pour le coach
-      organizer: (organizerId) => `${baseUrl}/users/organizer/${organizerId}/profile`,
       updateOrganizer: `${baseUrl}/users/organizer/profile`, //uniquement pour l'organisateur
     } 
 };

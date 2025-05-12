@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'next/navigation';
 import MessageCard from './MessageCard';
 import MessageFilter from './filters/MessageFilter';
-import  * as  messageService from '../../services/message-service';
+import  * as  MessageService from '../../services/message-service';
 import { useNotification } from '../../hooks/useNotification';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -59,8 +59,8 @@ const MessageList = ({
       
       // Appel du service approprié selon qu'on affiche la boîte de réception ou les messages envoyés
       const response = isInbox 
-        ? await messageService.getInboxMessages(messageFilters)
-        : await messageService.getSentMessages(messageFilters);
+        ? await MessageService.getInboxMessages(messageFilters)
+        : await MessageService.getSentMessages(messageFilters);
       
       setMessages(response.data || []);
       setTotalPages(Math.ceil(response.total / response.pageSize) || 1);
@@ -97,7 +97,7 @@ const MessageList = ({
   // Optimisation: Mémoriser les fonctions de gestion d'événements
   const handleMarkAsRead = useCallback(async (messageId) => {
     try {
-      await messageService.markAsRead(messageId);
+      await MessageService.markAsRead(messageId);
       
       // Mettre à jour l'état local sans déclencher de re-render complet
       setMessages(prevMessages => 
@@ -124,7 +124,7 @@ const MessageList = ({
   // Supprimer un message
   const handleDelete = useCallback(async (messageId) => {
     try {
-      await messageService.deleteMessage(messageId);
+      await MessageService.deleteMessage(messageId);
       
       // Mettre à jour l'état local sans déclencher de re-render complet
       setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));

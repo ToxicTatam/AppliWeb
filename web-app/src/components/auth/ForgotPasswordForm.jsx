@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UserForm from './UserForm';
-import  authService from '@/services/auth-service';
+import  AuthService from '@/services/auth-service';
 import { useNotification } from '@/hooks/useNotification';
 
 /**
@@ -35,7 +35,7 @@ const ForgotPasswordForm = () => {
     setError('');
     
     try {
-      const response = await authService.forgotPassword(formData.email);
+      const response = await AuthService.forgotPassword(formData.email);
       
       if (response) {
         setEmailSent(true);

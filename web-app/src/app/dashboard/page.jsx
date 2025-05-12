@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
-import matchService from '@/services/match-service';
-import * as competitionService from '@/services/competition-service';
-import * as teamService from '@/services/team-service';
-import * as playerService from '@/services/player-service';
+import Matchservice from '@/services/match-service';
+import * as CompetitionService from '@/services/competition-service';
+import * as TeamService from '@/services/team-service';
+import * as PlayerService from '@/services/player-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 // Composant CardInfo simple
@@ -62,13 +62,13 @@ export default function DashboardPage() {
       setLoading(true);
       try {
         // Récupérer les stats de base
-        const competitionsResponse = await competitionService.getAllCompetitions();
-        const teamsResponse = await teamService.getAllTeams();
-        const playersResponse = await playerService.getAllPlayers();
-        const matchesResponse = await matchService.getAllMatches();
+        const competitionsResponse = await CompetitionService.getAllCompetitions();
+        const teamsResponse = await TeamService.getAllTeams();
+        const playersResponse = await PlayerService.getAllPlayers();
+        const matchesResponse = await Matchservice.getAllMatches();
         
         // Récupérer quelques matchs récents
-        const upcomingMatches = await matchService.getAllMatches({ 
+        const upcomingMatches = await Matchservice.getAllMatches({ 
           status: 'SCHEDULED',
           limit: 5
         });

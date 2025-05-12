@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import  * as  MatchService from '@/services/match-service';
+import  * as  Matchservice from '@/services/match-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const MatchStatistics = ({ matchId, match }) => {
@@ -17,7 +17,7 @@ const MatchStatistics = ({ matchId, match }) => {
     setLoading(true);
     try {
       // Récupérer les données consolidées pour le match
-      const consolidatedData = await MatchService.getConsolidatedMatchSheetByMatchId(matchId);
+      const consolidatedData = await Matchservice.getConsolidatedMatchSheetByMatchId(matchId);
       setConsolidatedMatch(consolidatedData);
       setError(null);
     } catch (err) {

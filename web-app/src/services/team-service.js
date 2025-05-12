@@ -22,7 +22,6 @@ export const getAllTeams = async (d = {}) => {
  */
 export const getTeamById = async (teamId) => {
   const response = await api.get(endpoints.teams.byId(teamId));
-  console.log('getTeamById', response);
   return response;
 };
 

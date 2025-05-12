@@ -2,7 +2,10 @@ package com.web.n7.controller;
 
 import com.web.n7.dto.users.CoachDTO;
 import com.web.n7.dto.users.OrganizerDTO;
+import com.web.n7.model.users.User;
 import com.web.n7.service.UserServiceImpl;
+import com.web.n7.util.RoleMapDTO;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +17,15 @@ public class UserController {
 
     private final UserServiceImpl userService;
 
-    @GetMapping("/coaches/{coachId}")
-    public ResponseEntity<CoachDTO> getCoachProfile(@PathVariable Long coachId) {
-        try {
-            CoachDTO coachDTO = userService.getCoachById(coachId);
-            if (coachDTO == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(coachDTO);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @GetMapping("/{userId}")
+
+    //COACHDTO, ORGANIZERDTO, PLAYERDTO, USERDTO,ADMINDTO EN SORTIE
+    public ResponseEntity<Object> getUserById(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+
+        return ResponseEntity.ok(RoleMapDTO.ToDTO(user));
     }
+
 
     @PutMapping("/coaches")
     public ResponseEntity<CoachDTO> updateCoachProfile(@RequestBody CoachDTO coachDTO) {
@@ -37,18 +37,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/organizers/{organizerId}")
-    public ResponseEntity<OrganizerDTO> getOrganizerProfile(@PathVariable Long organizerId) {
-        try {
-            OrganizerDTO organizerDTO = userService.getOrganizerById(organizerId);
-            if (organizerDTO == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(organizerDTO);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+    
 
     @PutMapping("/organizers")
     public ResponseEntity<OrganizerDTO> updateOrganizerProfile(@RequestBody OrganizerDTO organizerDTO) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import   * as matchService from '@/services/match-service';
+import   * as Matchservice from '@/services/match-service';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -15,7 +15,7 @@ const PlayerMatchList = ({ playerId }) => {
   const fetchPlayerMatches = async () => {
     setLoading(true);
     try {
-      const response = await matchService.getMatchesByPlayerId(playerId);
+      const response = await Matchservice.getMatchesByPlayerId(playerId);
       setMatches(response.data || []);
       setError(null);
     } catch (err) {

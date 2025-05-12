@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import MatchService from '@/services/match-service';
+import Matchservice from '@/services/match-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamMatches = ({ teamId }) => {
@@ -16,7 +16,7 @@ const TeamMatches = ({ teamId }) => {
       
       setLoading(true);
       try {
-        const response = await MatchService.getTeamMatches(teamId);
+        const response = await Matchservice.getTeamMatches(teamId);
         setMatches(response.data || []);
         setError(null);
       } catch (err) {

@@ -5,10 +5,13 @@
 const MatchFilter = {
   status: String,        // Statut du match (SCHEDULED, IN_PROGRESS, COMPLETED, etc.)
   title: String,         // Titre du match pour recherche partielle
-  competitionName: Stiing, // nom de la compétition 
+  competitionName: String, // nom de la compétition 
   teamName: String,      // Nom de l'équipe participante
   startDate: Date,       // Date de début de la période de recherche
   endDate: Date          // Date de fin de la période de recherche
+  limit:int,
+  teamId:int,
+  competitionId:Long 
 };
 ```
 
@@ -31,9 +34,11 @@ const CompetitionFilter = {
   name: String,          // Nom de la compétition (recherche partielle)
   category: String,      // Catégorie de la compétition
   organizerName: String, // Nom de l'organisateur (recherche partielle)
-  startDate: Date,       // Date de début
+  startDate: Date,       // Date de début iso striing
   endDate: Date,         // Date de fin
   createdAt: Date        // Date de création
+  limit:int
+
 };
 ```
 
@@ -47,8 +52,8 @@ const MediaFilter = {
   teamName: String,       // Nom de l'équipe associée
   matchTitle: String,     // Titre du match associé
   uploaderName: String,   // Nom de l'utilisateur qui a uploadé le média
-  startDate: String,      // Date de début pour la recherche
-  endDate: String         // Date de fin pour la recherche
+  startDate: Date,      // Date de début pour la recherche
+  endDate: Date         // Date de fin pour la recherche
 };
 ```
 
@@ -101,6 +106,8 @@ const PlayerFilters = {
   status: String,         // Statut du joueur
   teamName: String,       // Nom de l'équipe du joueur (recherche partielle)
   competitionName: String // Nom de la compétition à laquelle le joueur a participé
+  competitionId:Long
+  teamId:long
 };
 ```
 

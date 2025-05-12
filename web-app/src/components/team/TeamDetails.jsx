@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import   * as  TeamService from '@/services/team-service';
-import * as MatchService from '@/services/match-service';
+import * as Matchservice from '@/services/match-service';
 import * as PlayerService from '@/services/player-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import TeamHeader from './TeamHeader';
@@ -43,7 +43,7 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
       setPlayers(playersResponse || []);
 
       // Récupérer les matchs de l'équipe (limité à 3 pour l'aperçu)
-      const matchesResponse = await MatchService.getMatchesByTeamId(teamId);
+      const matchesResponse = await Matchservice.getMatchesByTeamId(teamId);
       setMatches(matchesResponse || []);
 
       setError(null);
@@ -89,7 +89,7 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
             {/* En-tête et contenu principal */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               {/* En-tête de l'équipe - charge ses propres données via TeamService */}
-              <TeamHeader teamId={id} />
+              <TeamHeader teamId={teamId} />
       
               {/* Navigation par onglets */}
               <TeamTabs activeTab={activeTab} onTabChange={handleTabChange} />
@@ -232,19 +232,19 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
 </>
   )}
               {activeTab === 'players' && (
-                <TeamPlayers teamId={id} />
+                <TeamPlayers teamId={teamId} />
               )}
 
               {activeTab === 'matches' && (
-                <TeamMatches teamId={id} />
+                <TeamMatches teamId={teamId} />
               )}
 
               {activeTab === 'competitions' && (
-                <TeamCompetitions teamId={id} />
+                <TeamCompetitions teamId={teamId} />
               )}
 
               {activeTab === 'standings' && (
-                <TeamStanding teamId={id} />
+                <TeamStanding teamId={teamId} />
               )}
       
     </div>

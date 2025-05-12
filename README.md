@@ -43,10 +43,10 @@ source start.sh
 
 ## Démarrage manuel (si le lancement automatique échoue)
 
-### 1. Démarrer la base de données HSQLDB
+### 1. Démarrer la base de données HSQLDB (placez vous dans le repertoire de la base de donnee)
 
 ```bash
-source source.sh
+source start.sh
 ```
 
 ### 2. Lancer le backend (SpringBoot)
@@ -79,4 +79,9 @@ npm run dev
 ---
 
 **Note** : Pour une compréhension complète des modèles et relations, consultez les fichiers dans le répertoire LIRE/.
+
+ATTENTION: Le script start.sh marche sur les machines de l'N7 uniquement dans la version actuellement presente.
+Si vous vous utiliser sur votre machine personnelle, rassurez vous d'avoir un terminal mate(mate-terminal) installé
+ou remplacé mate-terminal par gnome-terminal (si la distrubtion utilisé est ubuntu et que gnome est le terminal par defaut)
+A defaut , vous pouvez installer l un comme l autre via apt install mate-terminal ou apt install gnome-terminal
 

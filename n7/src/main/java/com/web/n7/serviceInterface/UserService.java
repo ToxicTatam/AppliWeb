@@ -16,7 +16,7 @@ public interface UserService {
     void deleteUser(Long id);
     List<User> searchUsers(String keyword);
     User getUserByEmail(String email);
-    void changePassword(Long userId, String newPassword);
+    void changePassword(Long userId,String oldPassword, String newPassword);
 
     User updateUser(UserDTO userDTO);
     User register(UserDTO userDTO);
@@ -40,12 +40,7 @@ public interface UserService {
 
 
 
-    // Information sur le coach (utilisé par les deux profils)
-    CoachDTO getCoachById(Long coachId);
     CoachDTO updateCoach(CoachDTO coachDTO);
-
-    // Informations sur l'organisateur
-    OrganizerDTO getOrganizerById(Long OrganizerId);
     OrganizerDTO updateOrganizer(OrganizerDTO organizerDTO);
 
 

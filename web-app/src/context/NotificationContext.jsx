@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import   notificationService from '@/services/notification-service';
+import   NotificationService from '@/services/notification-service';
 
 export const NotificationContext = createContext();
 
@@ -17,7 +17,7 @@ export const NotificationProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await notificationService.getAllNotifications();
+      const response = await NotificationService.getAllNotifications();
       const data = response.data || response;
       setNotifications(data);
       setUnreadCount(data.filter(notification => !notification.isRead).length);
@@ -32,7 +32,7 @@ export const NotificationProvider = ({ children }) => {
   const markAsRead = useCallback(async (notificationId) => {
     try {
       // Update on the server
-      await notificationService.markAsRead(notificationId);
+      await NotificationService.markAsRead(notificationId);
       
       // Update locally
       setNotifications(prev => prev.map(notification => 
@@ -49,7 +49,7 @@ export const NotificationProvider = ({ children }) => {
   const markAllAsRead = useCallback(async () => {
     try {
       // Update on the server 
-      await notificationService.markAllAsRead();
+      await NotificationService.markAllAsRead();
       
       // Update locally
       setNotifications(prev => prev.map(notification => ({ 
@@ -76,7 +76,7 @@ export const NotificationProvider = ({ children }) => {
   const removeNotification = useCallback(async (notificationId) => {
     try {
       // Delete on the server
-      await notificationService.deleteNotification(notificationId);
+      await NotificationService.deleteNotification(notificationId);
       
       // Update locally
       setNotifications(prev => {
@@ -111,7 +111,7 @@ export const NotificationProvider = ({ children }) => {
     
     if (user?.id) {
       // Subscribe to notifications
-      const socket = notificationService.subscribeToNotifications(
+      const socket = NotificationService.subscribeToNotifications(
         user.id,
         (newNotification) => {
           addNotification(newNotification);
@@ -121,7 +121,7 @@ export const NotificationProvider = ({ children }) => {
       // Clean up on unmount
       return () => {
         if (socket) {
-          notificationService.unsubscribeFromNotifications(socket);
+          NotificationService.unsubscribeFromNotifications(socket);
         }
       };
     }

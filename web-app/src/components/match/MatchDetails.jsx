@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import * as MatchService from '@/services/match-service';
+import * as Matchservice from '@/services/match-service';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import MatchStatistics from './MatchStatistics';
 import MatchSheetTab from './MatchSheetTab';
@@ -27,7 +27,7 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
     setLoading(true);
     try {
       // Récupérer les informations de base du match
-      const matchData = await MatchService.getMatchById(matchId);
+      const matchData = await Matchservice.getMatchById(matchId);
       setMatch(matchData);
       setError(null);
     } catch (err) {

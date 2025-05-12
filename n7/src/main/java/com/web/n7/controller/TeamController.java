@@ -25,7 +25,7 @@ import com.web.n7.serviceInterface.TeamService;
 public class TeamController {
 
 
-    private final UserServiceImpl userService;
+  
     private final  TeamService teamService;
 
 
@@ -156,15 +156,5 @@ public class TeamController {
             @PathVariable Long competitionId) {
         return ResponseEntity.ok(teamService.getCoachesByCompetition(organizerId, competitionId));
     }
-    
-    // Endpoints pour les profils coach et organisateur
-    @GetMapping("/coach/{coachId}/profile")
-    public ResponseEntity<CoachDTO> getCoachById(@PathVariable Long coachId) {
-        return ResponseEntity.ok(userService.getCoachById(coachId));
-    }
-    
-    @PutMapping("/coach/profile")
-    public ResponseEntity<CoachDTO> updateCoach(@RequestBody CoachDTO coachDTO) {
-        return ResponseEntity.ok(userService.updateCoach(coachDTO));
-    }
+ 
 }
