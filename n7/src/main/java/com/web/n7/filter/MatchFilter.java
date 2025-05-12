@@ -12,6 +12,7 @@ public class MatchFilter {
     private String title;
     private String competitionName;
     private String teamName;
+    private int limit;
 
     private Long teamId;
     private Long competitionId;

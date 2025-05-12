@@ -6,6 +6,13 @@ import   * as  TeamService from '@/services/team-service';
 import * as MatchService from '@/services/match-service';
 import * as PlayerService from '@/services/player-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import TeamHeader from './TeamHeader';
+import TeamTabs from './TeamTabs';
+import TeamPlayers from './TeamPlayers';
+import TeamMatches from './TeamMatches';
+import TeamCompetitions from './TeamCompetitions';
+import TeamStanding from './TeamStanding';
+
 
 const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
   // États pour les données et le chargement
@@ -14,6 +21,12 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('info');
+  
+  // Fonction pour gérer le changement d'onglet
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
 
   // Charger les données de l'équipe
   const fetchTeamDetails = async () => {
@@ -69,24 +82,27 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
     );
   }
 
-  // Si pas de données
-  if (!team) {
-    return (
-      <div className="bg-gray-50 border border-gray-200 text-gray-600 px-6 py-8 rounded-md text-center">
-        <h3 className="text-lg font-medium mb-2">Équipe non trouvée</h3>
-        <p className="text-gray-500">
-          Les détails de cette équipe ne sont pas disponibles.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
+
+            {/* En-tête et contenu principal */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* En-tête de l'équipe - charge ses propres données via TeamService */}
+              <TeamHeader teamId={id} />
+      
+              {/* Navigation par onglets */}
+              <TeamTabs activeTab={activeTab} onTabChange={handleTabChange} />
+      
+
+{activeTab === 'info' && (
+<>
       <div>
         <h2 className="text-xl font-semibold text-gray-800 mb-3">À propos de l'équipe</h2>
         <p className="text-gray-600">{team.description || 'Aucune description disponible.'}</p>
       </div>
+
+        
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gray-50 p-4 rounded-lg">
@@ -143,6 +159,7 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
           )}
         </div>
       </div>
+     
 
       {/* Aperçu des joueurs */}
       {players.length > 0 && (
@@ -209,7 +226,29 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
             ))}
           </div>
         </div>
-      )}
+      )
+    }
+
+</>
+  )}
+              {activeTab === 'players' && (
+                <TeamPlayers teamId={id} />
+              )}
+
+              {activeTab === 'matches' && (
+                <TeamMatches teamId={id} />
+              )}
+
+              {activeTab === 'competitions' && (
+                <TeamCompetitions teamId={id} />
+              )}
+
+              {activeTab === 'standings' && (
+                <TeamStanding teamId={id} />
+              )}
+      
+    </div>
+
     </div>
   );
 };

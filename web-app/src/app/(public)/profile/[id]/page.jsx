@@ -2,12 +2,8 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import authService from '@/services/auth-service';
 import { USER_ROLES } from '@/context/AuthContext';
-import teamService from '@/services/team-service';
 import { useParams } from 'next/navigation';
-import competitionService from '@/services/competition-service';
 import { Card, CardContent, Typography, Box, Chip, Avatar, Button, Grid, Divider, Container, CircularProgress } from '@mui/material';
 import { Email, Phone, Sports, LocationOn, WorkOutline, CalendarToday, Groups } from '@mui/icons-material';
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import {publicNavigationLinks} from "@/components/utils/navigationLinks";

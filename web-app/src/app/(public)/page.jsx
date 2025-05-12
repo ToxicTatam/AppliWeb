@@ -30,7 +30,7 @@ export default function HomePage() {
         });
         
         // Formater les données des matchs pour l'affichage
-        const formattedMatches = (matchResponse.data || []).slice(0, 3).map(match => ({
+        const formattedMatches = (matchResponse || []).slice(0, 3).map(match => ({
           id: match.id,
           title: match.title || `${match.homeTeamName} vs. ${match.awayTeamName}`,
           date: new Date(match.scheduledDateTime).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
@@ -38,7 +38,7 @@ export default function HomePage() {
         }));
         
         // Formater les données des compétitions pour l'affichage
-        const formattedCompetitions = (competitionResponse.data || []).slice(0, 3).map(comp => ({
+        const formattedCompetitions = (competitionResponse || []).slice(0, 3).map(comp => ({
           id: comp.id,
           name: comp.name,
           teams: comp.teamsCount || 0,

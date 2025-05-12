@@ -12,8 +12,8 @@ public class CompetitionFilter {
     private String name; //recherche partielle
     private String category;
     private String organizerName;//recherche partielle
-
-      
+    private int limit;
+         
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
       

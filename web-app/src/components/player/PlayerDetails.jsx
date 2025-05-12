@@ -91,6 +91,10 @@ const PlayerDetails = ({ playerId, isUserView = true }) => {
         >
           Réessayer
         </button>
+
+        <Link href="/players" className="mt-4 inline-block text-blue-600 hover:underline">
+          Retour aux joueurs
+        </Link>
       </div>
     );
   }

@@ -99,7 +99,11 @@ const CompetitionDetails = ({ competitionId, isUserView = true }) => {
         >
           Réessayer
         </button>
+        <Link href="/competitions" className="mt-4 inline-block text-blue-600 hover:underline">
+           Retour aux compétitions
+          </Link>
       </div>
+
     );
   }
   
