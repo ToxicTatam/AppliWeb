@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import TeamService from '@/services/team-service';
+import   * as  TeamService from '@/services/team-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamCompetitions = ({ teamId }) => {

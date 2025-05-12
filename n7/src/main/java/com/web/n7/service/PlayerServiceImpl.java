@@ -190,9 +190,9 @@ public class PlayerServiceImpl implements PlayerService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + teamId));
         
-        if (!team.getCoach().getId().equals(coachId)) {
-            throw new UnauthorizedException("This coach is not authorized to view players of this team");
-        }
+        // if (!team.getCoach().getId().equals(coachId)) {
+        //     throw new UnauthorizedException("This coach is not authorized to view players of this team");
+        // }
         
         // Récupérer tous les joueurs de l'équipe
         List<Player> players = team.getPlayers();

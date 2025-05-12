@@ -11,4 +11,6 @@ public class PlayerFilters {
     private String status;       // Filtre sur le statut du joueur
     private String teamName;     // Filtre sur le nom de l'équipe (recherche partielle)
     private String competitionName; //filtre nom de competition (competition auquel le jouer a participe)
+    private Long competitionId; //filtre id de competition (competition auquel le jouer a participe)
+    private Long teamId; //filtre id de l'equipe (equipe auquel le jouer a jouer)
 }

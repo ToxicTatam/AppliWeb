@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import CompetitionService from '@/services/competition-service';
-import TeamService from '@/services/team-service';
+import * as CompetitionService from '@/services/competition-service';
+import * as  TeamService from '@/services/team-service';
 
 const MatchFilters = ({ onFilterChange, initialFilters = {} }) => {
   // États pour les filtres
@@ -29,11 +29,11 @@ const MatchFilters = ({ onFilterChange, initialFilters = {} }) => {
       try {
         // Charger les compétitions
         const competitionsResponse = await CompetitionService.getAllCompetitions();
-        setCompetitions(competitionsResponse.data || []);
+        setCompetitions(competitionsResponse|| []);
         
         // Charger les équipes
         const teamsResponse = await TeamService.getAllTeams();
-        setTeams(teamsResponse.data || []);
+        setTeams(teamsResponse || []);
       } catch (error) {
         setCompetitions([]);
         setTeams([]);

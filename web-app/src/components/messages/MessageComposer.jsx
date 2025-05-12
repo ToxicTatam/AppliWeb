@@ -22,9 +22,9 @@ import {
   Person,
   MeetingRoom
 } from '@mui/icons-material';
-import messageService from '../../services/message-service';
-import teamService from '../../services/team-service';
-import competitionService from '../../services/competition-service';
+import   * as  messageService from '../../services/message-service';
+import  * as  teamService from '../../services/team-service';
+import  * as  competitionService from '../../services/competition-service';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotification } from '../../hooks/useNotification';
 

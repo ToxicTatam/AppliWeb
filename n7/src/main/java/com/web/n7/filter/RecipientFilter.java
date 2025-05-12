@@ -7,8 +7,8 @@ import lombok.Data;
      */
 @Data
 public class RecipientFilter {
-        private Long teamName;
-        private Long competitionName;
+        private String teamName;
+        private String competitionName;
         private String targetRole;
         private String search;
         

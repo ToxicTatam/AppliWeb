@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import  Card  from '@/components/ui/Card';
-import TeamService from '@/services/team-service';
+import   * as  TeamService from '@/services/team-service';
 
 
 const TeamStanding = ({ teamId, competitionId = null }) => {

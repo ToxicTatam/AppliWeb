@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TeamService from '@/services/team-service';
+import   * as TeamService from '@/services/team-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamHeader = ({ teamId }) => {

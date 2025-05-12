@@ -28,7 +28,7 @@ import {
   SupervisorAccount,
   Public
 } from '@mui/icons-material';
-import messageService from '../../services/message-service';
+import   * as  messageService from '../../services/message-service';
 import { useNotification } from '../../hooks/useNotification';
 
 /**

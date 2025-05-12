@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import matchService from '@/services/match-service';
-import competitionService from '@/services/competition-service';
+import * as matchService from '@/services/match-service';
+import * as competitionService from '@/services/competition-service';
 
 export default function HomePage() {
   // États pour stocker les données

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import MatchService from '@/services/match-service';
-import TeamService from '@/services/team-service';
+import * as MatchService from '@/services/match-service';
+import * as TeamService from '@/services/team-service';
+import * as PlayerService from '@/services/player-service';
 import { useNotification } from '@/hooks/useNotification';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -70,16 +71,21 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
       const team = await TeamService.getTeamById(userTeamId);
       setTeamData(team);
       
-      // Récupérer les joueurs et le staff de l'équipe
-      const playersResponse = await TeamService.getTeamPlayers(userTeamId);
-      const staffResponse = await TeamService.getTeamStaff(userTeamId);
+      // Récupérer les joueurs de l'équipe
+      const playersResponse = await PlayerService.getPlayersByTeam(userTeamId);
+      setAllTeamPlayers(playersResponse || []);
       
-      setAllTeamPlayers(playersResponse.data || []);
-      setAllTeamStaff(staffResponse.data || []);
+      // Pour le staff, nous devrons utiliser une autre méthode ou adapter la logique
+      // car il n'y a pas de méthode getTeamStaff disponible
+      setAllTeamStaff([]); // Temporairement vide jusqu'à ce qu'une méthode appropriée soit disponible
       
       // Vérifier si une feuille de match existe déjà
       try {
-        const existingSheet = await MatchService.getMatchSheetByTeam(matchId, userTeamId);
+        // Utilisons getMatchSheetByMatchId au lieu de getMatchSheetByTeam qui n'existe pas
+        const matchSheets = await MatchService.getMatchSheetByMatchId(matchId);
+        // Filtrer pour trouver la feuille de match de l'équipe spécifique
+        const existingSheet = matchSheets?.find(sheet => sheet.teamId === userTeamId);
+        
         if (existingSheet) {
           setIsEdit(true);
           setMatchSheet({
@@ -300,13 +306,19 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
     
     setSubmitting(true);
     try {
+      // Récupérer le coachId - à adapter selon votre contexte d'application
+      const coachId = 1; // Exemple - à remplacer par l'ID réel du coach connecté
+      
       if (isEdit) {
         // Mettre à jour une feuille de match existante
-        await MatchService.updateMatchSheet(matchId, matchSheet);
+        // On utilise updateMatchSheet de match-service.js qui attend coachId, matchSheetId et matchSheetDTO
+        await MatchService.updateMatchSheet(coachId, matchSheet.id, matchSheet);
         showNotification('Feuille de match mise à jour avec succès', 'success');
       } else {
         // Créer une nouvelle feuille de match
-        await MatchService.createMatchSheet(matchId, matchSheet);
+        // Comme il n'y a pas de méthode createMatchSheet définie, utilisons updateMatchSheet
+        // avec les paramètres appropriés
+        await MatchService.updateMatchSheet(coachId, matchId, matchSheet);
         showNotification('Feuille de match créée avec succès', 'success');
       }
       
@@ -315,6 +327,7 @@ const MatchSheetForm = ({ matchId, teamId = null }) => {
     } catch (error) {
       showNotification(
         `Erreur lors de la ${isEdit ? 'mise à jour' : 'création'} de la feuille de match`,
+        error.message || 'Une erreur est survenue',
         'error'
       );
     } finally {

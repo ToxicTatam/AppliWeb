@@ -624,4 +624,31 @@ public class MatchServiceImpl implements MatchService {
                 .updatedAt(matchSheet.getUpdatedAt())
                 .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MatchDTO> getAllMatches(MatchFilter filter) {
+      if(filter == null){
+        return matchRepository.findAll().stream()
+        .map(this::mapMatchToMatchDTO)
+        .collect(Collectors.toList());
+      }
+
+      List<Match> matches = matchRepository.findAll();
+              // Convertir les entités en DTOs
+        return matches.stream()
+              .map(this::mapMatchToMatchDTO)
+              .collect(Collectors.toList());
+
+}
+
+    @Override
+    @Transactional(readOnly = true)
+    public MatchDTO getMatchById(Long matchId) {
+       
+   return matchRepository.findById(matchId)
+   .map(this::mapMatchToMatchDTO)
+   .orElseThrow(() -> new RuntimeException("Match non trouvé"));
+    }
+
 }

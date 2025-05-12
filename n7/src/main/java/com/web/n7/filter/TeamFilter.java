@@ -6,6 +6,5 @@ import lombok.Data;
 public class TeamFilter {
     private String name;        // Filtrage par nom d'équipe
     private String category;    // Filtrage par catégorie d'équipe
-    private Long coachId;       // Filtrage par ID du coach
     private String coachName;   // Filtrage par nom du coach
 }

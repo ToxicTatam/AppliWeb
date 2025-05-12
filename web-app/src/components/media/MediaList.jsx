@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MediaCard from './MediaCard';
 import MediaFilters from './MediaFilters';
-import MediaService from '@/services/media-service';
+import   * as  MediaService from '@/services/media-service';
 
 const MediaList = () => {
   const [media, setMedia] = useState([]);
@@ -26,7 +26,7 @@ const MediaList = () => {
       try {
         setLoading(true);
         const result = await MediaService.getAllMedia(filters);
-        setMedia(result.data || []);
+        setMedia(result || []);
         setTotalItems(result.total || 0);
         setError(null);
       } catch (err) {

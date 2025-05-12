@@ -18,7 +18,7 @@ import MessageComposer from '@/components/messages/MessageComposer';
 import DashboardHeader from '@/components/dashboard/common/DashboardHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
-import messageService from '@/services/message-service';
+import * as messageService from '@/services/message-service';
 
 const MessagesPage = () => {
   const { user } = useAuth();

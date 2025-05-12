@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TeamCard from './TeamCard';
 import TeamFilters from './TeamFilters';
-import TeamService from '@/services/team-service';
+import   * as  TeamService from '@/services/team-service';
 import { usePagination } from '@/hooks/usePagination';
 
 const TeamList = ({ isUserView = true, initialFilters = {}, coachId = null , competitionId=null}) => {
@@ -35,7 +35,7 @@ const TeamList = ({ isUserView = true, initialFilters = {}, coachId = null , com
         response = await TeamService.getAllTeams(filters);
       }
       // S'assurer que nous travaillons avec un tableau
-      const teamsArray = response.data || [];
+      const teamsArray = response || [];
       setTeams(teamsArray);
       setTotalItems(teamsArray.length); // Pour la pagination
       setError(null);

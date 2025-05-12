@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import TeamService from '@/services/team-service';
+import * as TeamService from '@/services/team-service';
 import TeamList from '@/components/team/TeamList';
 
 export default function TeamsPage() {

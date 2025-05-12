@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import notificationService from '@/services/notification-service';
+import   notificationService from '@/services/notification-service';
 
 export const NotificationContext = createContext();
 

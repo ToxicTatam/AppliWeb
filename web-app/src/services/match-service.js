@@ -13,9 +13,32 @@ import endpoints from '../lib/api/endpoints';
  * @returns {Promise<Array>} - Liste des matchs
  */
 export const getMatchesByTeamId = async (teamId, filter = {}) => {
-  const response = await api.get(endpoints.matches.byTeam(teamId), { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.matches.byTeam(teamId), filter);
+  return response;
 };
+
+
+
+/**
+ * Récupère tous les matchs avec filtres optionnels
+ * @param {Object} filter - Filtres pour les matchs
+ * @returns {Promise<Array>} - Liste des matchs
+ */   
+
+export const getAllMatches = async (filter = {}) => {
+  const response = await api.get(endpoints.matches.base, filter);
+  return response;
+}
+
+/*
+*récupère un match par son ID
+* @param {number} matchId - ID du match
+* @returns {Promise<Object>} - Match trouvé 
+*/
+export const getMatchById = async (matchId) => {
+  const response = await api.get(endpoints.matches.byId(matchId));
+  return response;
+}
 
 /**
  * Récupère les matchs d'une compétition
@@ -24,8 +47,8 @@ export const getMatchesByTeamId = async (teamId, filter = {}) => {
  * @returns {Promise<Array>} - Liste des matchs
  */
 export const getMatchesByCompetitionId = async (competitionId, filter = {}) => {
-  const response = await api.get(endpoints.matches.byCompetition(competitionId), { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.matches.byCompetition(competitionId), filter);
+  return response;
 };
 
 /**
@@ -35,7 +58,7 @@ export const getMatchesByCompetitionId = async (competitionId, filter = {}) => {
  */
 export const getMatchSheetByMatchId = async (matchId) => {
   const response = await api.get(endpoints.matches.sheets(matchId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -45,7 +68,7 @@ export const getMatchSheetByMatchId = async (matchId) => {
  */
 export const getMatchSheetBy = async (matchSheetId) => {
   const response = await api.get(endpoints.matches.bySheet(matchSheetId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -55,7 +78,7 @@ export const getMatchSheetBy = async (matchSheetId) => {
  */
 export const getConsolidatedMatchSheetByMatchId = async (matchId) => {
   const response = await api.get(endpoints.matches.consolidated(matchId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -66,7 +89,7 @@ export const getConsolidatedMatchSheetByMatchId = async (matchId) => {
  */
 export const getMatchByTeamId = async (teamId, matchId) => {
   const response = await api.get(endpoints.matches.teamMatch(teamId, matchId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -76,7 +99,7 @@ export const getMatchByTeamId = async (teamId, matchId) => {
  */
 export const getMatchesByPlayerId = async (playerId) => {
   const response = await api.get(endpoints.matches.byPlayer(playerId));
-  return response.data;
+  return response;
 };
 
 // Méthodes pour les organisateurs
@@ -88,7 +111,7 @@ export const getMatchesByPlayerId = async (playerId) => {
  */
 export const scheduleMatch = async (organizerId, matchDTO) => {
   const response = await api.post(endpoints.matches.organizer.schedule(organizerId), matchDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -103,7 +126,7 @@ export const updateMatchStatus = async (organizerId, matchStatusUpdateDTO, reaso
     endpoints.matches.organizer.updateStatus(organizerId), 
     { ...matchStatusUpdateDTO, reason }
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -114,7 +137,7 @@ export const updateMatchStatus = async (organizerId, matchStatusUpdateDTO, reaso
  */
 export const updateMatchInfo = async (organizerId, matchDTO) => {
   const response = await api.put(endpoints.matches.organizer.update(organizerId), matchDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -125,7 +148,7 @@ export const updateMatchInfo = async (organizerId, matchDTO) => {
  */
 export const updateMatchScore = async (organizerId, matchScoreUpdateDTO) => {
   const response = await api.put(endpoints.matches.organizer.updateScore(organizerId), matchScoreUpdateDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -140,7 +163,7 @@ export const updateMatchParticipants = async (organizerId, matchId, participants
     endpoints.matches.organizer.updateParticipants(organizerId, matchId), 
     participants
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -155,7 +178,7 @@ export const validateMatchSheet = async (organizerId, matchSheetValidationDTO, c
     endpoints.matches.organizer.validateSheet(organizerId), 
     { ...matchSheetValidationDTO, comments }
   );
-  return response.data;
+  return response;
 };
 
 // Méthodes pour les coachs
@@ -167,7 +190,7 @@ export const validateMatchSheet = async (organizerId, matchSheetValidationDTO, c
  */
 export const getMatchSheetsByTeamAndCoach = async (coachId, teamId) => {
   const response = await api.get(endpoints.matches.coach.sheets(coachId, teamId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -177,7 +200,7 @@ export const getMatchSheetsByTeamAndCoach = async (coachId, teamId) => {
  */
 export const getMatchSheetsByCoach = async (coachId) => {
   const response = await api.get(endpoints.matches.coach.allSheets(coachId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -188,7 +211,7 @@ export const getMatchSheetsByCoach = async (coachId) => {
  */
 export const getMatchSheet = async (coachId, matchSheetId) => {
   const response = await api.get(endpoints.matches.coach.sheet(coachId, matchSheetId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -203,5 +226,5 @@ export const updateMatchSheet = async (coachId, matchSheetId, matchSheetDTO) => 
     endpoints.matches.coach.updateSheet(coachId, matchSheetId), 
     matchSheetDTO
   );
-  return response.data;
+  return response;
 };

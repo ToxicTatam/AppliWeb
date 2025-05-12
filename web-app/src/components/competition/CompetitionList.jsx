@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CompetitionCard from './CompetitionCard';
 import CompetitionFilters from './CompetitionFilters';
-import CompetitionService from '@/services/competition-service';
+import * as CompetitionService from '@/services/competition-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 import { usePagination } from '@/hooks/usePagination';
@@ -23,9 +23,9 @@ const CompetitionList = ({ isUserView = true, initialFilters = {} }) => {
   const fetchCompetitions = async () => {
     setLoading(true);
     try {
-      const response = await CompetitionService.getAllCompetitions(filters);
+      const competitionsData = await CompetitionService.getAllCompetitions(filters);
       // S'assurer que nous travaillons avec un tableau
-      const competitionsArray = response.data || [];
+      const competitionsArray = competitionsData || [];
       setCompetitions(competitionsArray);
       setTotalItems(competitionsArray.length); // Pour la pagination
       setError(null);

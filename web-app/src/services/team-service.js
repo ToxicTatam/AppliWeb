@@ -7,12 +7,12 @@ import endpoints from '../lib/api/endpoints';
 
 /**
  * Récupère toutes les équipes
- * @param {Object} filter - Filtres pour les équipes
+ * @param {Object} d - Filtres pour les équipes
  * @returns {Promise<Array>} - Liste des équipes
  */
-export const getAllTeams = async (filter = {}) => {
-  const response = await api.get(endpoints.teams.base, { params: filter });
-  return response.data;
+export const getAllTeams = async (d = {}) => {
+  const response = await api.get(endpoints.teams.base, d );
+  return response;
 };
 
 /**
@@ -22,7 +22,8 @@ export const getAllTeams = async (filter = {}) => {
  */
 export const getTeamById = async (teamId) => {
   const response = await api.get(endpoints.teams.byId(teamId));
-  return response.data;
+  console.log('getTeamById', response);
+  return response;
 };
 
 /**
@@ -32,7 +33,7 @@ export const getTeamById = async (teamId) => {
  */
 export const getTeamsByCoach = async (coachId) => {
   const response = await api.get(endpoints.teams.byCoach(coachId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -42,7 +43,7 @@ export const getTeamsByCoach = async (coachId) => {
  */
 export const getTeamsByCompetition = async (competitionId) => {
   const response = await api.get(endpoints.teams.byCompetition(competitionId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -52,7 +53,7 @@ export const getTeamsByCompetition = async (competitionId) => {
  */
 export const getTeamsByPlayer = async (playerId) => {
   const response = await api.get(endpoints.teams.byPlayer(playerId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -62,7 +63,7 @@ export const getTeamsByPlayer = async (playerId) => {
  */
 export const getTeamStandings = async (teamId) => {
   const response = await api.get(endpoints.teams.standings(teamId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -72,7 +73,7 @@ export const getTeamStandings = async (teamId) => {
  */
 export const getCompetitionStandings = async (competitionId) => {
   const response = await api.get(endpoints.teams.competitionStandings(competitionId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -83,7 +84,7 @@ export const getCompetitionStandings = async (competitionId) => {
  */
 export const getTeamCompetitionStanding = async (competitionId, teamId) => {
   const response = await api.get(endpoints.teams.teamCompetitionStanding(competitionId, teamId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -94,7 +95,7 @@ export const getTeamCompetitionStanding = async (competitionId, teamId) => {
  */
 export const createTeam = async (coachId, teamDTO) => {
   const response = await api.post(endpoints.teams.coach.create(coachId), teamDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -105,7 +106,7 @@ export const createTeam = async (coachId, teamDTO) => {
  */
 export const updateTeam = async (coachId, teamDTO) => {
   const response = await api.put(endpoints.teams.coach.update(coachId), teamDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -125,7 +126,7 @@ export const deleteTeam = async (coachId, teamId) => {
  */
 export const getAllCoachTeams = async (coachId) => {
   const response = await api.get(endpoints.teams.coach.all(coachId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -137,7 +138,7 @@ export const getAllCoachTeams = async (coachId) => {
  */
 export const addPlayerToTeam = async (coachId, teamId, playerDTO) => {
   const response = await api.post(endpoints.teams.coach.addPlayer(coachId, teamId), playerDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -163,7 +164,7 @@ export const transferPlayer = async (coachId, sourceTeamId, targetTeamId, player
   const response = await api.post(
     endpoints.teams.coach.transferPlayer(coachId, sourceTeamId, targetTeamId, playerId)
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -174,7 +175,7 @@ export const transferPlayer = async (coachId, sourceTeamId, targetTeamId, player
  */
 export const getCompetitionTeamsByOrganizer = async (organizerId, competitionId) => {
   const response = await api.get(endpoints.teams.organizer.byCompetition(organizerId, competitionId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -185,6 +186,6 @@ export const getCompetitionTeamsByOrganizer = async (organizerId, competitionId)
  */
 export const getCompetitionCoaches = async (organizerId, competitionId) => {
   const response = await api.get(endpoints.teams.organizer.coaches(organizerId, competitionId));
-  return response.data;
+  return response;
 };
 

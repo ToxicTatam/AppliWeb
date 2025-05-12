@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CompetitionService from '@/services/competition-service';
+import * as CompetitionService from '@/services/competition-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const CompetitionStandings = ({ competitionId }) => {

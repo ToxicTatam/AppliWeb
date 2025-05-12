@@ -12,8 +12,9 @@ import endpoints from '../lib/api/endpoints';
  * @returns {Promise<Array>} - Liste des compétitions
  */
 export const getAllCompetitions = async (filter = {}) => {
-  const response = await api.get(endpoints.competitions.base, { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.competitions.base,  filter);
+
+  return response;
 };
 
 /**
@@ -23,7 +24,7 @@ export const getAllCompetitions = async (filter = {}) => {
  */
 export const getCompetitionById = async (competitionId) => {
   const response = await api.get(endpoints.competitions.byId(competitionId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -33,8 +34,8 @@ export const getCompetitionById = async (competitionId) => {
  * @returns {Promise<Array>} - Liste des compétitions
  */
 export const getCompetitionsByTeamId = async (teamId, filter = {}) => {
-  const response = await api.get(endpoints.competitions.byTeam(teamId), { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.competitions.byTeam(teamId), filter);
+  return response;
 };
 
 /**
@@ -44,7 +45,7 @@ export const getCompetitionsByTeamId = async (teamId, filter = {}) => {
  */
 export const getCompetitionsByUserId = async (userId) => {
   const response = await api.get(endpoints.competitions.byUser(userId));
-  return response.data;
+  return response;
 };
 
 // Méthodes pour les organisateurs
@@ -55,8 +56,8 @@ export const getCompetitionsByUserId = async (userId) => {
  * @returns {Promise<Object>} - Réponse contenant les compétitions
  */
 export const getCompetitionsByOrganizer = async (organizerId, filter = {}) => {
-  const response = await api.get(endpoints.competitions.organizer.base(organizerId), { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.competitions.organizer.base(organizerId),  filter );
+  return response;
 };
 
 
@@ -68,7 +69,7 @@ export const getCompetitionsByOrganizer = async (organizerId, filter = {}) => {
  */
 export const createCompetition = async (organizerId, competitionDTO) => {
   const response = await api.post(endpoints.competitions.organizer.create(organizerId), competitionDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -83,7 +84,7 @@ export const updateCompetition = async (organizerId, competitionId, competitionD
     endpoints.competitions.organizer.update(organizerId, competitionId), 
     competitionDTO
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -108,7 +109,7 @@ export const updateCompetitionStatus = async (organizerId, statusUpdateDTO, reas
     endpoints.competitions.organizer.updateStatus(organizerId), 
     { ...statusUpdateDTO, reason }
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -154,7 +155,7 @@ export const requestTeamRegistration = async (coachId, teamId, competitionId, re
     endpoints.competitions.coach.register(coachId, teamId, competitionId), 
     { reason }
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -170,7 +171,7 @@ export const requestTeamWithdrawal = async (coachId, teamId, competitionId, reas
     endpoints.competitions.coach.withdraw(coachId, teamId, competitionId), 
     { reason }
   );
-  return response.data;
+  return response;
 };
 
 /**
@@ -194,6 +195,6 @@ export const requestTeamsWithdrawalIntoAllCompetition = async (coachId, teamId, 
  */
 export const getCompetitionRequestsByCoach = async (coachId) => {
   const response = await api.get(endpoints.competitions.coach.requests(coachId));
-  return response.data;
+  return response;
 };
 

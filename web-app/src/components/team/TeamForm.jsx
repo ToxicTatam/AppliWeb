@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { team_service } from '@/services/team-service';
+import   * as  TeamService  from '@/services/team-service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { Select, Input, Button, Card } from '@/components/ui';
@@ -57,8 +57,8 @@ const TeamForm = ({ initialData = null, onSuccess, onCancel }) => {
       }
       
       return isEditing 
-        ? team_service.updateTeam(initialData.id, teamData)
-        : team_service.createTeam(teamData);
+        ? TeamService.updateTeam(initialData.id, teamData)
+        : TeamService.createTeam(teamData);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(['teams']);

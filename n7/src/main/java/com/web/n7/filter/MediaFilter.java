@@ -1,5 +1,9 @@
 package com.web.n7.filter;
 
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -10,6 +14,10 @@ public class MediaFilter {
     private String teamName;      // Filtre sur le nom de l'équipe
     private String matchTitle ; //titre du match
     private String uploaderName;  // Filtre sur le nom de l'uploader
-    private String startDate;     // Filtre sur la date de début
-    private String endDate;       // Filtre sur la date de fin
+     
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime startDate;     // Filtre sur la date de début
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime endDate;       // Filtre sur la date de fin
 }

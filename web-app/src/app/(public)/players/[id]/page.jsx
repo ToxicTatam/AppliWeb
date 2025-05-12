@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import PlayerService from '@/services/player-service';
+import * as PlayerService from '@/services/player-service';
 import PlayerDetails from '@/components/player/PlayerDetails';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 

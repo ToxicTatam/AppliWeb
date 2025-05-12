@@ -112,7 +112,7 @@ const playersEndpoints = {
     update: (coachId) => `${baseUrl}/players/coach/${coachId}`,
     remove: (coachId, playerId) => `${baseUrl}/players/coach/${coachId}/player/${playerId}`,
     all: (coachId) => `${baseUrl}/players/coach/${coachId}`,
-    byTeam: (coachId, teamId) => `${baseUrl}/players/coach/${coachId}/team/${teamId}`,
+    byTeam: (teamId,coachId,) => `${baseUrl}/players/coach/${coachId}/team/${teamId}`,
   },
   
   // Endpoints pour les organisateurs
@@ -124,6 +124,9 @@ const playersEndpoints = {
 
 // Endpoints pour les matchs
 const matchesEndpoints = {
+  base: `${baseUrl}/matches/all`,
+  byId: (id) => `${baseUrl}/matches/${id}`,
+  
   byTeam: (teamId) => `${baseUrl}/matches/team/${teamId}`,
   byCompetition: (competitionId) => `${baseUrl}/matches/competition/${competitionId}`,
   sheets: (matchId) => `${baseUrl}/matches/${matchId}/sheets`,

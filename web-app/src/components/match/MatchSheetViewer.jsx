@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import MatchService from '@/services/match-service';
+import   * as  MatchService from '@/services/match-service';
 import { PlayerStatus } from '@/lib/utils/enums';
 
 // Importation des composants extraits
@@ -41,10 +41,10 @@ const MatchSheetViewer = ({ matchId, teamId, isUserView = true }) => {
         setMatch(matchData);
         
         // Récupérer les feuilles de match de ce match
-        const matchSheetsResponse = await MatchService.getMatchSheets(matchId);
+        const matchSheetsResponse = await MatchService.getMatchSheetByMatchId(matchId);
         
         // Trouver la feuille de match pour l'équipe spécifiée
-        const teamMatchSheet = matchSheetsResponse.data.find(
+        const teamMatchSheet = matchSheetsResponse.find(
           sheet => sheet.teamId === Number(teamId)
         );
         
@@ -53,7 +53,7 @@ const MatchSheetViewer = ({ matchId, teamId, isUserView = true }) => {
         }
         
         // Récupérer les détails complets de la feuille de match
-        const detailedMatchSheet = await MatchService.getMatchSheetById(teamMatchSheet.id);
+        const detailedMatchSheet = await MatchService.getMatchSheetBy(teamMatchSheet.id);
         setMatchSheet(detailedMatchSheet);
         
         // Mettre à jour les joueurs

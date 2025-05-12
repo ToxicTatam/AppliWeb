@@ -6,7 +6,7 @@ const CompetitionFilters = ({ onFilterChange }) => {
   const [filters, setFilters] = useState({
     status: '',
     name: '',
-    organizer: '',
+    organizerName: '',
     category: '',
     dateRange: {
       from: '',
@@ -57,10 +57,12 @@ const CompetitionFilters = ({ onFilterChange }) => {
   // Appliquer les filtres
   const handleApplyFilters = () => {
     const activeFilters = Object.entries(filters).reduce((acc, [key, value]) => {
-      // Pour le dateRange, vérifier si les deux dates sont définies
+      // Pour le dateRange, vérifier si les deux dates sont définies et les formater
       if (key === 'dateRange') {
         if (value.from && value.to) {
-          acc[key] = value;
+
+          acc["startDate"] = new Date(`${value.from}T00:00:00`).toISOString();
+          acc["endDate"] = new Date(`${value.to}T23:59:59`).toISOString();
         }
       } 
       // Pour les autres filtres, les ajouter seulement s'ils ne sont pas vides
@@ -100,6 +102,7 @@ const CompetitionFilters = ({ onFilterChange }) => {
           >
             <option value="">Tous les statuts</option>
             <option value="UPCOMING">À venir</option>
+            <option value="REGISTRATION">Inscription ouverte</option>
             <option value="IN_PROGRESS">En cours</option>
             <option value="COMPLETED">Terminées</option>
             <option value="CANCELLED">Annulées</option>
@@ -131,7 +134,7 @@ const CompetitionFilters = ({ onFilterChange }) => {
             type="text"
             id="organizer"
             name="organizer"
-            value={filters.organizer}
+            value={filters.organizerName}
             onChange={handleFilterChange}
             placeholder="Nom de l'organisateur"
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

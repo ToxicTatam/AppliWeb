@@ -14,7 +14,7 @@ import endpoints from '../lib/api/endpoints';
  */
 export const registerPlayer = async (coachId, teamId, playerDTO) => {
   const response = await api.post(endpoints.players.coach.register(coachId, teamId), playerDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -25,7 +25,7 @@ export const registerPlayer = async (coachId, teamId, playerDTO) => {
  */
 export const updatePlayer = async (coachId, playerDTO) => {
   const response = await api.put(endpoints.players.coach.update(coachId), playerDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -45,18 +45,25 @@ export const removePlayer = async (coachId, playerId) => {
  */
 export const getPlayersByCoach = async (coachId) => {
   const response = await api.get(endpoints.players.coach.all(coachId));
-  return response.data;
+  return response;
 };
 
 /**
  * Récupère tous les joueurs d'une équipe
- * @param {number} coachId - ID du coach
- * @param {number} teamId - ID de l'équipe
+ * @param {number|string} teamId - ID de l'équipe
+ * @param {number|string} coachId - ID du coach (optionnel si pas de route coach-spécifique)
  * @returns {Promise<Array>} - Liste des joueurs
  */
-export const getPlayersByTeam = async (coachId, teamId) => {
-  const response = await api.get(endpoints.players.coach.byTeam(coachId, teamId));
-  return response.data;
+export const getPlayersByTeam = async (teamId, coachId = null) => {
+  // Conversion explicite en nombre pour éviter les problèmes de conversion Java
+  const numericTeamId = teamId ? Number(teamId) : null;
+  const numericCoachId = coachId ? Number(coachId) : null;
+  
+    // Si un coachId est fourni, utiliser l'endpoint coach-spécifique
+    const response = await api.get(endpoints.players.coach.byTeam(numericTeamId,0))
+    console.log('getPlayersByTeam', response);
+    return response;
+
 };
 
 /**
@@ -67,7 +74,7 @@ export const getPlayersByTeam = async (coachId, teamId) => {
  */
 export const getPlayersByCompetition = async (organizerId, competitionId) => {
   const response = await api.get(endpoints.players.organizer.byCompetition(organizerId, competitionId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -78,7 +85,7 @@ export const getPlayersByCompetition = async (organizerId, competitionId) => {
  */
 export const updatePlayerMatchPerformance = async (organizerId, playerPerformanceDTO) => {
   const response = await api.put(endpoints.players.organizer.updatePerformance(organizerId), playerPerformanceDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -87,8 +94,8 @@ export const updatePlayerMatchPerformance = async (organizerId, playerPerformanc
  * @returns {Promise<Array>} - Liste des joueurs
  */
 export const getAllPlayers = async (filter = {}) => {
-  const response = await api.get(endpoints.players.base, { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.players.base, filter);
+  return response;
 };
 
 /**
@@ -98,7 +105,7 @@ export const getAllPlayers = async (filter = {}) => {
  */
 export const getPlayerById = async (playerId) => {
   const response = await api.get(endpoints.players.byId(playerId));
-  return response.data;
+  return response;
 };
 
 /**
@@ -108,6 +115,6 @@ export const getPlayerById = async (playerId) => {
  * @returns {Promise<Array>} - Liste des performances
  */
 export const getPlayerPerformance = async (playerId, filter = {}) => {
-  const response = await api.get(endpoints.players.performance(playerId), { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.players.performance(playerId), filter);
+  return response;
 };

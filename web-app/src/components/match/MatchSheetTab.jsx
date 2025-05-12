@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import MatchService from '@/services/match-service';
+import  * as  MatchService from '@/services/match-service';
 import MatchSheetViewer from './MatchSheetViewer';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
@@ -24,8 +24,8 @@ const MatchSheetTab = ({ matchId, match, isUserView = true }) => {
     
     setLoading(true);
     try {
-      const sheetsResponse = await MatchService.getMatchSheets(matchId);
-      setMatchSheets(sheetsResponse.data || []);
+      const sheetsResponse = await MatchService.getMatchSheetByMatchId(matchId);
+      setMatchSheets(sheetsResponse || []);
       setError(null);
     } catch (err) {
       setError('Impossible de charger les feuilles de match. Veuillez réessayer plus tard.');

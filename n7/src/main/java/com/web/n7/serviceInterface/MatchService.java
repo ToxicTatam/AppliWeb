@@ -37,4 +37,7 @@ public interface MatchService {
     ConsolidatedMatchDTO getConsolidatedMatchSheetByMatchId(Long matchId);
     MatchSheetDTO getMatchByTeamId(Long teamId, Long matchId);
     List<MatchDTO> getMatchesByPlayerId(Long playerId);
+
+    List<MatchDTO> getAllMatches(MatchFilter filter);
+    MatchDTO getMatchById(Long matchId);
 }

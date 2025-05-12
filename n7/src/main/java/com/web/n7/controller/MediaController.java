@@ -13,16 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.web.n7.dto.common.MediaDTO;
 import com.web.n7.filter.MediaFilter;
-import com.web.n7.serviceInterface.MediaService;
 
 @RestController
 @RequestMapping("/api/media")
 @RequiredArgsConstructor
 public class MediaController {
 
-    private MediaServiceImpl mediaService;
-
-
+    private final MediaServiceImpl mediaService;
 
 
     // Endpoints pour tous les utilisateurs

@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import matchService from '@/services/match-service';
-import competitionService from '@/services/competition-service';
-import teamService from '@/services/team-service';
-import playerService from '@/services/player-service';
+import * as competitionService from '@/services/competition-service';
+import * as teamService from '@/services/team-service';
+import * as playerService from '@/services/player-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 // Composant CardInfo simple

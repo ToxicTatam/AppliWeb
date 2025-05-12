@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import CompetitionService from '@/services/competition-service';
+import * as CompetitionService from '@/services/competition-service';
 import CompetitionDetails from '@/components/competition/CompetitionDetails';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 

@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'next/navigation';
 import MessageCard from './MessageCard';
 import MessageFilter from './filters/MessageFilter';
-import messageService from '../../services/message-service';
+import  * as  messageService from '../../services/message-service';
 import { useNotification } from '../../hooks/useNotification';
 import { useAuth } from '../../hooks/useAuth';
 

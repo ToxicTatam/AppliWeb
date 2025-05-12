@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import Link from 'next/link';
-import PlayerService from '@/services/player-service';
+import   * as PlayerService from '@/services/player-service';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import PlayerStats from '@/components/player/PlayerStats';
 import PlayerMatchList from '@/components/player/PlayerMatchList';

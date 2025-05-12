@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.web.n7.service.MessageServiceImpl;
-import com.web.n7.serviceInterface.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import com.web.n7.filter.InboxFilter;
 import com.web.n7.filter.RecipientFilter;
 import com.web.n7.filter.SentFilter;
 import com.web.n7.model.enumeration.RecipientCategory;
-import com.web.n7.serviceInterface.MessageService;
 
 @RestController
 @RequestMapping("/api/messages")

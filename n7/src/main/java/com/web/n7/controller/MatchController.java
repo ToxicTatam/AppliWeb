@@ -25,13 +25,22 @@ public class MatchController {
 
     private final MatchServiceImpl matchService;
 
-
+@GetMapping("/all")
+public ResponseEntity<List<MatchDTO>> getAllMatches(MatchFilter filter){
+    return ResponseEntity.ok(matchService.getAllMatches(filter));
+}
 
     // Endpoints pour tous les utilisateurs
     @GetMapping("/team/{teamId}")
     public ResponseEntity<List<MatchDTO>> getMatchesByTeamId(
             @PathVariable Long teamId, MatchFilter filter) {
         return ResponseEntity.ok(matchService.getMatchesByTeamId(teamId, filter));
+    }
+
+
+    @GetMapping("/{matchId}")
+    public ResponseEntity<MatchDTO> getMatchById(@PathVariable Long matchId) {
+        return ResponseEntity.ok(matchService.getMatchById(matchId));
     }
 
     @GetMapping("/competition/{competitionId}")

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PlayerCard from './PlayerCard';
 import PlayerFilters from './PlayerFilters';
-import PlayerService from '@/services/player-service';
+import   * as PlayerService from '@/services/player-service';
 import { usePagination } from '@/hooks/usePagination';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import Link from 'next/link';
@@ -32,14 +32,14 @@ const PlayerList = ({ isUserView = true, initialFilters = {}, teamId = null }) =
       // Récupérer les joueurs selon le contexte
       if (teamId) {
         // Joueurs d'une équipe spécifique
-        response = await PlayerService.getTeamPlayers(teamId, filters);
+        response = await PlayerService.getPlayersByTeam(teamId, filters);
       } else {
         // Tous les joueurs
         response = await PlayerService.getAllPlayers(filters);
       }
       
       // S'assurer que nous travaillons avec un tableau
-      const playersArray = response.data || [];
+      const playersArray = response || [];
       setPlayers(playersArray);
       setTotalItems(playersArray.length); // Pour la pagination
       setError(null);

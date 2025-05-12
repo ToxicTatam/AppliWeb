@@ -9,7 +9,6 @@ import TeamPlayers from '@/components/team/TeamPlayers';
 import TeamMatches from '@/components/team/TeamMatches';
 import TeamCompetitions from '@/components/team/TeamCompetitions';
 import TeamStanding from '@/components/team/TeamStanding';
-import TeamService from '@/services/team-service';
 
 export default function TeamDetailsPage() {
   const { id } = useParams();

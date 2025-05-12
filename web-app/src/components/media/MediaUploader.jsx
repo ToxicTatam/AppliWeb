@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import MediaService from '@/services/media-service';
+import   * as MediaService from '@/services/media-service';
 
 const MediaUploader = ({ onUploadSuccess, onCancel }) => {
   const [mediaData, setMediaData] = useState({

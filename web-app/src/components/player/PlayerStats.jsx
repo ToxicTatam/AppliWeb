@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PlayerService from '@/services/player-service';
+import   * as PlayerService from '@/services/player-service';
 import PlayerStatsCard from './PlayerStatsCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 

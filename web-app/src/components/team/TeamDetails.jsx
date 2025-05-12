@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import TeamService from '@/services/team-service';
+import   * as  TeamService from '@/services/team-service';
+import * as MatchService from '@/services/match-service';
+import * as PlayerService from '@/services/player-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
@@ -21,15 +23,15 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
     try {
       // Récupérer les détails de l'équipe
       const teamData = await TeamService.getTeamById(teamId);
-      setTeam(teamData);
+      setTeam(teamData || []);
 
       // Récupérer les joueurs de l'équipe (limité à 3 pour l'aperçu)
-      const playersResponse = await TeamService.getTeamPlayers(teamId);
-      setPlayers(playersResponse.data || []);
+      const playersResponse = await PlayerService.getPlayersByTeam(teamId);
+      setPlayers(playersResponse || []);
 
       // Récupérer les matchs de l'équipe (limité à 3 pour l'aperçu)
-      const matchesResponse = await TeamService.getTeamMatches(teamId);
-      setMatches(matchesResponse.data || []);
+      const matchesResponse = await MatchService.getMatchesByTeamId(teamId);
+      setMatches(matchesResponse || []);
 
       setError(null);
     } catch (err) {

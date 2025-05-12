@@ -12,7 +12,7 @@ import endpoints from '../lib/api/endpoints';
  */
 export const getMediaById = async (id) => {
   const response = await api.get(endpoints.media.byId(id));
-  return response.data;
+  return response;
 };
 
 /**
@@ -21,8 +21,8 @@ export const getMediaById = async (id) => {
  * @returns {Promise<Array>} - Liste des médias
  */
 export const getAllMedia = async (mediaFilter = {}) => {
-  const response = await api.get(endpoints.media.base, { params: mediaFilter });
-  return response.data;
+  const response = await api.get(endpoints.media.base,mediaFilter);
+  return response;
 };
 
 /**
@@ -32,7 +32,7 @@ export const getAllMedia = async (mediaFilter = {}) => {
  */
 export const createMedia = async (mediaDTO) => {
   const response = await api.post(endpoints.media.create, mediaDTO);
-  return response.data;
+  return response;
 };
 
 /**
@@ -43,7 +43,7 @@ export const createMedia = async (mediaDTO) => {
  */
 export const updateMedia = async (id, mediaDTO) => {
   const response = await api.put(endpoints.media.update(id), mediaDTO);
-  return response.data;
+  return response;
 };
 
 /**

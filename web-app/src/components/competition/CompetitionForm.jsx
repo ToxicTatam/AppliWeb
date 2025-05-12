@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import CompetitionService from '@/services/competition-service';
+import * as CompetitionService from '@/services/competition-service';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { useNotification } from '@/hooks/useNotification';
 

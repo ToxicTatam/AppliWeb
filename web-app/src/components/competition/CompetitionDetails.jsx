@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Link from 'next/link';
-import CompetitionService from '../../services/competition-service';
+import * as CompetitionService from '../../services/competition-service';
 import CompetitionStandings from './CompetitionStandings';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import CompetitionTeamList from './CompetitionTeamList';
