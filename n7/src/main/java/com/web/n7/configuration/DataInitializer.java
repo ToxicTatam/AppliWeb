@@ -6,7 +6,9 @@ import com.web.n7.model.enumeration.competition.CompetitionStatus;
 import com.web.n7.model.enumeration.competition.CompetitionTeamStatus;
 import com.web.n7.model.enumeration.competition.CompetitionType;
 import com.web.n7.model.enumeration.match.MatchRole;
+import com.web.n7.model.enumeration.match.MatchSheetStatus;
 import com.web.n7.model.enumeration.match.MatchStatus;
+import com.web.n7.model.enumeration.player.PlayerPosition;
 import com.web.n7.model.enumeration.player.PlayerStatus;
 import com.web.n7.model.users.Admin;
 import com.web.n7.model.users.Coach;
@@ -43,6 +45,7 @@ public class DataInitializer implements CommandLineRunner {
     private final TeamStandingRepository teamStandingRepository;
     private final MatchRepository matchRepository;
     private final MatchParticipantRepository matchParticipantRepository;
+    private final MatchSheetRepository matchSheetRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -585,5 +588,174 @@ public class DataInitializer implements CommandLineRunner {
                 matchRepository.save(match);
             }
         }
+
+        // Créer les feuilles de match pour tous les matchs
+        createMatchSheets();
+    }
+
+    /**
+     * Crée les feuilles de match pour tous les matchs enregistrés
+     */
+    private void createMatchSheets() {
+        log.info("Création des feuilles de match...");
+        Random random = new Random();
+        
+        // Récupérer tous les matchs
+        List<Match> allMatches = matchRepository.findAll();
+        
+        for (Match match : allMatches) {
+            // Pour chaque match, créer une feuille de match pour chaque équipe participante
+            // Créer une copie de la liste des participants pour éviter ConcurrentModificationException
+            List<MatchParticipant> participants = new ArrayList<>(match.getParticipants());
+            
+            for (MatchParticipant participant : participants) {
+                Team team = participant.getTeam();
+                
+                // Déterminer le statut de la feuille de match en fonction du statut du match
+                MatchSheetStatus status;
+                if (match.getStatus() == MatchStatus.COMPLETED) {
+                    status = MatchSheetStatus.VALIDATED;
+                } else if (match.getStatus() == MatchStatus.SCHEDULED) {
+                    status = random.nextBoolean() ? MatchSheetStatus.UNVALIDATED : MatchSheetStatus.SUBMITTED;
+                } else {
+                    status = MatchSheetStatus.ONGOING;
+                }
+
+                // Créer la feuille de match
+                MatchSheet matchSheet = MatchSheet.builder()
+                        .match(match)
+                        .team(team)
+                        .status(status)
+                        .submissionDeadline(match.getMatchDate().toLocalDate().minusDays(1))
+                        .strategy(team.getName() + " stratégie pour le match contre " + 
+                                 (participant.getRole() == MatchRole.HOME ? 
+                                  getOpponentTeamName(match, MatchRole.AWAY) : 
+                                  getOpponentTeamName(match, MatchRole.HOME)))
+                        .createdAt(LocalDateTime.now().minusDays(5))
+                        .updatedAt(LocalDateTime.now())
+                        .build();
+                
+                // Si le match est terminé, ajouter une date de validation
+                if (status == MatchSheetStatus.VALIDATED) {
+                    matchSheet.setValidationDate(match.getMatchDate().plusHours(2));
+                }
+                
+                MatchSheet savedMatchSheet = matchSheetRepository.save(matchSheet);
+                
+                // Créer les participations des joueurs
+                createPlayerParticipations(savedMatchSheet, team, match.getStatus());
+                
+                // Créer une liste temporaire des feuilles de match
+                List<MatchSheet> matchSheets = match.getMatchSheets() == null ? 
+                                              new ArrayList<>() : 
+                                              new ArrayList<>(match.getMatchSheets());
+                matchSheets.add(savedMatchSheet);
+                
+                // Mettre à jour la liste des feuilles de match du match
+                match.setMatchSheets(matchSheets);
+                matchRepository.save(match);
+            }
+        }
+        
+        log.info("Création des feuilles de match terminée.");
+    }
+    
+    /**
+     * Récupère le nom de l'équipe adverse en fonction du rôle
+     */
+    private String getOpponentTeamName(Match match, MatchRole role) {
+        return match.getParticipants().stream()
+                .filter(p -> p.getRole() == role)
+                .findFirst()
+                .map(p -> p.getTeam().getName())
+                .orElse("Équipe inconnue");
+    }
+
+    /**
+     * Crée les participations des joueurs pour une feuille de match
+     */
+    private void createPlayerParticipations(MatchSheet matchSheet, Team team, MatchStatus matchStatus) {
+        Random random = new Random();
+        
+        // Récupérer les joueurs de l'équipe
+        List<Player> teamPlayers = team.getPlayers() != null ? 
+                                   new ArrayList<>(team.getPlayers()) : 
+                                   new ArrayList<>();
+        
+        if (teamPlayers.isEmpty()) {
+            return;
+        }
+        
+        // Sélectionner 11 titulaires et 5 remplaçants maximum
+        int maxPlayers = Math.min(teamPlayers.size(), 16);
+        List<PlayerParticipation> participations = new ArrayList<>();
+        
+        for (int i = 0; i < maxPlayers; i++) {
+            Player player = teamPlayers.get(i);
+            PlayerStatus status = i < 11 ? PlayerStatus.STARTER : PlayerStatus.SUBSTITUTE;
+            
+            // Déterminer la position du joueur
+            PlayerPosition position;
+            if (i == 0) {
+                position = PlayerPosition.GOALKEEPER;
+            } else if (i < 5) {
+                position = PlayerPosition.DEFENDER;
+            } else if (i < 9) {
+                position = PlayerPosition.MIDFIELDER;
+            } else {
+                position = PlayerPosition.FORWARD;
+            }
+            
+            PlayerParticipation participation = PlayerParticipation.builder()
+                    .matchSheet(matchSheet)
+                    .player(player)
+                    .shirtNumber(i + 1)
+                    .status(status)
+                    .position(position)
+                    .createdAt(LocalDateTime.now().minusDays(5))
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            
+            // Si le match est terminé ou en cours, ajouter des statistiques
+            if (matchStatus == MatchStatus.COMPLETED) {
+                // Seuls les attaquants et les milieux ont une chance de marquer
+                int goalsScored = 0;
+                if (position == PlayerPosition.FORWARD || position == PlayerPosition.MIDFIELDER) {
+                    goalsScored = random.nextInt(3); // 0 à 2 buts
+                }
+                
+                int yellowCards = random.nextInt(100) < 20 ? 1 : 0; // 20% de chance d'avoir un carton jaune
+                int redCards = yellowCards == 1 && random.nextInt(100) < 10 ? 1 : 0; // 10% de chance d'avoir un rouge après un jaune
+                
+                // Temps de jeu - les titulaires jouent plus longtemps
+                int minutesPlayed = 0;
+                if (status == PlayerStatus.STARTER) {
+                    minutesPlayed = redCards == 1 ? random.nextInt(60) + 30 : 90; // Expulsé entre la 30e et la 90e minute
+                } else if (status == PlayerStatus.SUBSTITUTE) {
+                    // Les remplaçants entrent en seconde mi-temps
+                    int substitutionInTime = random.nextInt(30) + 60; // Entre la 60e et la 90e minute
+                    participation.setSubstitutionInTime(substitutionInTime);
+                    minutesPlayed = 90 - substitutionInTime;
+                    
+                    // S'il y a un carton rouge, le joueur est sorti plus tôt
+                    if (redCards == 1) {
+                        minutesPlayed = random.nextInt(minutesPlayed - 1) + 1;
+                    }
+                }
+                
+                participation.setGoalsScored(goalsScored);
+                participation.setYellowCards(yellowCards);
+                participation.setRedCards(redCards);
+                participation.setMinutesPlayed(minutesPlayed);
+            }
+            
+            participations.add(participation);
+        }
+        
+        // Assigner toutes les participations à la feuille de match
+        matchSheet.setPlayerParticipations(participations);
+        
+        // Sauvegarder la feuille de match avec les participations
+        matchSheetRepository.save(matchSheet);
     }
 } 
