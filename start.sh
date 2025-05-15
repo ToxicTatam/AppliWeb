@@ -59,7 +59,7 @@ fi
 
 # Lancement de la BD dans un terminal séparé
 
-mate-terminal --tab --title="HSQLDB Database" --working-directory="$DB_DIR" -- bash -c "source start.sh; exec bash"
+gnome-terminal --tab --title="HSQLDB Database" --working-directory="$DB_DIR" -- bash -c "source start.sh; exec bash"
 
 # Attente que la BD soit prête (vérification du port 9001, port par defaut de hsqldb)
 echo "Attente du démarrage complet de la base de données..."
@@ -82,7 +82,7 @@ start_component "le backend Spring Boot"
 cd "$BACKEND_DIR" || { echo -e "${RED}Impossible d'accéder au répertoire backend${NC}"; return 1; }
 
 # Lancement du backend Spring Boot dans un terminal séparé
-mate-terminal --tab --title="Backend Spring Boot" --working-directory="$BACKEND_DIR" -- bash -c "mvn spring-boot:run; exec bash"
+gnome-terminal --tab --title="Backend Spring Boot" --working-directory="$BACKEND_DIR" -- bash -c "mvn spring-boot:run; exec bash"
 
 # Retour au répertoire initial
 cd "$INITIAL_DIR"
@@ -109,7 +109,7 @@ start_component "le frontend Next.js"
 
 
 # Lancement du frontend Next.js dans un terminal séparé
-mate-terminal --tab --title="Frontend Next.js" --working-directory="$FRONTEND_DIR" -- bash -c "npm run dev; exec bash"
+gnome-terminal --tab --title="Frontend Next.js" --working-directory="$FRONTEND_DIR" -- bash -c "npm run dev; exec bash"
 
 
 # Retour au répertoire initial

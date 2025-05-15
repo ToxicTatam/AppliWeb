@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
-import Matchservice from '@/services/match-service';
+import * as Matchservice from '@/services/match-service';
 import * as CompetitionService from '@/services/competition-service';
 import * as TeamService from '@/services/team-service';
 import * as PlayerService from '@/services/player-service';
