@@ -11,8 +11,8 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Table from '@/components/ui/Table';
 import Input from '@/components/ui/Input';
 
-export default function MatchSheetDetailPage({ params }) {
-  const { matchSheetId } = params;
+export default function MatchSheetDetailPage() {
+  const { matchSheetId } = useParams();
   const [matchSheet, setMatchSheet] = useState(null);
   const [playerSelections, setPlayerSelections] = useState([]);
   const [strategy, setStrategy] = useState('');

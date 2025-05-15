@@ -39,8 +39,12 @@ public class Team {
     private Coach coach;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+
+    @Builder.Default
     private List<Player> players = new ArrayList<>();
 
+    
+    @Builder.Default
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CompetitionTeam> competitionTeams = new ArrayList<>();
 

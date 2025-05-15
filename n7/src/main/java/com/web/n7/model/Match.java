@@ -28,6 +28,7 @@ public class Match {
     private Competition competition;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+      @Builder.Default
     private List<MatchParticipant> participants = new ArrayList<>();
 
     @Column(name = "match_date", nullable = false)
@@ -47,6 +48,7 @@ public class Match {
     private MatchStatus status;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @Builder.Default
     List<MatchSheet> matchSheets = new ArrayList<>();
 
     private int round;// Round number in the competition

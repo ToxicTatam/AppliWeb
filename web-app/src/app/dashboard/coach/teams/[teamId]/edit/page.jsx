@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter,useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getTeamById, updateTeam } from '@/services/team-service';
 import Button from '@/components/ui/Button';
@@ -10,8 +10,8 @@ import Input from '@/components/ui/Input';
 import Alert from '@/components/ui/Alert';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
-export default function EditTeamPage({ params }) {
-  const { teamId } = params;
+export default function EditTeamPage() {
+  const { teamId } = useParams();
   const [formData, setFormData] = useState({
     teamId: null,
     name: '',

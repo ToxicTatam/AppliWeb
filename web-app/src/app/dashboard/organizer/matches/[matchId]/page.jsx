@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getMatchById, updateMatchStatus, updateMatchScore, updateMatchInfo } from '@/services/match-service';
 import Card from '@/components/ui/Card';
@@ -11,9 +11,9 @@ import Alert from '@/components/ui/Alert';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Modal from '@/components/ui/Modal';
 
-export default function MatchDetailsPage({ params }) {
+export default function MatchDetailsPage() {
   const router = useRouter();
-  const { matchId } = params;
+  const { matchId } = useParams();
   const { user } = useAuth();
   
   const [match, setMatch] = useState(null);

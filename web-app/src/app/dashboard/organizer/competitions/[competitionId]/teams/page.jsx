@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter ,useParams} from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getCompetitionById } from '@/services/competition-service';
 import { updateTeamCompetitionStatus } from '@/services/competition-service';
@@ -13,9 +13,9 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Table from '@/components/ui/Table';
 import Modal from '@/components/ui/Modal';
 
-export default function CompetitionTeamsPage({ params }) {
+export default function CompetitionTeamsPage() {
   const router = useRouter();
-  const { competitionId } = params;
+  const { competitionId } = useParams();
   const { user } = useAuth();
   
   const [competition, setCompetition] = useState(null);

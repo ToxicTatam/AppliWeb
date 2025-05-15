@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getTeamById } from '@/services/team-service';
 import { getPlayersByTeam, removePlayer } from '@/services/player-service';
@@ -11,8 +11,8 @@ import Alert from '@/components/ui/Alert';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Table from '@/components/ui/Table';
 
-export default function TeamDetailsPage({ params }) {
-  const { teamId } = params;
+export default function TeamDetailsPage() {
+  const { teamId } = useParams();
   const [team, setTeam] = useState(null);
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);

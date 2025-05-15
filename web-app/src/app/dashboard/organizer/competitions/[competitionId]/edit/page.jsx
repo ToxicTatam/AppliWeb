@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getCompetitionById, updateCompetition } from '@/services/competition-service';
 import Card from '@/components/ui/Card';
@@ -10,9 +10,9 @@ import Input from '@/components/ui/Input';
 import Alert from '@/components/ui/Alert';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
-export default function EditCompetitionPage({ params }) {
+export default function EditCompetitionPage() {
   const router = useRouter();
-  const { competitionId } = params;
+  const { competitionId } = useParams();
   const { user } = useAuth();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
