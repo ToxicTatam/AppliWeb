@@ -42,7 +42,9 @@ export const getNavigationLinks = (user, hasRole, userRoles) => {
       links.push(
         { name: 'Gestion d\'équipe', href: '/dashboard/coach/teams', icon: 'manage-teams' },
         { name: 'Gestion de joueurs', href: '/dashboard/coach/players', icon: 'manage-players' },
-        { name: 'Gestion de matchs', href: '/dashboard/coach/matches', icon: 'manage-matches' }
+        { name: 'Gestion de matchs', href: '/dashboard/coach/matches', icon: 'manage-matches' },
+        { name: 'Gestion de compétitions', href: '/dashboard/coach/competitions', icon: 'manage-competitions' },
+
       );
     }
     
@@ -50,7 +52,8 @@ export const getNavigationLinks = (user, hasRole, userRoles) => {
     if (hasRole(userRoles.ORGANIZER)) {
       links.push(
         { name: 'Gestion de compétitions', href: '/dashboard/organizer/competitions', icon: 'manage-competitions' },
-        { name: 'Gestion de matchs', href: '/dashboard/organizer/matches', icon: 'manage-matches' }
+        { name: 'Gestion de matchs', href: '/dashboard/organizer/matches', icon: 'manage-matches' },
+        { name: 'Validation des Feuilles de Match', href: '/dashboard/organizer/validation-match', icon: 'validation-match' },
       );
     }
     
@@ -66,44 +69,5 @@ export const getNavigationLinks = (user, hasRole, userRoles) => {
   return links;
 };
 
-// Liens supplémentaires pour les utilisateurs authentifiés selon leur rôle
-export const getAdditionalLinks = (userRole) => {
-  const additionalLinks = [];
-  
-  // Liens communs pour PLAYER, COACH, ORGANIZER et ADMIN
-  if (['PLAYER', 'COACH', 'ORGANIZER', 'ADMIN'].includes(userRole)) {
-    additionalLinks.push(
-      { name: 'Messagerie', href: '/dashboard/messages', icon: 'message' },
-      { name: 'Notifications', href: '/dashboard/notifications', icon: 'notification' }
 
-    
-    );
-  }
-  
-  // Liens spécifiques pour COACH
-  if (userRole === 'COACH') {
-    additionalLinks.push(
-      { name: 'Gestion d\'équipe', href: '/dashboard/coach/teams', icon: 'manage-teams' },
-      { name: 'Gestion de joueurs', href: '/dashboard/coach/players', icon: 'manage-players' },
-      { name: 'Gestion de matchs', href: '/dashboard/coach/matches', icon: 'manage-matches' }
-    );
-  }
-  
-  // Liens spécifiques pour ORGANIZER
-  if (userRole === 'ORGANIZER') {
-    additionalLinks.push(
-      { name: 'Gestion de compétitions', href: '/dashboard/organizer/competitions', icon: 'manage-competitions' },
-      { name: 'Gestion de matchs', href: '/dashboard/organizer/matches', icon: 'manage-matches' }
-    );
-  }
-  
-  // Liens spécifiques pour ADMIN
-  if (userRole === 'ADMIN') {
-    additionalLinks.push(
-      { name: 'Administration', href: '/dashboard/admin', icon: 'admin' },
-      { name: 'Gestion d\' utilisateur', href: '/dashboard/admin', icon: 'admin' }
-    );
-  }
-  
-  return additionalLinks;
-};
+ 

@@ -1,33 +1,78 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { createCompetition } from '@/services/competition-service';
+import { getCompetitionById, updateCompetition } from '@/services/competition-service';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Alert from '@/components/ui/Alert';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
-export default function CreateCompetitionPage() {
+export default function EditCompetitionPage({ params }) {
   const router = useRouter();
+  const { competitionId } = params;
   const { user } = useAuth();
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    type: 'LEAGUE',
-    category: 'SENIOR',
+    type: '',
+    category: '',
     startDate: '',
     endDate: '',
     registrationDeadline: '',
     location: '',
-    maxTeams: 12,
+    maxTeams: 0,
   });
+
+  useEffect(() => {
+    if (!user || user.role !== 'ORGANIZER') {
+      router.push('/dashboard');
+      return;
+    }
+
+    fetchCompetitionData();
+  }, [competitionId, user, router]);
+
+  const fetchCompetitionData = async () => {
+    try {
+      setLoading(true);
+      const competitionData = await getCompetitionById(competitionId);
+      
+      // Formater les dates pour les champs de type date
+      const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+      };
+      
+      setFormData({
+        name: competitionData.name || '',
+        description: competitionData.description || '',
+        type: competitionData.type || 'LEAGUE',
+        category: competitionData.category || 'SENIOR',
+        startDate: formatDate(competitionData.startDate),
+        endDate: formatDate(competitionData.endDate),
+        registrationDeadline: formatDate(competitionData.registrationDeadline),
+        location: competitionData.location || '',
+        maxTeams: competitionData.maxTeams || 12,
+      });
+      
+      setError(null);
+    } catch (err) {
+      console.error('Erreur lors de la récupération des données de la compétition:', err);
+      setError('Impossible de récupérer les données de la compétition. Veuillez réessayer plus tard.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,7 +88,7 @@ export default function CreateCompetitionPage() {
     e.preventDefault();
     
     if (!user || user.role !== 'ORGANIZER') {
-      setError('Vous devez être connecté en tant qu\'organisateur pour créer une compétition');
+      setError('Vous devez être connecté en tant qu\'organisateur pour modifier une compétition');
       return;
     }
     
@@ -68,30 +113,26 @@ export default function CreateCompetitionPage() {
         return;
       }
       
-      // Création de la compétition
-      const result = await createCompetition(user.id, formData);
+      // Mise à jour de la compétition
+      await updateCompetition(user.id, competitionId, formData);
       
       setSuccess(true);
       setTimeout(() => {
-        router.push(`/dashboard/organizer/competitions/${result.id}`);
+        router.push(`/dashboard/organizer/competitions/${competitionId}`);
       }, 2000);
       
     } catch (err) {
-      console.error('Erreur lors de la création de la compétition:', err);
-      setError('Impossible de créer la compétition. Veuillez vérifier vos informations et réessayer.');
+      console.error('Erreur lors de la modification de la compétition:', err);
+      setError('Impossible de modifier la compétition. Veuillez vérifier vos informations et réessayer.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!user || user.role !== 'ORGANIZER') {
+  if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Alert 
-          type="error" 
-          message="Vous n'êtes pas autorisé à accéder à cette page." 
-          onClose={() => router.push('/dashboard')}
-        />
+      <div className="flex justify-center items-center h-screen">
+        <LoadingSpinner />
       </div>
     );
   }
@@ -99,12 +140,12 @@ export default function CreateCompetitionPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Créer une nouvelle compétition</h1>
+        <h1 className="text-2xl font-bold">Modifier la compétition</h1>
         <Button 
-          onClick={() => router.push('/dashboard/organizer/competitions')}
+          onClick={() => router.push(`/dashboard/organizer/competitions/${competitionId}`)}
           className="bg-gray-600 hover:bg-gray-700"
         >
-          Retour à la liste
+          Annuler
         </Button>
       </div>
       
@@ -120,7 +161,7 @@ export default function CreateCompetitionPage() {
       {success && (
         <Alert 
           type="success" 
-          message="Compétition créée avec succès! Redirection en cours..." 
+          message="Compétition modifiée avec succès! Redirection en cours..." 
           className="mb-6"
         />
       )}
@@ -240,7 +281,7 @@ export default function CreateCompetitionPage() {
           <div className="flex justify-end space-x-4 pt-4">
             <Button 
               type="button"
-              onClick={() => router.push('/dashboard/organizer/competitions')}
+              onClick={() => router.push(`/dashboard/organizer/competitions/${competitionId}`)}
               className="bg-gray-600 hover:bg-gray-700"
             >
               Annuler
@@ -250,7 +291,7 @@ export default function CreateCompetitionPage() {
               className="bg-blue-600 hover:bg-blue-700"
               disabled={isSubmitting}
             >
-              {isSubmitting ? <LoadingSpinner size="sm" /> : 'Créer la compétition'}
+              {isSubmitting ? <LoadingSpinner size="sm" /> : 'Enregistrer les modifications'}
             </Button>
           </div>
         </form>

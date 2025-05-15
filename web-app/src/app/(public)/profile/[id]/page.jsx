@@ -38,8 +38,6 @@ const PublicProfilePage = () => {
         
         // Vérifier si c'est un coach ou un organisateur (seuls ces profils sont accessibles publiquement)
         if (userData.role !== USER_ROLES.COACH && userData.role !== USER_ROLES.ORGANIZER) {
-          console.log("USER_ROLE", userData.role);
-          console.log(userData);
           setError("Ce profil n'est pas accessible publiquement");
           return;
         }
@@ -57,7 +55,6 @@ const PublicProfilePage = () => {
           setCompetitions(organizerCompetitions);
         }
       } catch (err) {
-        console.error("Erreur lors du chargement du profil:", err);
         setError("Une erreur est survenue lors du chargement du profil");
       } finally {
         setLoading(false);
@@ -287,9 +284,9 @@ const PublicProfilePage = () => {
                           {formatDate(competition.startDate)} - {formatDate(competition.endDate)}
                         </Typography>
                         <Chip 
-                          label={competition.status} 
+                          label={competition.status === 'REGISTRATION' ? 'Inscription ouverte' : competition.status === 'COMPLETED' ? 'Terminée' : competition.status === 'CANCELED' ? 'Annulée' : 'En cours'} 
                           size="small" 
-                          color={competition.status === 'En cours' ? 'success' : competition.status === 'Terminé' ? 'default' : 'primary'}
+                          color={competition.status === 'REGISTRATION' ? 'success' : competition.status === 'COMPLETED' ? 'default' : 'primary'}
                         />
                       </Box>
                       <Box sx={{ mt: 2 }}>

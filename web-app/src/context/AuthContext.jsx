@@ -92,18 +92,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('authToken', data.token);
         setUser(data.user);
         
-        // Redirection en fonction du rôle
-        if (data.user.role === USER_ROLES.ADMIN) {
-          router.push('/admin');
-        } else if (data.user.role === USER_ROLES.COACH) {
-          router.push('/coach');
-        } else if (data.user.role === USER_ROLES.ORGANIZER) {
-          router.push('/organizer');
-        } else if (data.user.role === USER_ROLES.PLAYER) {
-          router.push('/player');
-        } else {
-          router.push('/dashboard');
-        }
         
         return { success: true };
       } else {
@@ -121,7 +109,7 @@ export const AuthProvider = ({ children }) => {
   // Fonction de déconnexion
   const logout = () => {
     localStorage.removeItem('authToken');
-  //  localStorage.removeItem('user');
+    localStorage.removeItem('user');
     setUser(null);
     router.push('/login');
   };
@@ -144,7 +132,7 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         // Redirection vers la page de connexion après une inscription réussie
-        router.push('/login?registered=true');
+        router.push('/login');
         return { success: true };
       } else {
         setError(data.message || 'Échec de l\'inscription. Veuillez réessayer.');

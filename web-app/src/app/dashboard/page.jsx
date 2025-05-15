@@ -171,7 +171,9 @@ export default function DashboardPage() {
 
       {/* Actions rapides simplifiées */}
       {hasAccess(['COACH', 'ORGANIZER', 'ADMIN']) && (
+     
         <div className="bg-white rounded-lg shadow-sm border p-4">
+        
           <h2 className="text-lg font-medium mb-4">Actions rapides</h2>
           <div className="flex flex-wrap gap-3">
             {hasAccess(['COACH']) && (

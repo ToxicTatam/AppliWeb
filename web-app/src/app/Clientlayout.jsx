@@ -37,11 +37,12 @@ export default function ClientLayout({ children }) {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <NotificationProvider>
-          <FilterProvider>
-            {children}
-          </FilterProvider>
-        </NotificationProvider>
+          <NotificationProvider>
+            <FilterProvider>
+              {children}
+            </FilterProvider>
+          </NotificationProvider>
+      
       </ThemeProvider>
     </AuthProvider>
   );
