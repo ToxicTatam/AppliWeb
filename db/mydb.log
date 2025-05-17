@@ -19024,3 +19024,101 @@ COMMIT
 DELETE FROM TEAMS WHERE ID=1
 INSERT INTO TEAMS VALUES(5,'2025-05-15 09:28:18.718060',1,'2025-05-15 09:45:30.007824','SENIOR','Description de l''\u00e9quipe 1','','Team 1')
 COMMIT
+/*C224*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C218*/DISCONNECT
+/*C226*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C221*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C223*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C225*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C219*/DISCONNECT
+/*C222*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C220*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C227*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C231*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C229*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C230*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C233*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C228*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C232*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C234*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C236*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C237*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C235*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C238*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C239*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C241*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C243*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C240*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C244*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C245*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C242*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C246*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C247*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C248*/SET SCHEMA PUBLIC
+\u000a    drop table if exists admins cascade 
+\u000a    drop table if exists coaches cascade 
+\u000a    drop table if exists competition_requests cascade 
+\u000a    drop table if exists competition_teams cascade 
+\u000a    drop table if exists competitions cascade 
+\u000a    drop table if exists match_participants cascade 
+\u000a    drop table if exists match_sheets cascade 
+\u000a    drop table if exists matches cascade 
+\u000a    drop table if exists media cascade 
+\u000a    drop table if exists message_read_status cascade 
+\u000a    drop table if exists message_recipients cascade 
+\u000a    drop table if exists messages cascade 
+\u000a    drop table if exists notifications cascade 
+\u000a    drop table if exists organizers cascade 
+\u000a    drop table if exists player_participations cascade 
+\u000a    drop table if exists player_performances cascade 
+\u000a    drop table if exists players cascade 
+\u000a    drop table if exists standings cascade 
+\u000a    drop table if exists teams cascade 
+\u000a    drop table if exists users cascade 
+DISCONNECT
+/*C249*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C250*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C251*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C252*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C253*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C254*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C255*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C256*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C257*/SET SCHEMA PUBLIC
+DISCONNECT
