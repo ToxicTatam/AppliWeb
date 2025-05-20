@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter,useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getMatchSheet, updateMatchSheet } from '@/services/match-service';
 import Button from '@/components/ui/Button';

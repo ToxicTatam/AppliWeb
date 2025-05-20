@@ -112,8 +112,11 @@ export default function CoachMatchesPage() {
         {getStatusLabel(value)}
       </span>
     )},
-    { header: 'Actions', accessor: (row) => (
-      <div className="flex space-x-2">
+      { 
+        header: 'Actions', 
+        accessor: 'id', // Utilisez un champ simple comme accessor
+        cell: ({ row }) => (
+<div className="flex space-x-2">
         <Button
           onClick={() => router.push(`/dashboard/coach/matches/${row.id}`)}
           className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
@@ -121,7 +124,9 @@ export default function CoachMatchesPage() {
           {row.status === 'DRAFT' ? 'Éditer' : 'Voir'}
         </Button>
       </div>
-    )}
+        )
+      }
+
   ];
 
   if (loading) {
