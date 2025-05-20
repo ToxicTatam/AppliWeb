@@ -6,6 +6,7 @@ import com.web.n7.service.PlayerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,11 +62,14 @@ public class PlayerController {
         return ResponseEntity.ok(playerService.updatePlayer(coachId, playerDTO));
     }
 
+    //retirer un joueur d'une equipe, faut se rassurer que le joueur n est pas enregistré dans un match à venir
+//mettre à jour le frontend de la requete 
     @PreAuthorize("hasRole('COACH')")
     @DeleteMapping("/coach/{coachId}/player/{playerId}")
     public ResponseEntity<Void> removePlayer(
             @PathVariable Long coachId,
-            @PathVariable Long playerId) {
+            @PathVariable Long playerId,
+            @PathVariable Long teamId) {
         playerService.removePlayer(coachId, playerId);
         return ResponseEntity.noContent().build();
     }

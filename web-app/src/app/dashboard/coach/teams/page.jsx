@@ -33,7 +33,7 @@ export default function TeamsPage() {
       setTeams(response || []);
       setError(null);
     } catch (err) {
-      console.error('Erreur lors de la récupération des équipes:', err);
+      //console.error('Erreur lors de la récupération des équipes:', err);
       setError('Impossible de récupérer vos équipes. Veuillez réessayer plus tard.');
     } finally {
       setLoading(false);

@@ -23,6 +23,8 @@ export default function RegisterPlayerPage() {
     lastName: '',
     phone: '',
     address: '',
+    role: 'PLAYER',
+    status: 'STARTER',
     profilePicture: '',
     licenseNumber: '',
     dateOfBirth: '',

@@ -54,10 +54,10 @@ export default function PlayersPage() {
     }
   };
 
-  const handleRemovePlayer = async (playerId) => {
+  const handleRemovePlayer = async (playerId, teamId) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce joueur ? Cette action est irréversible.')) {
       try {
-        await removePlayer(user.id, playerId);
+        await removePlayer(user.id, playerId, teamId);
         setAlertInfo({
           show: true,
           message: 'Joueur supprimé avec succès',
@@ -86,17 +86,21 @@ export default function PlayersPage() {
     return nameMatch && teamMatch;
   });
 
+
   const columns = [
-    { header: 'Nom', accessor: (row) => `${row.firstName} ${row.lastName}` },
-    { header: 'Équipe', accessor: 'teamName' },
-    { header: 'Position', accessor: 'position' },
-    { header: 'Licence', accessor: 'licenseNumber' },
-    { header: 'Email', accessor: 'email' },
-    { header: 'Téléphone', accessor: 'phone' },
-    { header: 'Actions', accessor: (row) => (
+  { header: 'Nom', accessor: (row) => `${row.firstName} ${row.lastName}` },
+  { header: 'Équipe', accessor: 'teamName' },
+  { header: 'Position', accessor: 'position' },
+  { header: 'Licence', accessor: 'licenseNumber' },
+  { header: 'Email', accessor: 'email' },
+  { header: 'Téléphone', accessor: 'phone' },
+  { 
+    header: 'Actions', 
+    accessor: 'id', // Utilisez un champ simple comme accessor
+    cell: ({ row }) => (
       <div className="flex space-x-2">
         <Button
-          onClick={() => router.push(`/dashboard/coach/players/${row.id}`)}
+          onClick={() => router.push(`/players/${row.id}`)}
           className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
         >
           Détails
@@ -108,14 +112,15 @@ export default function PlayersPage() {
           Modifier
         </Button>
         <Button
-          onClick={() => handleRemovePlayer(row.id)}
+          onClick={() => handleRemovePlayer(row.id, row.teamId)}
           className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1"
         >
           Supprimer
         </Button>
       </div>
-    )}
-  ];
+    )
+  }
+];
 
   if (loading) {
     return (

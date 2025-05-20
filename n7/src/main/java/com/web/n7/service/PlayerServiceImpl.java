@@ -36,6 +36,9 @@ import com.web.n7.repository.UserRepository;
 import com.web.n7.serviceInterface.PlayerService;
 import com.web.n7.util.RoleMapDTO;
 
+import com.web.n7.model.enumeration.Role;
+import com.web.n7.model.enumeration.player.PlayerStatus;
+
 @Service
 @RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
@@ -99,6 +102,7 @@ public class PlayerServiceImpl implements PlayerService {
             player.setLastName(playerDTO.getLastName());
             player.setAddress(playerDTO.getAddress());
             player.setProfilePicture(playerDTO.getProfilePicture());
+            player.setRole(Role.PLAYER); // Définir le rôle PLAYER
             player.setCreatedAt(LocalDateTime.now());
             player.setUpdatedAt(LocalDateTime.now());
         }
@@ -107,7 +111,15 @@ public class PlayerServiceImpl implements PlayerService {
         player.setLicenseNumber(playerDTO.getLicenseNumber());
         player.setDateOfBirth(playerDTO.getDateOfBirth());
         player.setPosition(playerDTO.getPosition().toString());
-        player.setStatus(playerDTO.getStatus());
+        
+        // S'assurer que le statut n'est jamais null
+        if (playerDTO.getStatus() != null) {
+            player.setStatus(playerDTO.getStatus());
+        } else {
+            // Définir une valeur par défaut pour le statut
+            player.setStatus(PlayerStatus.SUBSTITUTE);  // ou toute autre valeur par défaut appropriée
+        }
+        
         player.setTeam(team);
         player.setPerformances(new ArrayList<>());
         

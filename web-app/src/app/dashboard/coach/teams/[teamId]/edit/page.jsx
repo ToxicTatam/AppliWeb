@@ -17,7 +17,7 @@ export default function EditTeamPage() {
     name: '',
     description: '',
     logo: '',
-    category: 'SENIOR'
+    //category: 'SENIOR'
   });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -44,7 +44,7 @@ export default function EditTeamPage() {
         name: teamData.name || '',
         description: teamData.description || '',
         logo: teamData.logo || '',
-        category: teamData.category || 'SENIOR'
+     //   category: teamData.category || 'SENIOR'
       });
       
       setError(null);
@@ -144,7 +144,7 @@ export default function EditTeamPage() {
             />
           </div>
 
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Catégorie
             </label>
@@ -162,7 +162,7 @@ export default function EditTeamPage() {
               <option value="BENJAMIN">Benjamin</option>
               <option value="POUSSIN">Poussin</option>
             </select>
-          </div>
+          </div> */}
 
           <div className="flex justify-end">
             <Button
