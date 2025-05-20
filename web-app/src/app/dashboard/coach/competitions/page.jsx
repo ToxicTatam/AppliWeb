@@ -260,7 +260,7 @@ const competitionColumns = [
       return (
         <div className="flex space-x-2">
           <Button
-            onClick={() => router.push(`/dashboard/coach/competitions/${row.id}`)}
+            onClick={() => router.push(`/competitions/${row.id}`)}
             className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
           >
             Détails
