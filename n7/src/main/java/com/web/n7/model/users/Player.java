@@ -29,7 +29,8 @@ public class Player extends User {
     private String position; //FORWARD,MIDFIELDER,DEFENDER,GOALKEEPER
     @Enumerated(EnumType.STRING)
     @Column(name = "player_status", nullable = false)
-    private PlayerStatus status = PlayerStatus.SUBSTITUTE; // Valeur par défaut
+    private PlayerStatus status ; // Valeur par défau
+    
 
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)

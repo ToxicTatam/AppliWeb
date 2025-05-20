@@ -20,7 +20,7 @@ export default function CreateCompetitionPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    type: 'LEAGUE',
+    competitionType: 'LEAGUE',
     category: 'SENIOR',
     startDate: '',
     endDate: '',
@@ -143,7 +143,7 @@ export default function CreateCompetitionPage() {
               </label>
               <select
                 name="type"
-                value={formData.type}
+                value={formData.competitionType}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
