@@ -306,8 +306,7 @@ const PlayerDetails = ({ playerId, isUserView = true }) => {
               </div>
             </div>
           )} */}
-          // ...existing code...
-
+      
 {performanceSummary && (
   <div>
     <div className="flex justify-between items-center mb-4">
