@@ -89,22 +89,26 @@ export default function TeamDetailsPage() {
     }},
     { header: 'Email', accessor: 'email' },
     { header: 'Téléphone', accessor: 'phone' },
-    { header: 'Actions', accessor: (row) => (
-      <div className="flex space-x-2">
-        <Button
-          onClick={() => router.push(`/dashboard/coach/players/${row.id}`)}
-          className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
-        >
-          Détails
-        </Button>
-        <Button
-          onClick={() => handleRemovePlayer(row.id)}
-          className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1"
-        >
-          Retirer
-        </Button>
-      </div>
-    )}
+    { 
+      header: 'Actions', 
+      accessor: 'id',
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
+          <Button
+            onClick={() => router.push(`/players/${row.id}`)}
+            className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
+          >
+            Détails
+          </Button>
+          <Button
+            onClick={() => handleRemovePlayer(row.id)}
+            className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1"
+          >
+            Retirer
+          </Button>
+        </div>
+      )
+    }
   ];
 
   return (

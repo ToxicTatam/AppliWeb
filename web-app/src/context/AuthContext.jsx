@@ -232,7 +232,7 @@ export const AuthProvider = ({ children }) => {
   // Fonction pour vérifier la validité du token auprès du backend
   const verifyToken = async (token) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/verify-token', {
+      const response = await fetch('http://localhost:8080/api/auth/verify-token', {
         headers: {
           Authorization: `Bearer ${token}`
         }
