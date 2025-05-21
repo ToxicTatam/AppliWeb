@@ -7,11 +7,11 @@ import endpoints from '../lib/api/endpoints';
 
 /**
  * Récupère toutes les équipes
- * @param {Object} d - Filtres pour les équipes
+ * @param {Object} filters - Filtres pour les équipes
  * @returns {Promise<Array>} - Liste des équipes
  */
-export const getAllTeams = async (d = {}) => {
-  const response = await api.get(endpoints.teams.base, d );
+export const getAllTeams = async (filters = {}) => {
+  const response = await api.get(endpoints.teams.base, filters);
   return response;
 };
 
@@ -30,18 +30,19 @@ export const getTeamById = async (teamId) => {
  * @param {number} coachId - ID du coach
  * @returns {Promise<Array>} - Liste des équipes
  */
-export const getTeamsByCoach = async (coachId,filters) => {
-  const response = await api.get(endpoints.teams.byCoach(coachId));
+export const getTeamsByCoach = async (coachId, filters = {}) => {
+  const response = await api.get(endpoints.teams.byCoach(coachId), filters);
   return response;
 };
 
 /**
  * Récupère les équipes participant à une compétition
  * @param {number} competitionId - ID de la compétition
+ * @param {Object} filters - Filtres pour les équipes
  * @returns {Promise<Array>} - Liste des équipes
  */
-export const getTeamsByCompetition = async (competitionId) => {
-  const response = await api.get(endpoints.teams.byCompetition(competitionId));
+export const getTeamsByCompetition = async (competitionId, filters = {}) => {
+  const response = await api.get(endpoints.teams.byCompetition(competitionId), filters);
   return response;
 };
 
