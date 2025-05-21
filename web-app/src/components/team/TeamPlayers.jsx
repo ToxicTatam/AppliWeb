@@ -17,7 +17,7 @@ const TeamPlayers = ({ teamId }) => {
     try {
       // Utiliser la fonction correcte du PlayerService au lieu de 
       const response = await PlayerService.getPlayersByTeam(teamId);
-      setPlayers(response || []);numericCoachId
+      setPlayers(response || []);
       setError(null);
     } catch (err) {
       setError('Impossible de charger les joueurs de l\'équipe. Veuillez réessayer plus tard.');

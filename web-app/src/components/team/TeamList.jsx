@@ -29,7 +29,7 @@ const TeamList = ({ isUserView = true, initialFilters = {}, coachId = null , com
       }
       else if (coachId) {
         // Si un ID de coach est fourni, charger les équipes de ce coach
-        response = await TeamService.getCoachTeams(coachId, filters);
+        response = await TeamService.getTeamsByCoach(coachId, filters);
       } else {
         // Sinon, charger toutes les équipes avec les filtres
         response = await TeamService.getAllTeams(filters);

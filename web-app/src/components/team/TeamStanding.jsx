@@ -19,7 +19,7 @@ const TeamStanding = ({ teamId, competitionId = null }) => {
         // Si un competitionId est fourni, obtenir le classement pour cette compétition spécifique
         // Sinon, obtenir le meilleur/dernier classement de l'équipe
         const response = competitionId 
-          ? await TeamService.getTeamStandingInCompetition(teamId, competitionId)
+          ? await TeamService.getTeamCompetitionStanding(teamId, competitionId)
           : await TeamService.getTeamStandings(teamId);
         
         // Si nous obtenons un tableau (plusieurs compétitions), prendre le premier

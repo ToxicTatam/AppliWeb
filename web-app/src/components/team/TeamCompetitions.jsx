@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import   * as  TeamService from '@/services/team-service';
+import * as CompetitionService from '@/services/competition-service';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const TeamCompetitions = ({ teamId }) => {
@@ -17,10 +17,16 @@ const TeamCompetitions = ({ teamId }) => {
     
     setLoading(true);
     try {
-      const response = await TeamService.getTeamCompetitions(teamId);
-      setCompetitions(response.data || []);
+      const response = await CompetitionService.getCompetitionsByTeamId(teamId);
+      
+      // Vérifier le format de la réponse
+      const competitionsData = response.data ? response.data : response;
+      
+      console.log('Competitions fetched:', competitionsData);
+      setCompetitions(competitionsData || []);
       setError(null);
     } catch (err) {
+      console.error('Error fetching competitions:', err);
       setError('Impossible de charger les compétitions de l\'équipe. Veuillez réessayer plus tard.');
       setCompetitions([]);
     } finally {
@@ -64,6 +70,16 @@ const TeamCompetitions = ({ teamId }) => {
     );
   }
 
+  // Fonction pour formater le type de compétition
+  const getCompetitionTypeLabel = (type) => {
+    const types = {
+      'LEAGUE': 'Championnat',
+      'TOURNAMENT': 'Tournoi',
+      'CUP': 'Coupe'
+    };
+    return types[type] || type;
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold text-gray-800 mb-6">Compétitions de l'équipe</h2>
@@ -76,12 +92,17 @@ const TeamCompetitions = ({ teamId }) => {
           >
             <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4 text-white">
               <h3 className="font-bold text-xl">{competition.name}</h3>
-              <p className="text-sm opacity-90">{competition.category}</p>
+              <div className="flex justify-between items-center mt-1">
+                <p className="text-sm opacity-90">{competition.category}</p>
+                <span className="text-xs bg-white bg-opacity-20 px-2 py-0.5 rounded">
+                  {getCompetitionTypeLabel(competition.type)}
+                </span>
+              </div>
             </div>
             
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-sm">Status</span>
+                <span className="text-gray-600 text-sm">Statut</span>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   competition.status === 'UPCOMING' ? 'bg-blue-100 text-blue-800' :
                   competition.status === 'IN_PROGRESS' ? 'bg-green-100 text-green-800' :
@@ -106,15 +127,35 @@ const TeamCompetitions = ({ teamId }) => {
                   </span>
                 </div>
                 
-                {competition.standing && (
+                {competition.registeredTeams !== undefined && (
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Classement actuel:</span>
+                    <span className="text-gray-500">Équipes inscrites:</span>
                     <span className="font-medium">
-                      {competition.standing.position}e sur {competition.teamCount || '?'} équipes
+                      {competition.registeredTeams} / {competition.maxTeams || '∞'}
                     </span>
                   </div>
                 )}
+                
+                {competition.location && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Lieu:</span>
+                    <span className="font-medium">{competition.location}</span>
+                  </div>
+                )}
+                
+                {competition.organizerName && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Organisateur:</span>
+                    <span className="font-medium">{competition.organizerName}</span>
+                  </div>
+                )}
               </div>
+              
+              {competition.description && (
+                <div className="text-sm text-gray-600 mt-2">
+                  <p className="line-clamp-2">{competition.description}</p>
+                </div>
+              )}
               
               <div className="pt-4 border-t border-gray-100">
                 <Link 

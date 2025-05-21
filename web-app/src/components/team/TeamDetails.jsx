@@ -87,7 +87,7 @@ const TeamDetails = ({ teamId,  activeTab = 'info',
 
 
   return (
-    <div className="space-y-6">
+    <div className="">
 
             {/* En-tête et contenu principal */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">

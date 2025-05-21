@@ -30,7 +30,7 @@ export const getTeamById = async (teamId) => {
  * @param {number} coachId - ID du coach
  * @returns {Promise<Array>} - Liste des équipes
  */
-export const getTeamsByCoach = async (coachId) => {
+export const getTeamsByCoach = async (coachId,filters) => {
   const response = await api.get(endpoints.teams.byCoach(coachId));
   return response;
 };
