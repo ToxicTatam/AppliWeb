@@ -4,24 +4,27 @@ import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import TeamDetails from '@/components/team/TeamDetails';
 
-
 export default function TeamDetailsPage() {
   const { id } = useParams();
+  const [activeTab, setActiveTab] = useState('info');
 
-  console.log('TeamDetailsPage', id);
+  // Fonction pour gérer le changement d'onglet
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
-    <div className="space-y-8">
+ <>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Détails de l'équipe</h1>
+        <TeamDetails 
+          teamId={id}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          onViewAllPlayers={() => handleTabChange('players')} 
+          onViewAllMatches={() => handleTabChange('matches')} 
+        />
 
-        {/* Contenu des onglets - chaque composant charge ses propres données */}
-        <div className="p-6">
-        
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">Détails de l'équipe</h1>
-            <TeamDetails 
-              teamId={id} 
-              onViewAllPlayers={() => handleTabChange('players')} 
-              onViewAllMatches={() => handleTabChange('matches')} 
-            />
-      </div>
-    </div>
+        </>
+    
   );
 }

@@ -14,19 +14,22 @@ import TeamCompetitions from './TeamCompetitions';
 import TeamStanding from './TeamStanding';
 
 
-const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
+const TeamDetails = ({ teamId,  activeTab = 'info', 
+  onTabChange,
+  onViewAllPlayers, 
+  onViewAllMatches }) => {
   // États pour les données et le chargement
   const [team, setTeam] = useState(null);
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('info');
+  //const [activeTab, setActiveTab] = useState('info');
   
-  // Fonction pour gérer le changement d'onglet
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
+  // // Fonction pour gérer le changement d'onglet
+  // const handleTabChange = (tab) => {
+  //   setActiveTab(tab);
+  // };
 
   // Charger les données de l'équipe
   const fetchTeamDetails = async () => {
@@ -92,7 +95,7 @@ const TeamDetails = ({ teamId, onViewAllPlayers, onViewAllMatches }) => {
               <TeamHeader teamId={teamId} />
       
               {/* Navigation par onglets */}
-              <TeamTabs activeTab={activeTab} onTabChange={handleTabChange} />
+              <TeamTabs activeTab={activeTab} onTabChange={onTabChange} />
       
 
 {activeTab === 'info' && (

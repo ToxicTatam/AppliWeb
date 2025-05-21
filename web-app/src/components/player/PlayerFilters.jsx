@@ -20,10 +20,10 @@ const PlayerFilters = ({ filters, setFilters, resetFilters }) => {
 
   const statusOptions = [
     { value: '', label: 'Tous les statuts' },
-    { value: 'ACTIVE', label: 'Actif' },
+    { value: 'STARTER', label: 'Titulaire' },
     { value: 'INJURED', label: 'Blessé' },
     { value: 'SUSPENDED', label: 'Suspendu' },
-    { value: 'INACTIVE', label: 'Inactif' }
+    { value: 'SUBSTITUTE', label: 'Remplacant' }
   ];
 
   return (

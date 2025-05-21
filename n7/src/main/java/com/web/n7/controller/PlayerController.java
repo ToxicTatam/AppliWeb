@@ -80,7 +80,7 @@ public class PlayerController {
         return ResponseEntity.ok(playerService.getPlayersByCoach(coachId));
     }
 
-    @PreAuthorize("hasRole('COACH')")
+    //@PreAuthorize("hasRole('COACH')")
     @GetMapping("/coach/{coachId}/team/{teamId}")
     public ResponseEntity<List<PlayerDTO>> getPlayersByTeam(
             @PathVariable Long coachId,
