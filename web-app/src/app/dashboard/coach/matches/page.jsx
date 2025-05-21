@@ -73,22 +73,20 @@ export default function CoachMatchesPage() {
 
   const getStatusLabel = (status) => {
     const statusMap = {
-      'DRAFT': 'Brouillon',
+      'ONGOING': 'Brouillon',
       'UNVALIDATED': 'Non validée',
       'SUBMITTED': 'Soumise',
-      'APPROVED': 'Approuvée',
-      'REJECTED': 'Rejetée'
+      'VALIDATED': 'Approuvée',
     };
     return statusMap[status] || status;
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'DRAFT': return 'bg-yellow-100 text-yellow-800';
+      case 'ONGOING': return 'bg-yellow-100 text-yellow-800';
       case 'UNVALIDATED': return 'bg-red-100 text-red-800';
       case 'SUBMITTED': return 'bg-blue-100 text-blue-800';
-      case 'APPROVED': return 'bg-green-100 text-green-800';
-      case 'REJECTED': return 'bg-red-100 text-red-800';
+      case 'VALIDATED': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -97,31 +95,39 @@ export default function CoachMatchesPage() {
     { header: 'Match', accessor: 'matchTitle' },
     { header: 'Compétition', accessor: 'competitionName' },
     { header: 'Équipe', accessor: 'teamName' },
-    { header: 'Date', accessor: (row) => {
-      if (!row.matchDateTime) return 'Non spécifiée';
-      return new Date(row.matchDateTime).toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }},
-    { header: 'Statut', accessor: 'status', render: (value) => (
-      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(value)}`}>
-        {getStatusLabel(value)}
-      </span>
-    )},
+    { 
+      header: 'Date', 
+      accessor: 'matchDateTime',
+      cell: ({ row }) => {
+        if (!row.matchDateTime) return 'Non spécifiée';
+        return new Date(row.matchDateTime).toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    },
+    { 
+      header: 'Statut', 
+      accessor: 'status',
+      cell: ({ row }) => (
+        <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(row.status)}`}>
+          {getStatusLabel(row.status)}
+        </span>
+      )
+    },
       { 
         header: 'Actions', 
-        accessor: 'id', // Utilisez un champ simple comme accessor
+        accessor: 'id', 
         cell: ({ row }) => (
 <div className="flex space-x-2">
         <Button
           onClick={() => router.push(`/dashboard/coach/matches/${row.id}`)}
           className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
         >
-          {row.status === 'DRAFT' ? 'Éditer' : 'Voir'}
+          {row.status === 'UNVALIDATED' || row.status === "ONGOING" ? 'Éditer' : 'Voir'}
         </Button>
       </div>
         )
@@ -190,11 +196,11 @@ export default function CoachMatchesPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les statuts</option>
-                <option value="DRAFT">Brouillon</option>
-                <option value="UNVALIDATED">Non validée</option>
+                <option value="ONGOING">Brouillon</option>
+                <option value="UNVALIDATED">Rejété</option>
                 <option value="SUBMITTED">Soumise</option>
-                <option value="APPROVED">Approuvée</option>
-                <option value="REJECTED">Rejetée</option>
+                <option value="VALIDATED">Approuvée</option>
+        
               </select>
             </div>
           </div>
@@ -222,7 +228,7 @@ export default function CoachMatchesPage() {
             <div className="flex items-center">
               <span className="inline-block w-3 h-3 rounded-full bg-green-300 mr-2"></span>
               <span className="text-sm text-gray-600">
-                Approuvée: {matchSheets.filter(sheet => sheet.status === 'APPROVED').length}
+                Approuvée: {matchSheets.filter(sheet => sheet.status === 'VALIDATED').length}
               </span>
             </div>
           </div>
