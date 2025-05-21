@@ -23,27 +23,48 @@ public class JwtAuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String authHeader = ((HttpServletRequest) request).getHeader("Authorization");
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String authHeader = httpRequest.getHeader("Authorization");
 
         // Check if the Authorization header has a valid Bearer token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7); // Extract token
-            String email = jwtUtil.extractUsername(token); // Extract email from token
+            
+            try {
+                String email = jwtUtil.extractUsername(token); // Extract email from token
 
-            // Ensure the user is not already authenticated
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//                UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-                CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(email);
+                // Ensure the user is not already authenticated
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(email);
 
+                    // Validate token and set authentication
+                    if (jwtUtil.validateToken(token)) {
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                // Validate token and set authentication
-                if (jwtUtil.validateToken(token)) {
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    } else {
+                        // Token is blacklisted or invalid but not expired
+                        httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        httpResponse.setContentType("application/json");
+                        httpResponse.getWriter().write("{\"error\":\"Invalid token\",\"status\":401}");
+                        return;
+                    }
                 }
+            } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                // Catch specifically expired tokens
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpResponse.setContentType("application/json");
+                httpResponse.getWriter().write("{\"error\":\"Token expired\",\"status\":401}");
+                return;
+            } catch (Exception e) {
+                // Other JWT exceptions
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpResponse.setContentType("application/json");
+                httpResponse.getWriter().write("{\"error\":\"" + e.getMessage() + "\",\"status\":401}");
+                return;
             }
         }
 

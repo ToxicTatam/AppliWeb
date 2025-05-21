@@ -5,7 +5,10 @@ import com.web.n7.model.users.*;
 import com.web.n7.service.CustomUserDetailsService;
 import com.web.n7.service.UserServiceImpl;
 import com.web.n7.util.CustomUserDetails;
+import com.web.n7.util.TokenBlacklistService;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.web.n7.util.RoleMapDTO;
 
@@ -34,6 +37,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserServiceImpl userService;
     private final CustomUserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
   
 
     @PostMapping("/login")
@@ -142,6 +146,43 @@ public class AuthController {
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Unauthorized or error fetching user details.");
+        }
+    }
+    
+    @PostMapping("/verify-token")
+    public ResponseEntity<?> verifyToken(@RequestParam String token) {
+        try {
+            // Vérifie d'abord si le token a un format valide
+            String email = jwtUtil.extractUsername(token);
+            
+            if (email == null) {
+                return ResponseEntity.status(401).body("Token malformé ou invalide");
+            }
+            
+            // Vérifie si le token est dans la liste noire
+            if (tokenBlacklistService.isBlacklisted(token)) {
+                return ResponseEntity.status(401).body("Token révoqué");
+            }
+            
+            // Vérifie si le token est expiré
+            if (jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(401).body("Token expiré");
+            }
+            
+            // Si toutes les vérifications passent
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("status", "valid");
+            responseMap.put("email", email);
+            responseMap.put("expiration", jwtUtil.getExpirationDateFromToken(token));
+            responseMap.put("role", jwtUtil.extractUserRole(token));
+            
+            return ResponseEntity.ok(responseMap);
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            return ResponseEntity.status(401).body("Token expiré");
+        } catch (io.jsonwebtoken.JwtException e) {
+            return ResponseEntity.status(401).body("Token invalide: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la validation du token: " + e.getMessage());
         }
     }
 

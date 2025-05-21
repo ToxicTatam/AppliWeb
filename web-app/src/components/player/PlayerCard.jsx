@@ -16,10 +16,10 @@ const PlayerCard = ({ player, isUserView = true }) => {
   // Fonction pour obtenir la couleur de badge du statut
   const getStatusColor = (status) => {
     const statusColors = {
-      'ACTIVE': 'bg-green-100 text-green-800',
+      'STARTER': 'bg-green-100 text-green-800',
       'INJURED': 'bg-red-100 text-red-800',
       'SUSPENDED': 'bg-yellow-100 text-yellow-800',
-      'INACTIVE': 'bg-gray-100 text-gray-800'
+      'SUSPENDED': 'bg-gray-100 text-gray-800'
     };
     return statusColors[status] || 'bg-gray-100 text-gray-800';
   };
@@ -27,13 +27,32 @@ const PlayerCard = ({ player, isUserView = true }) => {
   // Fonction pour obtenir le libellé du statut
   const getStatusLabel = (status) => {
     const statuses = {
-      'ACTIVE': 'Actif',
+      'STARTER': 'Titulaire',
+      'SUBSTITUTE': 'Remplaçant',
       'INJURED': 'Blessé',
       'SUSPENDED': 'Suspendu',
-      'INACTIVE': 'Inactif'
     };
     return statuses[status] || status;
   };
+
+    // Fonction pour calculer l'âge à partir de la date de naissance
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return null;
+    
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
+  // Calculer l'âge du joueur
+  const playerAge = calculateAge(player.dateOfBirth);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
@@ -71,7 +90,7 @@ const PlayerCard = ({ player, isUserView = true }) => {
           {player.age && (
             <div className="flex items-center">
               <span className="w-24 flex-shrink-0 font-medium">Âge:</span>
-              <span>{player.age} ans</span>
+              <span>{playerAge} ans</span>
             </div>
           )}
           

@@ -57,20 +57,20 @@ const PlayerDetails = ({ playerId, isUserView = true }) => {
 
   const translateStatus = (status) => {
     const statusMap = {
-      'ACTIVE': 'Actif',
+      'STARTER': 'Titulaire',
+      'SUBSTITUTE': 'Remplaçant',
       'INJURED': 'Blessé',
       'SUSPENDED': 'Suspendu',
-      'INACTIVE': 'Inactif'
     };
     return statusMap[status] || status;
   };
 
   const getStatusColor = (status) => {
     const statusColorMap = {
-      'ACTIVE': 'bg-green-100 text-green-800',
+      'STARTER': 'bg-green-100 text-green-800',
       'INJURED': 'bg-red-100 text-red-800',
       'SUSPENDED': 'bg-yellow-100 text-yellow-800',
-      'INACTIVE': 'bg-gray-100 text-gray-800'
+      'SUBSTITUTE': 'bg-gray-100 text-gray-800'
     };
     return statusColorMap[status] || 'bg-gray-100 text-gray-800';
   };
@@ -271,7 +271,7 @@ const PlayerDetails = ({ playerId, isUserView = true }) => {
           </div>
 
        
-          {performanceSummary && (
+          {/* {performanceSummary && (
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-gray-800">Résumé des performances</h3>
@@ -305,7 +305,102 @@ const PlayerDetails = ({ playerId, isUserView = true }) => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
+          // ...existing code...
+
+{performanceSummary && (
+  <div>
+    <div className="flex justify-between items-center mb-4">
+      <h3 className="text-lg font-medium text-gray-800">Résumé des performances</h3>
+      <Link 
+        href={`/players/${player.id}/stats`} 
+        className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+      >
+        Voir toutes les statistiques
+      </Link>
+    </div>
+    
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats communes à tous les joueurs */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+        <span className="text-3xl font-bold text-purple-600">{performanceSummary.totalMatches || 0}</span>
+        <p className="text-sm text-gray-600 mt-1">Matchs joués</p>
+      </div>
+      
+      {/* Statistiques spécifiques par position */}
+      {player.position === 'GOALKEEPER' ? (
+        <>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.savesMade || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Arrêts</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.cleanSheets || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Clean sheets</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.savePercentage?.toFixed(1) || '-'}%</span>
+            <p className="text-sm text-gray-600 mt-1">% Arrêts</p>
+          </div>
+        </>
+      ) : player.position === 'DEFENDER' ? (
+        <>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.interceptions || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Interceptions</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.ballsRecovered || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Ballons récupérés</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.rating?.toFixed(1) || '-'}</span>
+            <p className="text-sm text-gray-600 mt-1">Note moyenne</p>
+          </div>
+        </>
+      ) : player.position === 'MIDFIELDER' ? (
+        <>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.successfulPasses || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Passes réussies</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.totalAssists || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Passes décisives</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.passAccuracy?.toFixed(1) || '-'}%</span>
+            <p className="text-sm text-gray-600 mt-1">Précision passes</p>
+          </div>
+        </>
+      ) : (
+        // FORWARD
+        <>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.totalGoals || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Buts</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.shotsOnTarget || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Tirs cadrés</p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+            <span className="text-3xl font-bold text-purple-600">{performanceSummary.totalAssists || 0}</span>
+            <p className="text-sm text-gray-600 mt-1">Passes décisives</p>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
           </>
         )}
         </div>

@@ -78,10 +78,35 @@
                        .setSigningKey(key)
                        .build()
                        .parseClaimsJws(token);
-               //return true;
-               return !tokenBlacklistService.isBlacklisted(token);
+               
+               // Check if token is blacklisted
+               if (tokenBlacklistService.isBlacklisted(token)) {
+                   return false;
+               }
+               
+               // Check if token is expired
+               Date expiration = getExpirationDateFromToken(token);
+               if (expiration.before(new Date())) {
+                   return false;
+               }
+               
+               return true;
            } catch (JwtException | IllegalArgumentException e) {
                return false;
+           }
+       }
+       
+       /**
+        * Vérifie si un token est expiré
+        * @param token le token JWT à vérifier
+        * @return true si le token est expiré, false sinon
+        */
+       public boolean isTokenExpired(String token) {
+           try {
+               Date expiration = getExpirationDateFromToken(token);
+               return expiration.before(new Date());
+           } catch (Exception e) {
+               return true;
            }
        }
 
@@ -98,7 +123,7 @@
        }
 
 
-       private String extractUserRole(String token) {
+       public String extractUserRole(String token) {
            Claims claims = Jwts.parserBuilder()
                    .setSigningKey(key)
                    .build()
