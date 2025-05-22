@@ -54,16 +54,16 @@ const competitionsEndpoints = {
     delete: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
     updateStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/status?reason=${reason}`,
     updateTeamStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/team-status?reason=${reason}`,
-    processRequest: (organizerId, requestId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}?reason=${reason}`,
+    processRequest: (organizerId, requestId, approved, reason) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}?approved=${approved}?reason=${reason}`,
     requests: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/competition/${competitionId}/requests`,
   
   },
   
   // Endpoints pour les coachs
   coach: {
-    register: (coachId, teamId, competitionId) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/register/${competitionId}`,
-    withdraw: (coachId, teamId, competitionId) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/withdraw/${competitionId}`,
-    withdrawAll: (coachId, teamId) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/withdraw-all`,
+    register: (coachId, teamId, competitionId,reason) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/register/${competitionId}?reason=${reason}`,
+    withdraw: (coachId, teamId, competitionId, reason) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/withdraw/${competitionId}?reason=${reason}`,
+    withdrawAll: (coachId, teamId, reason) => `${baseUrl}/competitions/coach/${coachId}/team/${teamId}/withdraw-all?reason=${reason}`,
     requests: (coachId) => `${baseUrl}/competitions/coach/${coachId}/requests`,
   }
 };

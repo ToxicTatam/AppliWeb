@@ -145,7 +145,7 @@ public class CompetitionController {
             @PathVariable Long coachId, 
             @PathVariable Long teamId, 
             @PathVariable Long competitionId,
-            @RequestBody String reason) {
+            @RequestParam String reason) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(competitionService.requestTeamRegistration(coachId, teamId, competitionId, reason));
     }
@@ -156,7 +156,7 @@ public class CompetitionController {
             @PathVariable Long coachId, 
             @PathVariable Long teamId, 
             @PathVariable Long competitionId,
-            @RequestBody String reason) {
+            @RequestParam String reason) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(competitionService.requestTeamWithdrawal(coachId, teamId, competitionId, reason));
     }
@@ -166,7 +166,7 @@ public class CompetitionController {
     public ResponseEntity<Void> requestTeamsWithdrawalIntoAllCompetition(
             @PathVariable Long coachId, 
             @PathVariable Long teamId,
-            @RequestBody String reason) {
+            @RequestParam String reason) {
         competitionService.requestTeamsWithdrawalIntoAllCompetition(coachId, teamId, reason);
         return ResponseEntity.ok().build();
     }

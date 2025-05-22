@@ -136,8 +136,8 @@ export const updateTeamCompetitionStatus = async (organizerId, statusUpdateDTO, 
  */
 export const processCompetitionRequest = async (organizerId, requestId, approved, reason) => {
   await api.put(
-    endpoints.competitions.organizer.processRequest(organizerId, requestId,reason), 
-    { approved }
+    endpoints.competitions.organizer.processRequest(organizerId, requestId,approved, reason), 
+    
   );
 };
 
@@ -163,8 +163,7 @@ export const getRequestsByCompetitionId = async (organizerId, competitionId) => 
  */
 export const requestTeamRegistration = async (coachId, teamId, competitionId, reason) => {
   const response = await api.post(
-    endpoints.competitions.coach.register(coachId, teamId, competitionId), 
-    { reason }
+    endpoints.competitions.coach.register(coachId, teamId, competitionId, reason), 
   );
   return response;
 };
@@ -179,8 +178,7 @@ export const requestTeamRegistration = async (coachId, teamId, competitionId, re
  */
 export const requestTeamWithdrawal = async (coachId, teamId, competitionId, reason) => {
   const response = await api.post(
-    endpoints.competitions.coach.withdraw(coachId, teamId, competitionId), 
-    { reason }
+    endpoints.competitions.coach.withdraw(coachId, teamId, competitionId,reason), 
   );
   return response;
 };
@@ -194,8 +192,8 @@ export const requestTeamWithdrawal = async (coachId, teamId, competitionId, reas
  */
 export const requestTeamsWithdrawalIntoAllCompetition = async (coachId, teamId, reason) => {
   await api.post(
-    endpoints.competitions.coach.withdrawAll(coachId, teamId), 
-    { reason }
+    endpoints.competitions.coach.withdrawAll(coachId, teamId, reason), 
+ 
   );
 };
 
