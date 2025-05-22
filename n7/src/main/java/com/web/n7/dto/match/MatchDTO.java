@@ -1,5 +1,6 @@
 package com.web.n7.dto.match;
 
+import com.web.n7.model.enumeration.match.MatchSheetStatus;
 import com.web.n7.model.enumeration.match.MatchStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +28,6 @@ public class MatchDTO {
     private String matchSheetStatus;
     private int round;
     private Boolean hasMatchsheet;
+
 
 }

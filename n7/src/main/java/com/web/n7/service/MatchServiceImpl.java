@@ -516,6 +516,7 @@ public class MatchServiceImpl implements MatchService {
                 .scheduledDateTime(match.getMatchDate())
                 .participants(participantDTOs)
                 .status(match.getStatus())
+                .matchSheetStatus(MatchSheetStatus.VALIDATED.name())
                 .homeTeamScore(match.getHomeScore())
                 .awayTeamScore(match.getAwayScore())
                 .round(match.getRound())

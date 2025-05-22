@@ -54,13 +54,10 @@ export const getPlayersByCoach = async (coachId) => {
  * @param {number|string} coachId - ID du coach (optionnel si pas de route coach-spécifique)
  * @returns {Promise<Array>} - Liste des joueurs
  */
-export const getPlayersByTeam = async (teamId, coachId = null) => {
-  // Conversion explicite en nombre pour éviter les problèmes de conversion Java
-  const numericTeamId = teamId ? Number(teamId) : null;
-  const numericCoachId = coachId ? Number(coachId) : null;
-  
+export const getPlayersByTeam = async (teamId, coachId ) => {
+ 
   // Si un coachId est fourni, utiliser l'endpoint coach-spécifique
-  const response = await api.get(endpoints.players.coach.byTeam(numericTeamId, numericCoachId));
+  const response = await api.get(endpoints.players.coach.byTeam(teamId, coachId));
   return response;
 };
 

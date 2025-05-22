@@ -142,24 +142,25 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
           <div className="flex flex-wrap gap-2 mb-6">
             {isCoach && (
               <Link 
-                href={`/dashboard/coach/matches/${match.id}/match-sheet`}
+                href={`/dashboard/coach/matches/${match.id}`}
                 className="inline-block px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
               >
-                {match.hasMatchSheet ? 'Modifier la feuille de match' : 'Créer une feuille de match'}
+                {match.matchSheetStatus === 'SUBMITTED' || match.matchSheetStatus === "UNVALIDATED" 
+                || match.matchSheetStatus === 'ONGOING' ? 'Modifier la feuille de match' : 'Créer une feuille de match'}
               </Link>
             )}
             
             {isOrganizer && (
               <>
                 <Link 
-                  href={`/dashboard/organizer/matches/${match.id}/edit`}
+                  href={`/dashboard/organizer/matches/${match.id}`}
                   className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Modifier le match
                 </Link>
-                {match.hasMatchSheet && match.matchSheetStatus === 'SUBMITTED' && (
+                {match.matchSheetStatus === 'SUBMITTED' && (
                   <Link 
-                    href={`/dashboard/organizer/matches/${match.id}/validate`}
+                    href={`/dashboard/organizer/matches/match-validation?${match.id}`}
                     className="inline-block px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
                   >
                     Valider la feuille de match
@@ -175,10 +176,10 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
           <div className="grid grid-cols-5 w-full max-w-3xl">
             <div className="col-span-2 flex flex-col items-center md:items-end text-center md:text-right">
               <Link 
-                href={isUserView ? `/teams/${match.homeTeamId}` : `/dashboard/teams/${match.homeTeamId}`}
+                href={isUserView ? `/teams/${match.participants?.find(p => p.role === 'HOME')?.teamId}` : `/dashboard/teams/${match.participants?.find(p => p.role === 'HOME')?.teamId}`}
                 className="text-xl font-semibold text-gray-800 hover:text-green-600 transition-colors mb-2"
               >
-                {match.homeTeamName}
+                {match.participants?.find(p => p.role === 'HOME')?.teamName || 'Non spécifié'}
               </Link>
               {/* À remplacer par un logo d'équipe si disponible */}
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
@@ -196,10 +197,10 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
             
             <div className="col-span-2 flex flex-col items-center md:items-start text-center md:text-left">
               <Link 
-                href={isUserView ? `/teams/${match.awayTeamId}` : `/dashboard/teams/${match.awayTeamId}`}
+                href={isUserView ? `/teams/${match.participants?.find(p => p.role === 'AWAY')?.teamId}` : `/dashboard/teams/${match.participants?.find(p => p.role === 'AWAY')?.teamId}`}
                 className="text-xl font-semibold text-gray-800 hover:text-green-600 transition-colors mb-2"
               >
-                {match.awayTeamName}
+                {match.participants?.find(p => p.role === 'AWAY')?.teamName || 'Non spécifié'}
               </Link>
               {/* À remplacer par un logo d'équipe si disponible */}
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
@@ -224,7 +225,7 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
             Informations
           </button>
           
-          {match.hasMatchSheet && (
+          {true && (
             <button
               onClick={() => handleTabChange('matchsheet')}
               className={`px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap ${
@@ -301,19 +302,19 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
                   <li className="flex justify-between">
                     <span className="text-gray-600">Équipe à domicile</span>
                     <Link 
-                      href={isUserView ? `/teams/${match.homeTeamId}` : `/dashboard/teams/${match.homeTeamId}`}
+                      href={isUserView ? `/teams/${match.participants?.find(p => p.role === 'HOME')?.teamId}` : `/dashboard/teams/${match.participants?.find(p => p.role === 'HOME')?.teamId}`}
                       className="font-medium text-green-600 hover:underline"
                     >
-                      {match.homeTeamName}
+                      {match.participants?.find(p => p.role === 'HOME')?.teamName || 'Non spécifié'}
                     </Link>
                   </li>
                   <li className="flex justify-between">
                     <span className="text-gray-600">Équipe à l'extérieur</span>
                     <Link 
-                      href={isUserView ? `/teams/${match.awayTeamId}` : `/dashboard/teams/${match.awayTeamId}`}
+                      href={isUserView ? `/teams/${match.participants?.find(p => p.role === 'AWAY')?.teamId}` : `/dashboard/teams/${match.participants?.find(p => p.role === 'AWAY')?.teamId}`}
                       className="font-medium text-green-600 hover:underline"
                     >
-                      {match.awayTeamName}
+                      {match.participants?.find(p => p.role === 'AWAY')?.teamName || 'Non spécifié'}
                     </Link>
                   </li>
                   {match.status === 'COMPLETED' && (
@@ -326,9 +327,9 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
                         <span className="text-gray-600">Vainqueur</span>
                         <span className="font-medium text-gray-800">
                           {match.homeTeamScore > match.awayTeamScore
-                            ? match.homeTeamName
+                            ? match.participants?.find(p => p.role === 'HOME')?.teamName
                             : match.homeTeamScore < match.awayTeamScore
-                            ? match.awayTeamName
+                            ? match.participants?.find(p => p.role === 'AWAY')?.teamName
                             : 'Match nul'}
                         </span>
                       </li>
@@ -337,11 +338,10 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
                   <li className="flex justify-between">
                     <span className="text-gray-600">Feuille de match</span>
                     <span className="font-medium text-gray-800">
-                      {match.hasMatchSheet 
-                        ? match.matchSheetStatus === 'VALIDATED' 
+                      {match.matchSheetStatus === 'VALIDATED' 
                           ? 'Validée' 
-                          : 'En attente de validation'
-                        : 'Non disponible'}
+                          : 'Pas encore disponible'}
+        
                     </span>
                   </li>
                 </ul>
@@ -351,7 +351,7 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
         )}
         
         {/* Onglet feuille de match */}
-        {activeTab === 'matchsheet' && match.hasMatchSheet && (
+        {activeTab === 'matchsheet' && (
           <MatchSheetTab matchId={matchId} match={match} isUserView={isUserView} />
         )}
         

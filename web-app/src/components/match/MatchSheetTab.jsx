@@ -17,14 +17,18 @@ const MatchSheetTab = ({ matchId, match, isUserView = true }) => {
 
   // Charger les feuilles de match
   const fetchMatchSheets = async () => {
-    if (!matchId || !match?.hasMatchSheet) {
+   
+
+    if (!matchId ) {
       setLoading(false);
       return;
     }
-    
+     console.log('Fetching match sheets...');
     setLoading(true);
     try {
       const sheetsResponse = await Matchservice.getMatchSheetByMatchId(matchId);
+         console.log (sheetsResponse || 'Feuilles de match non trouvées');
+         console.log('Feuilles de match:', match.matchSheetStatus);
       setMatchSheets(sheetsResponse || []);
       setError(null);
     } catch (err) {
@@ -67,8 +71,9 @@ const MatchSheetTab = ({ matchId, match, isUserView = true }) => {
 
   return (
     <div>
-      {match.matchSheetStatus === 'VALIDATED' ? (
-        matchSheets.length > 0 ? (
+      {match.matchSheetStatus === 'VALIDATED'  ? (
+     
+        matchSheets.length > -1? (
           <div className="space-y-6">
             {/* Sélecteur d'équipe si aucune équipe n'est sélectionnée */}
             {!selectedTeamSheet && (

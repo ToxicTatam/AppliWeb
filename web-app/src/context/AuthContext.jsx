@@ -233,9 +233,11 @@ export const AuthProvider = ({ children }) => {
   const verifyToken = async (token) => {
     try {
       const response = await fetch('http://localhost:8080/api/auth/verify-token', {
+         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
-        }
+        },
+         body: token,
       });
       
       return response.ok;
@@ -261,14 +263,14 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('authToken');
         
         if (token) {
-          // D'abord vérifier si le token est valide auprès du backend
-          const isValid = await verifyToken(token);
+          // // D'abord vérifier si le token est valide auprès du backend
+          // const isValid = await verifyToken(token);
           
-          if (!isValid) {
-            console.log('Token invalide ou expiré, déconnexion...');
-            handleLogout();
-            return;
-          }
+          // if (!isValid) {
+          //   console.log('Token invalide ou expiré, déconnexion...');
+          //   handleLogout();
+          //   return;
+          // }
           
           // Si le token est valide, récupérer les informations de l'utilisateur
           const userStr = localStorage.getItem('user');

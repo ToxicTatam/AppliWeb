@@ -42,7 +42,7 @@ const TeamDetails = ({ teamId,  activeTab = 'info',
       setTeam(teamData || []);
 
       // Récupérer les joueurs de l'équipe (limité à 3 pour l'aperçu)
-      const playersResponse = await PlayerService.getPlayersByTeam(teamId);
+      const playersResponse = await PlayerService.getPlayersByTeam(teamId, teamData.coachId);
       setPlayers(playersResponse || []);
 
       // Récupérer les matchs de l'équipe (limité à 3 pour l'aperçu)
