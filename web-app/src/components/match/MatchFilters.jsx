@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns';
 import * as CompetitionService from '@/services/competition-service';
 import * as  TeamService from '@/services/team-service';
 

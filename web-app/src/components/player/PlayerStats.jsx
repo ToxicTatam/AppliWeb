@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import   * as PlayerService from '@/services/player-service';
 import PlayerStatsCard from './PlayerStatsCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';

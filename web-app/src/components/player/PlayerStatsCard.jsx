@@ -1,4 +1,3 @@
-import React from 'react';
 
 const PlayerStatsCard = ({ title, stats }) => {
   return (

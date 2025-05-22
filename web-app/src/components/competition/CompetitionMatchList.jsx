@@ -1,7 +1,7 @@
   import React, { useState, useEffect } from 'react';
 import MatchList from '../match/MatchList';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
-import { Button } from '../ui/Button';
+import Button from '@/components/ui/Button';
 
 
 const CompetitionMatchList = ({ competitionId, isUserView = true }) => {
