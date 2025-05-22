@@ -57,13 +57,11 @@ export const getPlayersByCoach = async (coachId) => {
 export const getPlayersByTeam = async (teamId, coachId = null) => {
   // Conversion explicite en nombre pour éviter les problèmes de conversion Java
   const numericTeamId = teamId ? Number(teamId) : null;
- // const numericCoachId = coachId ? Number(coachId) : null;
+  const numericCoachId = coachId ? Number(coachId) : null;
   
-    // Si un coachId est fourni, utiliser l'endpoint coach-spécifique
-    const response = await api.get(endpoints.players.coach.byTeam(numericTeamId,0))
-    console.log('getPlayersByTeam', response);
-    return response;
-
+  // Si un coachId est fourni, utiliser l'endpoint coach-spécifique
+  const response = await api.get(endpoints.players.coach.byTeam(numericTeamId, numericCoachId));
+  return response;
 };
 
 /**

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter,useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getMatchSheet, updateMatchSheet } from '@/services/match-service';
+import { getPlayersByTeam } from '@/services/player-service';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Alert from '@/components/ui/Alert';
@@ -39,7 +40,37 @@ export default function MatchSheetDetailPage() {
       setLoading(true);
       const data = await getMatchSheet(user.id, matchSheetId);
       setMatchSheet(data);
-      setPlayerSelections(data.playerSelections || []);
+      
+      // Check if we have player selections from the server
+      if (data.playerParticipations && data.playerParticipations.length > 0) {
+        setPlayerSelections(data.playerParticipations);
+      } else if (data.teamId) {
+        // If no player selections and we have a team ID, fetch players from the team
+        try {
+          const teamPlayers = await getPlayersByTeam(data.teamId, user.id);
+          // Create player participation objects for each team player
+          const playerParticipations = teamPlayers.map(player => ({
+            playerId: player.id,
+            playerName: `${player.firstName} ${player.lastName}`,
+            matchSheetId: matchSheetId,
+            status: '', // Empty initially, coach will select STARTER or SUBSTITUTE
+            position: '', // Empty initially, coach will select position
+            shirtNumber: null, // Empty initially
+            // Adding additional fields that might be used after the match
+            goalsScored: 0,
+            yellowCards: 0,
+            redCards: 0,
+            minutesPlayed: 0,
+            substitutionInTime: null,
+            substitutionOutTime: null
+          }));
+          
+          setPlayerSelections(playerParticipations);
+        } catch (playerErr) {
+          console.error('Erreur lors de la récupération des joueurs de l\'équipe:', playerErr);
+        }
+      }
+      
       setStrategy(data.strategy || '');
       setError(null);
     } catch (err) {
@@ -58,7 +89,12 @@ export default function MatchSheetDetailPage() {
     setPlayerSelections(prevSelections => {
       return prevSelections.map(player => {
         if (player.playerId === playerId) {
-          return { ...player, [field]: value };
+          // If field is 'status', map it to 'playerStatus' for backend compatibility
+          if (field === 'status') {
+            return { ...player, playerStatus: value, [field]: value };
+          } else {
+            return { ...player, [field]: value };
+          }
         }
         return player;
       });
@@ -75,17 +111,19 @@ export default function MatchSheetDetailPage() {
       // Préparer les données pour la mise à jour
       const updateData = {
         ...matchSheet,
-        playerSelections,
+        playerParticipations: playerSelections, // Use playerParticipations instead of playerSelections for the backend
         strategy
       };
       
       await updateMatchSheet(user.id, matchSheetId, updateData);
       setSuccess('Feuille de match mise à jour avec succès');
       
-      // Rafraîchir les données
-      fetchMatchSheetData();
+      // Rafraîchir les données après un petit délai pour permettre à la mise à jour d'être effectuée
+      setTimeout(() => {
+        fetchMatchSheetData();
+      }, 500);
     } catch (err) {
-      console.error('Erreur lors de la mise à jour de la feuille de match:', err);
+      //console.error('Erreur lors de la mise à jour de la feuille de match:', err);
       setError('Impossible de mettre à jour la feuille de match. Veuillez réessayer plus tard.');
     } finally {
       setSubmitting(false);
@@ -95,7 +133,8 @@ export default function MatchSheetDetailPage() {
   const handleSubmitFinal = async () => {
     // Vérifier si tous les joueurs ont un statut et, si titulaires, ont un numéro de maillot
     const hasInvalidPlayers = playerSelections.some(player => {
-      return !player.status || (player.status === 'STARTER' && !player.shirtNumber);
+      const playerStatus = player.playerStatus || player.status;
+      return !playerStatus || (playerStatus === 'STARTER' && !player.shirtNumber);
     });
 
     if (hasInvalidPlayers) {
@@ -115,7 +154,7 @@ export default function MatchSheetDetailPage() {
       // Préparer les données pour la soumission finale
       const updateData = {
         ...matchSheet,
-        playerSelections,
+        playerParticipations: playerSelections, // Use playerParticipations instead of playerSelections for the backend
         strategy,
         status: 'SUBMITTED'
       };
@@ -123,8 +162,10 @@ export default function MatchSheetDetailPage() {
       await updateMatchSheet(user.id, matchSheetId, updateData);
       setSuccess('Feuille de match soumise avec succès');
       
-      // Rafraîchir les données
-      fetchMatchSheetData();
+      // Rafraîchir les données après un petit délai pour permettre à la mise à jour d'être effectuée
+      setTimeout(() => {
+        fetchMatchSheetData();
+      }, 500);
     } catch (err) {
       console.error('Erreur lors de la soumission de la feuille de match:', err);
       setError('Impossible de soumettre la feuille de match. Veuillez réessayer plus tard.');
@@ -135,22 +176,20 @@ export default function MatchSheetDetailPage() {
 
   const getStatusLabel = (status) => {
     const statusMap = {
-      'DRAFT': 'Brouillon',
+      'ONGOING': 'A completer',
       'UNVALIDATED': 'Non validée',
       'SUBMITTED': 'Soumise',
-      'APPROVED': 'Approuvée',
-      'REJECTED': 'Rejetée'
+      'VALIDATED': 'Approuvée',
     };
     return statusMap[status] || status;
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'DRAFT': return 'bg-yellow-100 text-yellow-800';
+      case 'ONGOING': return 'bg-yellow-100 text-yellow-800';
       case 'UNVALIDATED': return 'bg-red-100 text-red-800';
       case 'SUBMITTED': return 'bg-blue-100 text-blue-800';
-      case 'APPROVED': return 'bg-green-100 text-green-800';
-      case 'REJECTED': return 'bg-red-100 text-red-800';
+      case 'VALIDATED': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -373,9 +412,7 @@ export default function MatchSheetDetailPage() {
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Joueur
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Licence
-                      </th>
+               
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Statut
                       </th>
@@ -394,11 +431,8 @@ export default function MatchSheetDetailPage() {
                           <div className="font-medium text-gray-900">{player.playerName}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{player.licenseNumber}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
                           <select
-                            value={player.status || ''}
+                            value={player.status || player.playerStatus || ''}
                             onChange={(e) => handlePlayerStatusChange(player.playerId, 'status', e.target.value)}
                             className={`w-full px-2 py-1 border border-gray-300 rounded-md text-sm ${!isEditable ? 'bg-gray-100' : ''}`}
                             disabled={!isEditable}
@@ -406,9 +440,6 @@ export default function MatchSheetDetailPage() {
                             <option value="">Sélectionner...</option>
                             <option value="STARTER">Titulaire</option>
                             <option value="SUBSTITUTE">Remplaçant</option>
-                            <option value="NOT_PLAYED">Ne joue pas</option>
-                            <option value="INJURED">Blessé</option>
-                            <option value="RESERVE">Réserve</option>
                           </select>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -459,4 +490,4 @@ export default function MatchSheetDetailPage() {
       </form>
     </div>
   );
-} 
+}

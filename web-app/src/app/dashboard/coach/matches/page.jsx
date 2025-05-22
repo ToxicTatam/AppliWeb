@@ -49,7 +49,7 @@ export default function CoachMatchesPage() {
       
       setError(null);
     } catch (err) {
-      console.error('Erreur lors de la récupération des données:', err);
+      //console.error('Erreur lors de la récupération des données:', err);
       setError('Impossible de récupérer les feuilles de match. Veuillez réessayer plus tard.');
     } finally {
       setLoading(false);
@@ -127,7 +127,7 @@ export default function CoachMatchesPage() {
           onClick={() => router.push(`/dashboard/coach/matches/${row.id}`)}
           className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
         >
-          {row.status === 'UNVALIDATED' || row.status === "ONGOING" ? 'Éditer' : 'Voir'}
+          {row.status === 'UNVALIDATED' || row.status === "ONGOING" || row.status === "SUBMITTED"  ? 'Éditer' : 'Voir'}
         </Button>
       </div>
         )
@@ -216,7 +216,7 @@ export default function CoachMatchesPage() {
             <div className="flex items-center">
               <span className="inline-block w-3 h-3 rounded-full bg-yellow-300 mr-2"></span>
               <span className="text-sm text-gray-600">
-                Brouillon: {matchSheets.filter(sheet => sheet.status === 'DRAFT').length}
+                A completer: {matchSheets.filter(sheet => sheet.status === 'ONGOING').length}
               </span>
             </div>
             <div className="flex items-center">
