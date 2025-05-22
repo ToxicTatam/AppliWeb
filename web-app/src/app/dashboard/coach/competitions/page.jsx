@@ -227,6 +227,9 @@ const competitionColumns = [
         </span>
       );
     }},
+        { header: 'Raison', accessor: 'reason', cell: ({ value }) => (
+      <div className="max-w-xs truncate" title={value}>{value}</div>
+    )},
       { 
         header: 'Date', 
         accessor: 'id', // Utilisez un champ simple comme accessor

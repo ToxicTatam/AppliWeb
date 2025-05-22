@@ -10526,3 +10526,42 @@ INSERT INTO PLAYER_PARTICIPATIONS VALUES(NULL,NULL,3,NULL,13,NULL,NULL,NULL,'202
 INSERT INTO PLAYER_PARTICIPATIONS VALUES(NULL,NULL,3,NULL,14,NULL,NULL,NULL,'2025-05-17 21:37:38.734113',479,32,88,'2025-05-22 21:37:38.734113','SUBSTITUTE')
 INSERT INTO PLAYER_PARTICIPATIONS VALUES(NULL,NULL,3,NULL,15,NULL,NULL,NULL,'2025-05-17 21:37:38.734114',480,32,89,'2025-05-22 21:37:38.734114','SUBSTITUTE')
 COMMIT
+\u000a    drop table if exists admins cascade 
+\u000a    drop table if exists coaches cascade 
+\u000a    drop table if exists competition_requests cascade 
+\u000a    drop table if exists competition_teams cascade 
+\u000a    drop table if exists competitions cascade 
+\u000a    drop table if exists match_participants cascade 
+\u000a    drop table if exists match_sheets cascade 
+\u000a    drop table if exists matches cascade 
+\u000a    drop table if exists media cascade 
+\u000a    drop table if exists message_read_status cascade 
+\u000a    drop table if exists message_recipients cascade 
+\u000a    drop table if exists messages cascade 
+\u000a    drop table if exists notifications cascade 
+\u000a    drop table if exists organizers cascade 
+\u000a    drop table if exists player_participations cascade 
+\u000a    drop table if exists player_performances cascade 
+\u000a    drop table if exists players cascade 
+\u000a    drop table if exists standings cascade 
+\u000a    drop table if exists teams cascade 
+\u000a    drop table if exists users cascade 
+DISCONNECT
+/*C113*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C114*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C115*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C116*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C117*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C118*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C119*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C120*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C121*/SET SCHEMA PUBLIC
+DISCONNECT
