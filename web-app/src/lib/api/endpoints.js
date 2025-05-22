@@ -52,9 +52,9 @@ const competitionsEndpoints = {
     create: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}`,
     update: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
     delete: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
-    updateStatus: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}/status`,
-    updateTeamStatus: (organizerId) => `${baseUrl}/competitions/organizer/${organizerId}/team-status`,
-    processRequest: (organizerId, requestId) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}`,
+    updateStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/status?reason=${reason}`,
+    updateTeamStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/team-status?reason=${reason}`,
+    processRequest: (organizerId, requestId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}?reason=${reason}`,
   },
   
   // Endpoints pour les coachs

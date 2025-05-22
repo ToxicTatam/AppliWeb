@@ -106,8 +106,8 @@ export const deleteCompetition = async (organizerId, competitionId) => {
  */
 export const updateCompetitionStatus = async (organizerId, statusUpdateDTO, reason) => {
   const response = await api.put(
-    endpoints.competitions.organizer.updateStatus(organizerId), 
-    { ...statusUpdateDTO, reason }
+    endpoints.competitions.organizer.updateStatus(organizerId, reason), 
+    { ...statusUpdateDTO }
   );
   return response;
 };
@@ -121,8 +121,8 @@ export const updateCompetitionStatus = async (organizerId, statusUpdateDTO, reas
  */
 export const updateTeamCompetitionStatus = async (organizerId, statusUpdateDTO, reason) => {
   await api.put(
-    endpoints.competitions.organizer.updateTeamStatus(organizerId), 
-    { ...statusUpdateDTO, reason }
+    endpoints.competitions.organizer.updateTeamStatus(organizerId, reason), 
+    { ...statusUpdateDTO }
   );
 };
 
@@ -136,8 +136,8 @@ export const updateTeamCompetitionStatus = async (organizerId, statusUpdateDTO, 
  */
 export const processCompetitionRequest = async (organizerId, requestId, approved, reason) => {
   await api.put(
-    endpoints.competitions.organizer.processRequest(organizerId, requestId), 
-    { approved, reason }
+    endpoints.competitions.organizer.processRequest(organizerId, requestId,reason), 
+    { approved }
   );
 };
 

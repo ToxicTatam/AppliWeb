@@ -148,7 +148,7 @@ public class CompetitionController {
             @PathVariable Long coachId, 
             @PathVariable Long teamId, 
             @PathVariable Long competitionId,
-            @RequestParam String reason) {
+            @RequestBody String reason) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(competitionService.requestTeamWithdrawal(coachId, teamId, competitionId, reason));
     }
@@ -158,7 +158,7 @@ public class CompetitionController {
     public ResponseEntity<Void> requestTeamsWithdrawalIntoAllCompetition(
             @PathVariable Long coachId, 
             @PathVariable Long teamId,
-            @RequestParam String reason) {
+            @RequestBody String reason) {
         competitionService.requestTeamsWithdrawalIntoAllCompetition(coachId, teamId, reason);
         return ResponseEntity.ok().build();
     }
