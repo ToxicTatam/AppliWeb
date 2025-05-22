@@ -139,14 +139,21 @@ export default function TransferPlayerPage() {
     { header: 'Position', accessor: 'position' },
     { header: 'Licence', accessor: 'licenseNumber' },
     { header: 'Email', accessor: 'email' },
-    { header: 'Actions', accessor: (row) => (
-      <Button
+
+    { 
+        header: 'Actions', 
+        accessor: 'id', // Utilisez un champ simple comme accessor
+        cell: ({ row }) => (
+          <div className="flex space-x-2">
+               <Button
         onClick={() => handleSelectPlayer(row)}
         className={`text-xs px-2 py-1 ${selectedPlayer && selectedPlayer.id === row.id ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
       >
         {selectedPlayer && selectedPlayer.id === row.id ? 'Sélectionné' : 'Sélectionner'}
       </Button>
-    )}
+          </div>
+        )
+      }
   ];
 
   return (
