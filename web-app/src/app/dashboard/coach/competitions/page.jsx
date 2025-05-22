@@ -97,98 +97,6 @@ export default function CoachCompetitionsPage() {
     router.push(`/dashboard/coach/competitions/withdraw?competitionId=${competitionId}&teamId=${filters.teamId}`);
   };
 
-  // const competitionColumns = [
-  //   { header: 'Nom', accessor: 'name' },
-  //   { header: 'Catégorie', accessor: 'category' },
-  //   { header: 'Type', accessor: 'type' },
-  //   { header: 'Statut', accessor: 'status', render: (value) => {
-  //     let color = '';
-  //     switch (value) {
-  //       case 'UPCOMING': color = 'bg-yellow-100 text-yellow-800'; break;
-  //       case 'REGISTRATION': color = 'bg-blue-100 text-blue-800'; break;
-  //       case 'IN_PROGRESS': color = 'bg-green-100 text-green-800'; break;
-  //       case 'COMPLETED': color = 'bg-gray-100 text-gray-800'; break;
-  //       case 'CANCELLED': color = 'bg-red-100 text-red-800'; break;
-  //       default: color = 'bg-gray-100 text-gray-800';
-  //     }
-      
-  //     const statusText = {
-  //       'UPCOMING': 'À venir',
-  //       'REGISTRATION': 'Inscriptions ouvertes',
-  //       'IN_PROGRESS': 'En cours',
-  //       'COMPLETED': 'Terminée',
-  //       'CANCELLED': 'Annulée'
-  //     }[value] || value;
-      
-  //     return (
-  //       <span className={`px-2 py-1 rounded-full text-xs ${color}`}>
-  //         {statusText}
-  //       </span>
-  //     );
-  //   }},
-  //   { header: 'Date', accessor: (row) => {
-  //     if (!row.startDate) return 'Non spécifiée';
-  //     const start = new Date(row.startDate).toLocaleDateString('fr-FR');
-  //     const end = row.endDate ? new Date(row.endDate).toLocaleDateString('fr-FR') : 'N/A';
-  //     return `${start} - ${end}`;
-  //   }},
-    
-  //   { header: 'Actions', accessor: (row) => {
-  //     // Ne pas montrer les options d'inscription pour les compétitions terminées ou annulées
-  //     if (row.status === 'COMPLETED' || row.status === 'CANCELLED') {
-  //       return (
-  //         <Button
-  //           onClick={() => router.push(`/dashboard/coach/competitions/${row.id}`)}
-  //           className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
-  //         >
-  //           Détails
-  //         </Button>
-  //       );
-  //     }
-      
-  //     // Vérifier si l'équipe sélectionnée est déjà inscrite à cette compétition
-  //     const teamRequest = requestsData.find(req => 
-  //       req.competitionId === row.id && 
-  //       req.teamId.toString() === filters.teamId &&
-  //       req.requestType === 'REGISTRATION' &&
-  //       req.requestStatus !== 'REJECTED'
-  //     );
-      
-  //     return (
-  //       <div className="flex space-x-2">
-  //         <Button
-  //           onClick={() => router.push(`/dashboard/coach/competitions/${row.id}`)}
-  //           className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
-  //         >
-  //           Détails
-  //         </Button>
-  //         {row.status === 'REGISTRATION' && !teamRequest && (
-  //           <Button
-  //             onClick={() => handleRegisterClick(row.id)}
-  //             className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"
-  //             disabled={!filters.teamId}
-  //           >
-  //             Inscrire
-  //           </Button>
-  //         )}
-  //         {teamRequest && teamRequest.requestStatus === 'APPROVED' && (
-  //           <Button
-  //             onClick={() => handleWithdrawClick(row.id)}
-  //             className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1"
-  //           >
-  //             Retirer
-  //           </Button>
-  //         )}
-  //         {teamRequest && teamRequest.requestStatus === 'PENDING' && (
-  //           <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded flex items-center">
-  //             En attente
-  //           </span>
-  //         )}
-  //       </div>
-  //     );
-  //   }}
-  // ];
-// Remplacez la définition actuelle des colonnes par celle-ci
 
 const competitionColumns = [
   { header: 'Nom', accessor: 'name' },
@@ -234,14 +142,14 @@ const competitionColumns = [
     }
   },
   { 
-    header: 'Actions', 
+    header: 'Actions',
     accessor: 'id',
     cell: ({ row }) => {
       // Ne pas montrer les options d'inscription pour les compétitions terminées ou annulées
-      if (row.status === 'COMPLETED' || row.status === 'CANCELLED') {
+      if ( row.status !== 'REGISTRATION') {
         return (
           <Button
-            onClick={() => router.push(`/dashboard/coach/competitions/${row.id}`)}
+            onClick={() => router.push(`/competitions/${row.id}`)}
             className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1"
           >
             Détails
@@ -420,7 +328,7 @@ const competitionColumns = [
               Mes demandes
               {requestsData.filter(r => r.requestStatus === 'PENDING').length > 0 && (
                 <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  {requestsData.filter(r => r.requestStatus === 'PENDING').length}
+                  {requestsData.filter(r => r.requestStatus === 'PENDING' || r.requestStatus==='REJECTED').length}
                 </span>
               )}
             </button>

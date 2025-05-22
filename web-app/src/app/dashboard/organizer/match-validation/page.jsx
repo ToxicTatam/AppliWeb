@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { validateMatchSheet } from '@/services/match-service';
 import Card from '@/components/ui/Card';
@@ -15,6 +15,8 @@ import Modal from '@/components/ui/Modal';
 export default function MatchValidationPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const matchId = searchParams.get('matchId');
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

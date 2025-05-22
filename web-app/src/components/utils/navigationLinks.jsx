@@ -33,7 +33,6 @@ export const getNavigationLinks = (user, hasRole, userRoles) => {
     if (hasRole(userRoles.PLAYER) || hasRole(userRoles.COACH) || hasRole(userRoles.ORGANIZER) || hasRole(userRoles.ADMIN)) {
       links.push(
         { name: 'Messagerie', href: '/dashboard/messages', icon: 'message' },
-        { name: 'Notifications', href: '/dashboard/notifications', icon: 'notification' }
       );
     }
     
@@ -53,7 +52,7 @@ export const getNavigationLinks = (user, hasRole, userRoles) => {
       links.push(
         { name: 'Gestion de compétitions', href: '/dashboard/organizer/competitions', icon: 'manage-competitions' },
         { name: 'Gestion de matchs', href: '/dashboard/organizer/matches', icon: 'manage-matches' },
-        { name: 'Validation des Feuilles de Match', href: '/dashboard/organizer/validation-match', icon: 'validation-match' },
+        { name: 'Validation des Feuilles de Match', href: '/dashboard/organizer/match-validation', icon: 'validation-match' },
       );
     }
     

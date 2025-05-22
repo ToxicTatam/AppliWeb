@@ -160,7 +160,7 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
                 </Link>
                 {match.matchSheetStatus === 'SUBMITTED' && (
                   <Link 
-                    href={`/dashboard/organizer/matches/match-validation?${match.id}`}
+                    href={`/dashboard/organizer/matches/match-validation?matchId=${match.id}`}
                     className="inline-block px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
                   >
                     Valider la feuille de match
@@ -225,7 +225,7 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
             Informations
           </button>
           
-          {true && (
+        
             <button
               onClick={() => handleTabChange('matchsheet')}
               className={`px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap ${
@@ -236,7 +236,7 @@ const MatchDetails = ({ matchId, teamId, isUserView = true }) => {
             >
               Feuille de match
             </button>
-          )}
+          
           
           {match.status === 'COMPLETED' && (
             <button

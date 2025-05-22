@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { getMatchesByOrganizer } from '@/services/match-service';
+import { getCompetitionsByOrganizer } from '@/services/competition-service';
+import { getMatchesByCompetitionId } from '@/services/match-service';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -15,6 +16,8 @@ export default function OrganizerMatchesPage() {
   const router = useRouter();
   const { user } = useAuth();
   
+  const [competitions, setCompetitions] = useState([]);
+  const [selectedCompetition, setSelectedCompetition] = useState(null);
   const [matches, setMatches] = useState([]);
   const [filteredMatches, setFilteredMatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +25,6 @@ export default function OrganizerMatchesPage() {
   const [alertInfo, setAlertInfo] = useState({ show: false, message: '', type: '' });
   
   const [filters, setFilters] = useState({
-    competitionId: '',
     status: '',
     team: '',
     dateFrom: '',
@@ -35,37 +37,54 @@ export default function OrganizerMatchesPage() {
       return;
     }
 
-    fetchMatches();
+    fetchCompetitions();
   }, [user, router]);
+
+  useEffect(() => {
+    if (selectedCompetition) {
+      fetchMatchesForCompetition(selectedCompetition.id);
+    }
+  }, [selectedCompetition]);
 
   useEffect(() => {
     applyFilters();
   }, [matches, filters]);
 
-  const fetchMatches = async () => {
+  const fetchCompetitions = async () => {
     try {
       setLoading(true);
-      const matchesData = await getMatchesByOrganizer(user.id);
-      setMatches(matchesData || []);
-      setFilteredMatches(matchesData || []);
+      const response = await getCompetitionsByOrganizer(user.id);
+      setCompetitions(response.competitions || []);
       setError(null);
     } catch (err) {
-      console.error('Erreur lors de la récupération des matchs:', err);
-      setError('Impossible de récupérer vos matchs. Veuillez réessayer plus tard.');
+      console.error('Erreur lors de la récupération des compétitions:', err);
+    //  setError('Impossible de récupérer vos compétitions. Veuillez réessayer plus tard.');
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchMatchesForCompetition = async (competitionId) => {
+    try {
+      setLoading(true);
+      const matchesData = await getMatchesByCompetitionId(competitionId);
+      setMatches(matchesData || []);
+      setFilteredMatches(matchesData || []);
+      setError(null);
+    } catch (err) {
+      //console.error('Erreur lors de la récupération des matchs:', err);
+      setError('Impossible de récupérer les matchs pour cette compétition. Veuillez réessayer plus tard.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompetitionSelect = (competition) => {
+    setSelectedCompetition(competition);
+  };
+
   const applyFilters = () => {
     let filtered = [...matches];
-    
-    if (filters.competitionId) {
-      filtered = filtered.filter(match => 
-        match.competitionId === parseInt(filters.competitionId) ||
-        match.competitionName?.toLowerCase().includes(filters.competitionId.toLowerCase())
-      );
-    }
     
     if (filters.status) {
       filtered = filtered.filter(match => match.status === filters.status);
@@ -131,7 +150,6 @@ export default function OrganizerMatchesPage() {
 
   const matchColumns = [
     { header: 'Match', accessor: 'title' },
-    { header: 'Compétition', accessor: 'competitionName' },
     { header: 'Date', accessor: (row) => {
       if (!row.scheduledDateTime) return 'Non planifié';
       return new Date(row.scheduledDateTime).toLocaleDateString('fr-FR', { 
@@ -184,13 +202,97 @@ export default function OrganizerMatchesPage() {
     );
   }
 
+  // Afficher la liste des compétitions si aucune n'est sélectionnée
+  if (!selectedCompetition) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-6">Gestion des matchs</h1>
+          <h2 className="text-xl font-semibold mb-4">Sélectionnez une compétition</h2>
+        </div>
+        
+        {error && (
+          <Alert 
+            type="error" 
+            message={error} 
+            onClose={() => setError(null)}
+            className="mb-6"
+          />
+        )}
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {competitions.length === 0 ? (
+            <div className="col-span-3 bg-gray-50 rounded-lg p-8 text-center">
+              <p className="text-gray-500 mb-4">Vous n'avez pas encore créé de compétition</p>
+              <Button 
+                onClick={() => router.push('/dashboard/organizer/competitions/create')}
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                Créer une compétition
+              </Button>
+            </div>
+          ) : (
+            competitions.map(competition => (
+              <Card key={competition.id} className="hover:shadow-lg transition-shadow duration-300">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold mb-2">{competition.name}</h3>
+                  <p className="text-gray-600 mb-3 line-clamp-2">{competition.description || 'Aucune description'}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className={`px-2 py-1 rounded-full text-xs 
+                      ${competition.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
+                      competition.status === 'UPCOMING' ? 'bg-blue-100 text-blue-800' :
+                      competition.status === 'COMPLETED' ? 'bg-purple-100 text-purple-800' :
+                      'bg-gray-100 text-gray-800'}`}>
+                      {competition.status}
+                    </span>
+                    <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
+                      {competition.registeredTeams}/{competition.maxTeams} équipes
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-gray-500">
+                      {competition.totalMatches} matchs ({competition.completedMatches} terminés)
+                    </div>
+                    <Button 
+                      onClick={() => handleCompetitionSelect(competition)}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      Voir les matchs
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Afficher les matchs de la compétition sélectionnée
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <button 
+          onClick={() => setSelectedCompetition(null)}
+          className="flex items-center text-blue-600 hover:text-blue-800"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Retour aux compétitions
+        </button>
+      </div>
+
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Gestion des matchs</h1>
+        <div>
+          <h1 className="text-2xl font-bold">{selectedCompetition.name}</h1>
+          <p className="text-gray-600">Gestion des matchs</p>
+        </div>
         <Button 
-          onClick={() => router.push('/dashboard/organizer/matches/schedule')}
+          onClick={() => router.push(`/dashboard/organizer/matches/schedule?competitionId=${selectedCompetition.id}`)}
           className="bg-purple-600 hover:bg-purple-700"
+          disabled={selectedCompetition.status === 'COMPLETED'}
         >
           Programmer un match
         </Button>
@@ -218,14 +320,6 @@ export default function OrganizerMatchesPage() {
         <div className="p-6">
           <h2 className="text-lg font-semibold mb-4">Filtres</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Input
-              label="Compétition"
-              name="competitionId"
-              value={filters.competitionId}
-              onChange={handleFilterChange}
-              placeholder="Nom ou ID de la compétition"
-            />
-            
             <Input
               label="Équipe"
               name="team"
@@ -278,24 +372,26 @@ export default function OrganizerMatchesPage() {
           
           {filteredMatches.length === 0 ? (
             <div className="bg-gray-50 rounded-lg p-8 text-center">
-              <p className="text-gray-500 mb-4">Aucun match trouvé avec les filtres actuels</p>
-              <Button 
-                onClick={() => router.push('/dashboard/organizer/matches/schedule')}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
-                Programmer un match
-              </Button>
+              <p className="text-gray-500 mb-4">Aucun match trouvé pour cette compétition</p>
+              {selectedCompetition.status !== 'COMPLETED' && (
+                <Button 
+                  onClick={() => router.push(`/dashboard/organizer/matches/schedule?competitionId=${selectedCompetition.id}`)}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  Programmer un match
+                </Button>
+              )}
             </div>
           ) : (
             <Table 
               columns={matchColumns} 
               data={filteredMatches}
               pagination={{ itemsPerPage: 10 }}
-              emptyMessage="Aucun match trouvé"
+              emptyState={<div className="text-center py-4 text-gray-500">Aucun match trouvé</div>}
             />
           )}
         </div>
       </Card>
     </div>
   );
-} 
+}

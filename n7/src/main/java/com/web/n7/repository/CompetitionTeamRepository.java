@@ -74,4 +74,5 @@ public interface CompetitionTeamRepository extends JpaRepository<CompetitionTeam
      */
     @Query("SELECT COUNT(ct) FROM CompetitionTeam ct WHERE ct.competition.id = :id")
     int countByCompetitionId(Long id);
+    
 }

@@ -72,14 +72,13 @@ export default function RegisterCompetitionPage() {
     try {
       setSubmitting(true);
       setError(null);
-      
+      console.log('Soumission de la demande d\'inscription:', { teamId, competitionId, reason });
       await requestTeamRegistration(user.id, teamId, competitionId, reason);
       
       // Rediriger vers la page des compétitions avec un message de succès
       router.push(`/dashboard/coach/competitions?success=registration&teamId=${teamId}`);
     } catch (err) {
-      console.error('Erreur lors de la demande d\'inscription:', err);
-      setError('Impossible de soumettre la demande d\'inscription. Veuillez réessayer plus tard.');
+      setError('Impossible de soumettre la demande d\'inscription. Veuillez réessayer plus tard ou contacter le promoteur de la competition.');
     } finally {
       setSubmitting(false);
     }

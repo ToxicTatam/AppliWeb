@@ -74,7 +74,7 @@ const MatchSheetPlayerTable = ({ starters, substitutes }) => {
                   {player.playerName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {getPositionLabel(player.positionPlayed)}
+                  {getPositionLabel(player.position)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {player.minutesPlayed}

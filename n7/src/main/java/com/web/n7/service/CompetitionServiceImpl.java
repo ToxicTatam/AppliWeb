@@ -441,7 +441,7 @@ public class CompetitionServiceImpl implements CompetitionService {
             throw new IllegalStateException("Cette équipe est déjà inscrite à cette compétition");
         }
         
-        // Vérifier qu'il n'y a pas déjà une demande en attente
+       // Vérifier qu'il n'y a pas déjà une demande en attente
         if (competitionRequestRepository.existsByTeamIdAndCompetitionIdAndRequestTypeAndRequestStatus(
                 teamId, competitionId, RequestType.REGISTRATION, RequestStatus.PENDING)) {
             throw new IllegalStateException("Une demande d'inscription est déjà en attente pour cette équipe");

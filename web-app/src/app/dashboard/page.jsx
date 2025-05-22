@@ -122,7 +122,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Cartes d'information principales */}
+      {/* Cartes d'information principales
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <CardInfo 
           title="Compétitions" 
@@ -148,26 +148,9 @@ export default function DashboardPage() {
           icon="⚽" 
           href="/matches" 
         />
-      </div>
+      </div> */}
 
-      {/* Matchs à venir */}
-      <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
-        <h2 className="text-lg font-medium mb-4">Matchs à venir</h2>
-        {recentMatches.length > 0 ? (
-          <div className="space-y-3">
-            {recentMatches.map(match => (
-              <MatchItem key={match.id} match={match} />
-            ))}
-            <div className="text-center mt-4">
-              <Link href="/matches" className="text-indigo-600 hover:underline">
-                Voir tous les matchs
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <p className="text-gray-500 text-center py-4">Aucun match à venir</p>
-        )}
-      </div>
+
 
       {/* Actions rapides simplifiées */}
       {hasAccess(['COACH', 'ORGANIZER', 'ADMIN']) && (

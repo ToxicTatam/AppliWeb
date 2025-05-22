@@ -137,7 +137,7 @@ public class CompetitionController {
             @PathVariable Long coachId, 
             @PathVariable Long teamId, 
             @PathVariable Long competitionId,
-            @RequestParam String reason) {
+            @RequestBody String reason) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(competitionService.requestTeamRegistration(coachId, teamId, competitionId, reason));
     }
