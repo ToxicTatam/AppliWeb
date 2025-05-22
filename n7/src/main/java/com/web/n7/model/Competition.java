@@ -62,9 +62,11 @@ public class Competition {
     private Organizer organizer;
 
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<CompetitionTeam> competitionTeams = new ArrayList<>();
 
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Match> matches = new ArrayList<>();
 
     @Column(name = "created_at")

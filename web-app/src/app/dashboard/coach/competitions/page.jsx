@@ -117,7 +117,7 @@ const competitionColumns = [
       }
       
       const statusText = {
-        'UPCOMING': 'À venir',
+        'UPCOMING': 'A venir',
         'REGISTRATION': 'Inscriptions ouvertes',
         'IN_PROGRESS': 'En cours',
         'COMPLETED': 'Terminée',
@@ -146,7 +146,7 @@ const competitionColumns = [
     accessor: 'id',
     cell: ({ row }) => {
       // Ne pas montrer les options d'inscription pour les compétitions terminées ou annulées
-      if ( row.status !== 'REGISTRATION') {
+      if (row.status !== 'REGISTRATION' && row.status !== 'UPCOMING') {
         return (
           <Button
             onClick={() => router.push(`/competitions/${row.id}`)}
@@ -164,7 +164,7 @@ const competitionColumns = [
         req.requestType === 'REGISTRATION' &&
         req.requestStatus !== 'REJECTED'
       );
-      
+      console.log('Team Request:', teamRequest);
       return (
         <div className="flex space-x-2">
           <Button
@@ -173,7 +173,7 @@ const competitionColumns = [
           >
             Détails
           </Button>
-          {row.status === 'REGISTRATION' && !teamRequest && (
+          {(row.status === 'REGISTRATION' || row.status === 'UPCOMING') && !teamRequest && (
             <Button
               onClick={() => handleRegisterClick(row.id)}
               className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"
@@ -203,10 +203,10 @@ const competitionColumns = [
   const requestColumns = [
     { header: 'Équipe', accessor: 'teamName' },
     { header: 'Compétition', accessor: 'competitionName' },
-    { header: 'Type', accessor: 'requestType', render: (value) => {
+    { header: 'Type', accessor: 'requestType', cell: ({ value }) => {
       return value === 'REGISTRATION' ? 'Inscription' : 'Retrait';
     }},
-    { header: 'Statut', accessor: 'requestStatus', render: (value) => {
+    { header: 'Statut', accessor: 'requestStatus', cell: ({ value }) => {
       let color = '';
       switch (value) {
         case 'PENDING': color = 'bg-yellow-100 text-yellow-800'; break;
@@ -227,10 +227,11 @@ const competitionColumns = [
         </span>
       );
     }},
-    { header: 'Raison', accessor: 'reason' },
-    { header: 'Date', accessor: (row) => {
-      return new Date(row.createdAt).toLocaleDateString('fr-FR');
-    }}
+      { 
+        header: 'Date', 
+        accessor: 'id', // Utilisez un champ simple comme accessor
+        cell: ({ row }) => new Date(row.createdAt).toLocaleDateString('fr-FR')
+      }
   ];
 
   if (loading) {

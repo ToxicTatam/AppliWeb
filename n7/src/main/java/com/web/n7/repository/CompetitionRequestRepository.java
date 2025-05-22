@@ -84,6 +84,9 @@ public interface CompetitionRequestRepository extends JpaRepository<CompetitionR
      * @return true si la demande existe, false sinon
      */
     @Query("SELECT CASE WHEN COUNT(cr) > 0 THEN true ELSE false END FROM CompetitionRequest cr WHERE cr.team.id = :teamId AND cr.competition.id = :competitionId AND cr.requestType = :requestType AND cr.requestStatus = :requestStatus")
-    boolean existsByTeamIdAndCompetitionIdAndRequestTypeAndRequestStatus(Long teamId, Long competitionId,
-            RequestType registration, RequestStatus pending);
+    boolean existsByTeamIdAndCompetitionIdAndRequestTypeAndRequestStatus(
+            @Param("teamId") Long teamId, 
+            @Param("competitionId") Long competitionId,
+            @Param("requestType") RequestType requestType, 
+            @Param("requestStatus") RequestStatus requestStatus);
 }

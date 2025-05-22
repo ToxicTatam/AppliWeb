@@ -114,6 +114,7 @@ export default function EditCompetitionPage() {
       }
       
       // Mise à jour de la compétition
+      console.log('Données de la compétition à mettre à jour:', formData);
       await updateCompetition(user.id, competitionId, formData);
       
       setSuccess(true);
@@ -209,10 +210,7 @@ export default function EditCompetitionPage() {
               >
                 <option value="SENIOR">Senior</option>
                 <option value="JUNIOR">Junior</option>
-                <option value="CADET">Cadet</option>
-                <option value="MINIME">Minime</option>
-                <option value="BENJAMIN">Benjamin</option>
-                <option value="POUSSIN">Poussin</option>
+                <option value="VETERAN">Veteran</option>
               </select>
             </div>
             
@@ -298,4 +296,4 @@ export default function EditCompetitionPage() {
       </Card>
     </div>
   );
-} 
+}

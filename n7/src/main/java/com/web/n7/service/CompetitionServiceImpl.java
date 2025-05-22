@@ -25,6 +25,7 @@ import com.web.n7.model.Match;
 import com.web.n7.model.Team;
 import com.web.n7.model.enumeration.competition.CompetitionStatus;
 import com.web.n7.model.enumeration.competition.CompetitionTeamStatus;
+import com.web.n7.model.enumeration.competition.CompetitionType;
 import com.web.n7.model.enumeration.competition.RequestStatus;
 import com.web.n7.model.enumeration.competition.RequestType;
 import com.web.n7.model.users.Coach;
@@ -61,6 +62,12 @@ public class CompetitionServiceImpl implements CompetitionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Organisateur non trouvé avec l'ID: " + organizerId));
         
         // Créer et sauvegarder la nouvelle compétition
+        CompetitionType competitionType = competitionDTO.getCompetitionType();
+        if (competitionType == null) {
+            // Définir une valeur par défaut si le type est null
+            competitionType = CompetitionType.TOURNAMENT;
+        }
+        
         Competition competition = Competition.builder()
                 .name(competitionDTO.getName())
                 .description(competitionDTO.getDescription())
@@ -68,7 +75,7 @@ public class CompetitionServiceImpl implements CompetitionService {
                 .endDate(competitionDTO.getEndDate())
                 .location(competitionDTO.getLocation())
                 .maxTeams(competitionDTO.getMaxTeams())
-                .type(competitionDTO.getCompetitionType())
+                .type(competitionType)
                 .status(CompetitionStatus.UPCOMING) // Statut initial
                 .organizer(organizer)
                 .createdAt(LocalDateTime.now())
@@ -105,7 +112,12 @@ public class CompetitionServiceImpl implements CompetitionService {
         competition.setEndDate(competitionDTO.getEndDate());
         competition.setLocation(competitionDTO.getLocation());
         competition.setMaxTeams(competitionDTO.getMaxTeams());
-        competition.setType(competitionDTO.getCompetitionType());
+        
+        // Ne pas écraser le type de compétition avec une valeur nulle
+        if (competitionDTO.getCompetitionType() != null) {
+            competition.setType(competitionDTO.getCompetitionType());
+        }
+        
         competition.setUpdatedAt(LocalDateTime.now());
         
         Competition updatedCompetition = competitionRepository.save(competition);
