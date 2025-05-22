@@ -140,6 +140,13 @@ export default function PlayersPage() {
         >
           Enregistrer un joueur
         </Button>
+
+         <Button
+          onClick={() => router.push(`/dashboard/coach/players/transfer`)}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          Effectuer un transfert de joueur
+        </Button>
       </div>
 
       {alertInfo.show && (

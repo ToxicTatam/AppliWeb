@@ -101,8 +101,32 @@ export default function MatchSheetDetailPage() {
     });
   };
 
+  // Vérifier si un numéro de maillot est déjà utilisé par un autre joueur
+  const checkDuplicateShirtNumbers = (selections) => {
+    // Récupérer tous les numéros de maillot renseignés
+    const shirtNumbers = selections
+      .filter(player => player.shirtNumber)
+      .map(player => player.shirtNumber);
+    
+    // Vérifier si des doublons existent
+    const duplicates = shirtNumbers.filter((number, index) => shirtNumbers.indexOf(number) !== index);
+    
+    if (duplicates.length > 0) {
+      return `Numéro(s) de maillot en double: ${[...new Set(duplicates)].join(', ')}. Chaque joueur doit avoir un numéro unique.`;
+    }
+    
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Vérifier les doublons de numéros de maillot
+    const duplicateError = checkDuplicateShirtNumbers(playerSelections);
+    if (duplicateError) {
+      setError(duplicateError);
+      return;
+    }
     
     try {
       setSubmitting(true);
@@ -139,6 +163,13 @@ export default function MatchSheetDetailPage() {
 
     if (hasInvalidPlayers) {
       setError('Tous les joueurs doivent avoir un statut. Les titulaires doivent avoir un numéro de maillot.');
+      return;
+    }
+
+    // Vérifier les doublons de numéros de maillot
+    const duplicateError = checkDuplicateShirtNumbers(playerSelections);
+    if (duplicateError) {
+      setError(duplicateError);
       return;
     }
 
@@ -457,15 +488,25 @@ export default function MatchSheetDetailPage() {
                           </select>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <input
-                            type="number"
-                            min="1"
-                            max="99"
-                            value={player.shirtNumber || ''}
-                            onChange={(e) => handlePlayerStatusChange(player.playerId, 'shirtNumber', e.target.value ? parseInt(e.target.value) : '')}
-                            className={`w-20 px-2 py-1 border border-gray-300 rounded-md text-sm ${!isEditable ? 'bg-gray-100' : ''}`}
-                            disabled={!isEditable || player.status !== 'STARTER'}
-                          />
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="1"
+                              max="99"
+                              value={player.shirtNumber || ''}
+                              onChange={(e) => handlePlayerStatusChange(player.playerId, 'shirtNumber', e.target.value ? parseInt(e.target.value) : '')}
+                              className={`w-20 px-2 py-1 border ${
+                                // Vérifier si ce numéro est un doublon
+                                player.shirtNumber && playerSelections.filter(p => p.shirtNumber === player.shirtNumber).length > 1 
+                                  ? 'border-red-500 bg-red-50' 
+                                  : 'border-gray-300'
+                              } rounded-md text-sm ${!isEditable ? 'bg-gray-100' : ''}`}
+                              disabled={!isEditable}
+                            />
+                            {player.shirtNumber && playerSelections.filter(p => p.shirtNumber === player.shirtNumber).length > 1 && (
+                              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs" title="Numéro en double">!</span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
