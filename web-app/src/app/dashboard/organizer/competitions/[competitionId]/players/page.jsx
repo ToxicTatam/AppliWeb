@@ -325,7 +325,7 @@ export default function CompetitionPlayersPage() {
             <Table 
               columns={playerColumns} 
               data={filteredPlayers} 
-              emptyMessage="Aucun joueur trouvé avec les filtres actuels"
+             emptyState={<div className="text-center py-4 text-gray-500">Aucun joueur trouvé</div>}
             />
           )}
         </div>

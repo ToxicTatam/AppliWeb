@@ -385,7 +385,7 @@ export default function CompetitionDetailsPage({ params }) {
             <Table 
               columns={matchColumns} 
               data={matches} 
-              emptyMessage="Aucun match programmé"
+              emptyState={<div className="text-center py-4 text-gray-500">Aucun match programmé</div>}
             />
           )}
         </div>

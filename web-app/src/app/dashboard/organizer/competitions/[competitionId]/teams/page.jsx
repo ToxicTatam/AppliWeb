@@ -302,7 +302,7 @@ export default function CompetitionTeamsPage() {
             <Table 
               columns={teamColumns} 
               data={filteredTeams} 
-              emptyMessage="Aucune équipe trouvée avec les filtres actuels"
+             emptyState={<div className="text-center py-4 text-gray-500">Aucune équipe trouvée avec les filtres actuels</div>}
             />
           )}
         </div>

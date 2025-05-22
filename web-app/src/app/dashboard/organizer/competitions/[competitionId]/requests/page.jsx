@@ -245,7 +245,7 @@ export default function CompetitionRequestsPage() {
             <Table 
               columns={requestColumns} 
               data={requests} 
-              emptyMessage="Aucune demande trouvée"
+              emptyState={<div className="text-center py-4 text-gray-500">Aucune demande trouvée</div>}
             />
           )}
         </div>
