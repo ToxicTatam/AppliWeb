@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams    } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { getCompetitionById, processCompetitionRequest } from '@/services/competition-service';
+import { getCompetitionById, processCompetitionRequest, getRequestsByCompetitionId } from '@/services/competition-service';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
@@ -44,18 +44,14 @@ export default function CompetitionRequestsPage() {
       const competitionData = await getCompetitionById(competitionId);
       setCompetition(competitionData);
       
-      // Simuler la récupération des demandes
-      // Dans une vraie application, cela viendrait d'une API
-      if (competitionData.requests) {
-        setRequests(competitionData.requests);
-      } else {
-        // Simulation de données pour le développement
-        setRequests([]);
-      }
+      // Récupérer les demandes pour cette compétition
+      const requestsData = await getRequestsByCompetitionId(user.id, competitionId);
+      console.log('Demandes récupérées:', requestsData);
+      setRequests(requestsData || []);
       
       setError(null);
     } catch (err) {
-   //   console.error('Erreur lors de la récupération des données:', err);
+      console.error('Erreur lors de la récupération des données:', err);
       setError('Impossible de récupérer les données. Veuillez réessayer plus tard.');
     } finally {
       setLoading(false);
@@ -132,18 +128,17 @@ export default function CompetitionRequestsPage() {
 
   const requestColumns = [
     { header: 'Équipe', accessor: 'teamName' },
-    { header: 'Coach', accessor: 'coachName' },
-    { header: 'Type', accessor: 'type', render: (value) => (
+    { header: 'Type', accessor: 'requestType', cell: ({ value }) => (
       <span>{getRequestTypeLabel(value)}</span>
     )},
-    { header: 'Statut', accessor: 'status', render: (value) => (
+    { header: 'Statut', accessor: 'requestStatus', cell: ({ value }) => (
       <span className={`px-2 py-1 rounded-full text-xs ${getRequestStatusColor(value)}`}>
         {value === 'PENDING' ? 'En attente' :
          value === 'APPROVED' ? 'Approuvée' :
          value === 'REJECTED' ? 'Refusée' : value}
       </span>
     )},
-    { header: 'Date', accessor: 'createdAt', render: (value) => (
+    { header: 'Date', accessor: 'createdAt', cell: ({ value }) => (
       <span>{new Date(value).toLocaleDateString('fr-FR', { 
         day: 'numeric', 
         month: 'short', 
@@ -152,11 +147,11 @@ export default function CompetitionRequestsPage() {
         minute: '2-digit'
       })}</span>
     )},
-    { header: 'Raison', accessor: 'reason', render: (value) => (
+    { header: 'Raison', accessor: 'reason', cell: ({ value }) => (
       <div className="max-w-xs truncate" title={value}>{value}</div>
     )},
-    { header: 'Actions', accessor: (row) => (
-      row.status === 'PENDING' ? (
+    { header: 'Actions', accessor: 'requestStatus', cell: ({ row }) => (
+      row.requestStatus === 'PENDING' ? (
         <div className="flex space-x-2">
           <Button
             onClick={() => handleOpenModal(row, 'approve')}

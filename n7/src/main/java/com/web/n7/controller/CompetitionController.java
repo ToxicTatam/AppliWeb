@@ -130,6 +130,14 @@ public class CompetitionController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ORGANIZER')")
+    @GetMapping("/organizer/{organizerId}/competition/{competitionId}/requests")
+    public ResponseEntity<List<CoachCompetitionRequestDTO>> getRequestsByCompetitionId(
+            @PathVariable Long organizerId,
+            @PathVariable Long competitionId) {
+        return ResponseEntity.ok(competitionService.getRequestsByCompetitionId(organizerId, competitionId));
+    }
+
     // Endpoints pour les coachs
     @PreAuthorize("hasRole('COACH')")
     @PostMapping("/coach/{coachId}/team/{teamId}/register/{competitionId}")

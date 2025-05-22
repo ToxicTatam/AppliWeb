@@ -193,7 +193,6 @@ export default function EditCompetitionPage() {
                 <option value="LEAGUE">Championnat</option>
                 <option value="TOURNAMENT">Tournoi</option>
                 <option value="CUP">Coupe</option>
-                <option value="FRIENDLY">Amical</option>
               </select>
             </div>
             
@@ -208,9 +207,9 @@ export default function EditCompetitionPage() {
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="SENIOR">Senior</option>
-                <option value="JUNIOR">Junior</option>
-                <option value="VETERAN">Veteran</option>
+                <option value="SENIOR">SENIOR</option>
+                <option value="JUNIOR">JUNIOR</option>
+                <option value="VETERAN">VETERAN</option>
               </select>
             </div>
             

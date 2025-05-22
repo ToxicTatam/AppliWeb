@@ -772,4 +772,30 @@ public class CompetitionServiceImpl implements CompetitionService {
                 .processedAt(request.getProcessedAt() != null ? request.getProcessedAt().toString() : null)
                 .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CoachCompetitionRequestDTO> getRequestsByCompetitionId(Long organizerId, Long competitionId) {
+        // Vérifier que l'organisateur existe
+        Organizer organizer = userRepository.findById(organizerId)
+                .filter(user -> user instanceof Organizer)
+                .map(user -> (Organizer) user)
+                .orElseThrow(() -> new ResourceNotFoundException("Organisateur non trouvé avec l'ID: " + organizerId));
+        
+        // Récupérer la compétition et vérifier qu'elle appartient à l'organisateur
+        Competition competition = competitionRepository.findById(competitionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Compétition non trouvée avec l'ID: " + competitionId));
+        
+        if (!competition.getOrganizer().getId().equals(organizerId)) {
+            throw new UnauthorizedException("Cette compétition n'appartient pas à cet organisateur");
+        }
+        
+        // Récupérer toutes les demandes pour cette compétition
+        List<CompetitionRequest> requests = competitionRequestRepository.findByCompetitionId(competitionId);
+        
+        // Convertir les entités en DTOs et retourner
+        return requests.stream()
+                .map(this::mapToCoachCompetitionRequestDTO)
+                .collect(Collectors.toList());
+    }
 }

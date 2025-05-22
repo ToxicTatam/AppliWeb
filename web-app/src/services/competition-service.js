@@ -141,6 +141,17 @@ export const processCompetitionRequest = async (organizerId, requestId, approved
   );
 };
 
+/**
+ * Récupère les demandes d'inscription/retrait d'une compétition pour un organisateur
+ * @param {number} organizerId - ID de l'organisateur
+ * @param {number} competitionId - ID de la compétition
+ * @returns {Promise<Array>} - Liste des demandes
+ */
+export const getRequestsByCompetitionId = async (organizerId, competitionId) => {
+  const response = await api.get(endpoints.competitions.organizer.requests(organizerId, competitionId));
+  return response;
+};
+
 // Méthodes pour les coachs
 /**
  * Demande l'inscription d'une équipe à une compétition (coach)

@@ -146,7 +146,7 @@ const competitionColumns = [
     accessor: 'id',
     cell: ({ row }) => {
       // Ne pas montrer les options d'inscription pour les compétitions terminées ou annulées
-      if (row.status !== 'REGISTRATION' && row.status !== 'UPCOMING') {
+      if (row.status !== 'REGISTRATION') {
         return (
           <Button
             onClick={() => router.push(`/competitions/${row.id}`)}
@@ -173,7 +173,7 @@ const competitionColumns = [
           >
             Détails
           </Button>
-          {(row.status === 'REGISTRATION' || row.status === 'UPCOMING') && !teamRequest && (
+          {(row.status === 'REGISTRATION' ) && !teamRequest && (
             <Button
               onClick={() => handleRegisterClick(row.id)}
               className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1"

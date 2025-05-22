@@ -166,12 +166,9 @@ export default function CreateCompetitionPage() {
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="SENIOR">Senior</option>
-                <option value="JUNIOR">Junior</option>
-                <option value="CADET">Cadet</option>
-                <option value="MINIME">Minime</option>
-                <option value="BENJAMIN">Benjamin</option>
-                <option value="POUSSIN">Poussin</option>
+                <option value="SENIOR">SENIOR</option>
+                <option value="JUNIOR">JUNIOR</option>
+                <option value="VETERAN">VETERAN</option>
               </select>
             </div>
             

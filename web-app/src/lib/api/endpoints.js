@@ -55,6 +55,8 @@ const competitionsEndpoints = {
     updateStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/status?reason=${reason}`,
     updateTeamStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/team-status?reason=${reason}`,
     processRequest: (organizerId, requestId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}?reason=${reason}`,
+    requests: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/competition/${competitionId}/requests`,
+  
   },
   
   // Endpoints pour les coachs

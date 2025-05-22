@@ -44,5 +44,8 @@ public interface CompetitionService {
     List<CompetitionDTO> getAllCompetitions(CompetitionFilter filter);
 
     List<CompetitionDTO> getCompetitionsByUserId(Long userId);
+    
+    // Récupération des demandes par compétition (pour les organisateurs)
+    List<CoachCompetitionRequestDTO> getRequestsByCompetitionId(Long organizerId, Long competitionId);
 
 }
