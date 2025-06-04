@@ -22,9 +22,10 @@ import {
   Person,
   MeetingRoom
 } from '@mui/icons-material';
-import   * as  MessageService from '../../services/message-service';
-import  * as  TeamService from '../../services/team-service';
-import  * as  CompetitionService from '../../services/competition-service';
+import { sendMessage } from '../../services/message-service';
+import { getTeamsByPlayer, getAllCoachTeams } from '../../services/team-service';
+import { getCompetitionsByUserId } from '../../services/competition-service';
+import { getAllUsers } from '../../services/user-service';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotification } from '../../hooks/useNotification';
 
@@ -68,25 +69,27 @@ const MessageComposer = ({
     const loadInitialData = async () => {
       setLoading(true);
       try {
-        // Récupérer les catégories de destinataires disponibles pour ce rôle
-        const availableCategories = await MessageService.getAvailableRecipientCategories(user.role);
-        setRecipientCategories(availableCategories || []);
+        // Définir les catégories de destinataires disponibles selon le rôle
+        const availableCategories = getAvailableCategoriesForRole(user.role);
+        setRecipientCategories(availableCategories);
         
-        // Charger les destinataires potentiels
-        loadPotentialRecipients();
+        // Charger les destinataires potentiels pour les messages individuels
+        if (formData.recipientCategory === 'INDIVIDUAL') {
+          await loadPotentialRecipients();
+        }
         
         // Charger les équipes si l'utilisateur est un joueur ou un coach
         if (user.role === 'PLAYER') {
-          const teamsResponse = await TeamService.getTeamsByPlayer(user.id);
+          const teamsResponse = await getTeamsByPlayer(user.id);
           setTeams(teamsResponse || []);
         } else if (user.role === 'COACH') {
-          const teamsResponse = await TeamService.getAllCoachTeams(user.id);
+          const teamsResponse = await getAllCoachTeams(user.id);
           setTeams(teamsResponse || []);
         }
         
         // Charger les compétitions si l'utilisateur est un organisateur
         if (user.role === 'ORGANIZER') {
-          const competitionsResponse = await CompetitionService.getCompetitionsByUserId(user.id);
+          const competitionsResponse = await getCompetitionsByUserId(user.id);
           setCompetitions(competitionsResponse || []);
         }
       } catch (err) {
@@ -100,43 +103,53 @@ const MessageComposer = ({
     loadInitialData();
   }, [user.role]);
   
+  // Définir les catégories disponibles selon le rôle
+  const getAvailableCategoriesForRole = (userRole) => {
+    switch (userRole) {
+      case 'PLAYER':
+        return ['INDIVIDUAL', 'TEAM'];
+      case 'COACH':
+        return ['INDIVIDUAL', 'TEAM', 'TEAM_WITH_COACH'];
+      case 'ORGANIZER':
+        return ['INDIVIDUAL', 'TEAM', 'TEAM_WITH_COACH', 'ALL_COACHES', 'ALL_PLAYERS', 'COMPETITION_COACHES', 'GLOBAL'];
+      default:
+        return ['INDIVIDUAL'];
+    }
+  };
+  
   // Charger les destinataires potentiels en fonction de la catégorie sélectionnée
   const loadPotentialRecipients = async (filters = {}) => {
     try {
-      // Préparation des filtres spécifiques au rôle
-      const roleSpecificFilters = {};
-      
       if (formData.recipientCategory === 'TEAM' || formData.recipientCategory === 'TEAM_WITH_COACH') {
-        // Pour un joueur ou coach envoyant à une équipe, pas besoin de charger les destinataires individuels
         return;
       }
       
       if (formData.recipientCategory === 'INDIVIDUAL') {
-        // Définir les rôles cibles selon le rôle de l'utilisateur actuel
+        // Récupérer tous les utilisateurs et filtrer selon le rôle
+        const allUsers = await getAllUsers();
+        let filteredUsers = [];
+        
         if (user.role === 'PLAYER') {
           // Un joueur peut envoyer à un coach ou un organisateur
-          roleSpecificFilters.targetRole = filters.targetRole || 'COACH';
+          filteredUsers = allUsers.filter(u => u.role === 'COACH' || u.role === 'ORGANIZER');
         } else if (user.role === 'COACH') {
           // Un coach peut envoyer à un joueur ou un organisateur
-          roleSpecificFilters.targetRole = filters.targetRole || 'PLAYER';
+          filteredUsers = allUsers.filter(u => u.role === 'PLAYER' || u.role === 'ORGANIZER');
         } else if (user.role === 'ORGANIZER') {
           // Un organisateur peut envoyer à un coach ou un joueur
-          roleSpecificFilters.targetRole = filters.targetRole || 'COACH';
+          filteredUsers = allUsers.filter(u => u.role === 'COACH' || u.role === 'PLAYER');
         }
+        
+        // Filtrer par recherche si nécessaire
+        if (filters.search) {
+          filteredUsers = filteredUsers.filter(u => 
+            u.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+            u.email.toLowerCase().includes(filters.search.toLowerCase())
+          );
+        }
+        
+        setPotentialRecipients(filteredUsers);
       }
-      
-      // Si une recherche est en cours
-      if (filters.search) {
-        roleSpecificFilters.search = filters.search;
-      }
-      
-      // Récupérer les destinataires potentiels
-      const response = await MessageService.getPotentialRecipients({
-        ...roleSpecificFilters,
-        ...filters
-      });
-      
-      setPotentialRecipients(response || []);
     } catch (err) {
       console.error('Erreur lors du chargement des destinataires:', err);
     }
@@ -264,7 +277,7 @@ const MessageComposer = ({
       };
       
       // Envoi du message
-      const response = await MessageService.sendMessage(messageData);
+      const response = await sendMessage(messageData);
       
       // Notification de succès
       showNotification({
