@@ -86,7 +86,7 @@ ou remplacé(dans le script start.sh se trouvant à la racine du proje)  mate-te
 A defaut , vous pouvez installer l un comme l autre via apt install mate-terminal ou apt install gnome-terminal
 
 
-IDENTIFIANT DE CONNEXIONS
+QUELQUES IDENTIFIANT DE CONNEXIONS
 
 ```bash
 player_1_3@n7.com
