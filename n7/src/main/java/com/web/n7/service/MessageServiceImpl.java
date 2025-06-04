@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,11 +62,6 @@ public class MessageServiceImpl implements MessageService {
                     .collect(Collectors.toList());
             messages = messageRepository.findAllInbox(currentUser).stream()
                     .filter(m -> roles.contains(m.getSenderRole()))
-                    .collect(Collectors.toList());
-        } else if (filter.getIsPlatformMessage() != null && filter.getIsPlatformMessage()) {
-            // Filtrer les messages de la plateforme (ADMIN uniquement)
-            messages = messageRepository.findAllInbox(currentUser).stream()
-                    .filter(m -> m.getSenderRole() == Role.ADMIN)
                     .collect(Collectors.toList());
         } else if (filter.getRecipientCategory() != null) {
             messages = messageRepository.findByRecipientAndCategory(currentUser, filter.getRecipientCategory().name());

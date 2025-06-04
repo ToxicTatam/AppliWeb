@@ -114,10 +114,10 @@ const MessageCard = ({
   // Obtenir l'info du type de message pour l'affichage
   const getMessageTypeInfo = () => {
     // Message du système ou d'administrateur
-    if (message.senderRole === 'ADMIN' || message.senderRole === 'SYSTEM') {
+    if (message.senderRole === 'ADMIN') {
       return {
         icon: <Campaign fontSize="small" />,
-        label: 'Système',
+        label: 'Administration',
         color: 'info'
       };
     }

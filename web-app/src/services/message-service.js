@@ -6,12 +6,40 @@ import endpoints from '../lib/api/endpoints';
  */
 
 /**
+ * Transforme les paramètres de tableau pour éviter les crochets dans l'URL
+ * Spring Boot peut accepter des paramètres multiples avec le même nom sans crochets
+ * @param {Object} params - Paramètres originaux
+ * @returns {URLSearchParams} - Paramètres transformés en format URLSearchParams
+ */
+const transformArrayParameters = (params) => {
+  const searchParams = new URLSearchParams();
+  
+  for (const [key, value] of Object.entries(params)) {
+    if (Array.isArray(value)) {
+      // Pour les tableaux, ajouter chaque valeur avec le même nom de paramètre
+      // Cela génère senderRoles=SYSTEM&senderRoles=ADMIN au lieu de senderRoles[]=...
+      value.forEach(item => {
+        if (item !== undefined && item !== null) {
+          searchParams.append(key, item);
+        }
+      });
+    } else if (value !== undefined && value !== null) {
+      searchParams.append(key, value);
+    }
+  }
+  
+  return searchParams;
+};
+
+/**
  * Récupère les messages de la boîte de réception selon les filtres spécifiés
  * @param {Object} filter - Filtres pour la boîte de réception
  * @returns {Promise<Object>} - Messages de la boîte de réception
  */
 export const getInboxMessages = async (filter = {}) => {
-  const response = await api.get(endpoints.messages.inbox, filter);
+  // Transformer les paramètres de tableau pour éviter les crochets dans l'URL
+  const processedFilter = transformArrayParameters(filter);
+  const response = await api.get(endpoints.messages.inbox, processedFilter);
   return response.data;
 };
 
@@ -21,7 +49,8 @@ export const getInboxMessages = async (filter = {}) => {
  * @returns {Promise<Object>} - Messages envoyés
  */
 export const getSentMessages = async (filter = {}) => {
-  const response = await api.get(endpoints.messages.sent, filter);
+  const processedFilter = transformArrayParameters(filter);
+  const response = await api.get(endpoints.messages.sent, processedFilter);
   return response.data;
 };
 
@@ -80,7 +109,8 @@ export const deleteMessage = async (messageId, userId) => {
  * @returns {Promise<Array>} - Liste des destinataires potentiels
  */
 export const getPotentialRecipients = async (filter = {}) => {
-  const response = await api.get(endpoints.messages.recipients, filter);
+  const processedFilter = transformArrayParameters(filter);
+  const response = await api.get(endpoints.messages.recipients, processedFilter);
   // Adapter les données reçues du backend pour inclure le champ 'name'
   const recipients = response.data || [];
   return recipients.map(recipient => ({

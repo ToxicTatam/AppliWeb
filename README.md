@@ -82,11 +82,20 @@ npm run dev
 
 ATTENTION: Le script start.sh marche sur les machines de l'N7 uniquement dans la version actuellement presente.
 Si vous vous utiliser sur votre machine personnelle, rassurez vous d'avoir un terminal mate(mate-terminal) installé
-ou remplacé mate-terminal par gnome-terminal (si la distrubtion utilisé est ubuntu et que gnome est le terminal par defaut)
+ou remplacé(dans le script start.sh se trouvant à la racine du proje)  mate-terminal par gnome-terminal (si la distrubtion utilisé est ubuntu et que gnome est le terminal par defaut)
 A defaut , vous pouvez installer l un comme l autre via apt install mate-terminal ou apt install gnome-terminal
 
-Exemple
+
+IDENTIFIANT DE CONNEXIONS
+
 player_1_3@n7.com
+coach1@n7.com
+coach2@n7.com
 coach5@n7.com
 admin@n7.com
+organizer1@n7.com
 organizer2@n7.com
+organizer3@n7.com
+
+mot de passe par défaut
+password

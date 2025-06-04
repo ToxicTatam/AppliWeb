@@ -88,7 +88,7 @@ const MessageFilter = ({ isInbox = true, onFilterChange, currentFilters = {} }) 
       { value: 'individual', label: 'Messages individuels' },
       { value: 'team', label: 'Messages d\'équipe' },
       { value: 'broadcast', label: 'Diffusions' },
-      { value: 'system', label: 'Système' }
+      { value: 'system', label: 'Administration' }
     ];
   }, [isInbox]);
   
@@ -106,7 +106,7 @@ const MessageFilter = ({ isInbox = true, onFilterChange, currentFilters = {} }) 
       case 'team':
         // Filtrer les messages de l'équipe en excluant explicitement les messages d'admin
         filters.senderEntityType = 'TEAM';
-        filters.excludeSenderRoles = ['ADMIN', 'SYSTEM']; // Exclure les messages d'admin et système
+        filters.excludeSenderRoles = ['ADMIN']; // Exclure les messages d'admin
         break;
       case 'players':
         filters.senderRole = 'PLAYER';
@@ -118,8 +118,8 @@ const MessageFilter = ({ isInbox = true, onFilterChange, currentFilters = {} }) 
         filters.senderRole = 'ORGANIZER';
         break;
       case 'platform':
-        // Filtrer à la fois les messages systèmes et administrateurs
-        filters.senderRoles = ['SYSTEM', 'ADMIN'];
+        // Filtrer les messages administrateurs
+        filters.senderRoles = ['ADMIN'];
         break;
       default:
         // Pas de filtre spécifique pour 'all'
@@ -149,8 +149,8 @@ const MessageFilter = ({ isInbox = true, onFilterChange, currentFilters = {} }) 
         filters.isBroadcast = true;
         break;
       case 'system':
-        // Inclure à la fois les messages système et administrateurs
-        filters.isPlatformMessage = true;
+        // Inclure les messages d'administration
+        filters.senderRoles = ['ADMIN'];
         break;
       default:
         // Pas de filtre spécifique pour 'all'
