@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import   * as  MessageService from '../../services/message-service';
 import { useNotification } from '../../hooks/useNotification';
+import { useAuth } from '../../hooks/useAuth';
 
 /**
  * Composant pour visualiser un message en détail
@@ -48,6 +49,7 @@ const MessageViewer = ({
 }) => {
   const router = useRouter();
   const { showNotification } = useNotification();
+  const { user } = useAuth();
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -103,7 +105,17 @@ const MessageViewer = ({
     if (!messageId) return;
     
     try {
-      await MessageService.deleteMessage(messageId);
+      // Récupérer l'ID de l'utilisateur connecté
+      const userId = user?.id;
+      if (!userId) {
+        showNotification({
+          type: 'error',
+          message: 'Utilisateur non authentifié'
+        });
+        return;
+      }
+      
+      await MessageService.deleteMessage(messageId, userId);
       
       showNotification({
         type: 'success',

@@ -11,7 +11,7 @@ import endpoints from '../lib/api/endpoints';
  * @returns {Promise<Object>} - Messages de la boîte de réception
  */
 export const getInboxMessages = async (filter = {}) => {
-  const response = await api.get(endpoints.messages.inbox, { params: filter });
+  const response = await api.get(endpoints.messages.inbox, filter);
   return response.data;
 };
 
@@ -21,7 +21,7 @@ export const getInboxMessages = async (filter = {}) => {
  * @returns {Promise<Object>} - Messages envoyés
  */
 export const getSentMessages = async (filter = {}) => {
-  const response = await api.get(endpoints.messages.sent, { params: filter });
+  const response = await api.get(endpoints.messages.sent, filter);
   return response.data;
 };
 
@@ -67,7 +67,7 @@ export const markAllAsRead = async () => {
 /**
  * Supprime un message
  * @param {number} messageId - ID du message à supprimer
- * @param {number} userId - ID de l'utilisateur qui effectue la suppression
+ * @param {number} userId - ID de l'utilisateur
  * @returns {Promise<void>}
  */
 export const deleteMessage = async (messageId, userId) => {
@@ -80,8 +80,13 @@ export const deleteMessage = async (messageId, userId) => {
  * @returns {Promise<Array>} - Liste des destinataires potentiels
  */
 export const getPotentialRecipients = async (filter = {}) => {
-  const response = await api.get(endpoints.messages.recipients, { params: filter });
-  return response.data;
+  const response = await api.get(endpoints.messages.recipients, filter);
+  // Adapter les données reçues du backend pour inclure le champ 'name'
+  const recipients = response.data || [];
+  return recipients.map(recipient => ({
+    ...recipient,
+    name: `${recipient.firstName || ''} ${recipient.lastName || ''}`.trim() || recipient.userName || 'Utilisateur inconnu'
+  }));
 };
 
 /**

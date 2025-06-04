@@ -26,6 +26,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log("BONJOUR ")
     return Promise.reject(error);
   }
 );

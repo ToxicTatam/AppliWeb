@@ -19,6 +19,7 @@ import DashboardHeader from '@/components/dashboard/common/DashboardHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotification } from '@/hooks/useNotification';
 import * as MessageService from '@/services/message-service';
+import { countUnreadMessages } from '@/utils/messageUtils';
 
 const MessagesPage = () => {
   const { user } = useAuth();
@@ -29,17 +30,36 @@ const MessagesPage = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Récupérer le nombre de messages non lus de manière optimisée
+  // Récupérer le nombre de messages non lus en utilisant les fonctions existantes
   useEffect(() => {
     let isMounted = true;
     const fetchUnreadCount = async () => {
       try {
-        const response = await MessageService.getUnreadCount();
-        if (isMounted) {
-          setUnreadCount(response.count || 0);
+        // Utiliser getInboxMessages avec le filtre isRead: false pour compter les messages non lus
+        const response = await MessageService.getInboxMessages({ 
+          isRead: false
+        });
+        if (isMounted && response) {
+          // Adapter selon le format de réponse du backend
+          let count = 0;
+          if (response.total !== undefined) {
+            // Structure paginée
+            count = response.total;
+          } else if (response.id) {
+            // MessageDTO unique non lu
+            count = response.isRead ? 0 : 1;
+          } else if (Array.isArray(response)) {
+            // Tableau de MessageDTO
+            count = response.filter(msg => !msg.isRead).length;
+          }
+          setUnreadCount(count);
         }
       } catch (error) {
         console.error('Erreur lors de la récupération du nombre de messages non lus:', error);
+        // En cas d'erreur, mettre le compteur à 0
+        if (isMounted) {
+          setUnreadCount(0);
+        }
       }
     };
     
@@ -76,15 +96,35 @@ const MessagesPage = () => {
   };
   
   // Gestion de l'envoi réussi d'un message
-  const handleMessageSent = () => {
+  const handleMessageSent = async () => {
     showNotification({
       type: 'success',
       message: 'Message envoyé avec succès'
     });
+    
     // Rafraîchir le nombre de messages non lus après l'envoi
-    MessageService.getUnreadCount().then(response => {
-      setUnreadCount(response.count || 0);
-    });
+    try {
+      const response = await MessageService.getInboxMessages({ 
+        isRead: false
+      });
+      if (response) {
+        // Adapter selon le format de réponse du backend
+        let count = 0;
+        if (response.total !== undefined) {
+          // Structure paginée
+          count = response.total;
+        } else if (response.id) {
+          // MessageDTO unique non lu
+          count = response.isRead ? 0 : 1;
+        } else if (Array.isArray(response)) {
+          // Tableau de MessageDTO
+          count = response.filter(msg => !msg.isRead).length;
+        }
+        setUnreadCount(count);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du compteur de messages non lus:', error);
+    }
   };
   
   return (

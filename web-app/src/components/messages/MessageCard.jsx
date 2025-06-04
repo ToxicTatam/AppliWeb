@@ -19,15 +19,24 @@ import {
   Person, 
   Group, 
   MeetingRoom, 
-  Sports, 
+  SportsFootball,
   EmojiEvents, 
-  SupervisorAccount,
+  AdminPanelSettings,
   Public,
   MarkEmailRead,
   Delete,
   Reply,
-  Campaign
+  Campaign,
+  Message,
+  Tournament
 } from '@mui/icons-material';
+import { 
+  RECIPIENT_CATEGORIES, 
+  isBroadcastMessage, 
+  getRoleLabel, 
+  getRoleBadgeColor, 
+  getRecipientCategoryLabel 
+} from '../../types/message';
 
 /**
  * Carte affichant un message dans la boîte de réception ou la boîte d'envoi
@@ -52,47 +61,32 @@ const MessageCard = ({
   // Détermine l'icône à afficher en fonction de la catégorie de destinataire
   const getCategoryIcon = () => {
     switch (message.recipientCategory) {
-      case 'INDIVIDUAL':
+      case RECIPIENT_CATEGORIES.INDIVIDUAL:
         return <Person />;
-      case 'TEAM':
+      case RECIPIENT_CATEGORIES.TEAM:
+      case RECIPIENT_CATEGORIES.TEAM_WITH_COACH:
         return <Group />;
-      case 'TEAM_WITH_COACH':
-        return <MeetingRoom />;
-      case 'ALL_PLAYERS':
-        return <Sports />;
-      case 'ALL_COACHES':
-        return <SupervisorAccount />;
-      case 'COMPETITION_COACHES':
+      case RECIPIENT_CATEGORIES.ALL_PLAYERS:
+        return <SportsFootball />;
+      case RECIPIENT_CATEGORIES.ALL_COACHES:
         return <EmojiEvents />;
-      case 'GLOBAL':
+      case RECIPIENT_CATEGORIES.ALL_ORGANIZERS:
+        return <AdminPanelSettings />;
+      case RECIPIENT_CATEGORIES.COMPETITION_COACHES:
+        return <Tournament />;
+      case RECIPIENT_CATEGORIES.GLOBAL:
         return <Public />;
       default:
-        return <Person />;
+        return <Message />;
     }
   };
   
   // Retourne un libellé pour la catégorie de destinataire
   const getCategoryLabel = () => {
-    switch (message.recipientCategory) {
-      case 'INDIVIDUAL':
-        return 'Message individuel';
-      case 'TEAM':
-        return 'Équipe';
-      case 'TEAM_WITH_COACH':
-        return 'Équipe et coach';
-      case 'ALL_PLAYERS':
-        return 'Tous les joueurs';
-      case 'ALL_COACHES':
-        return 'Tous les coachs';
-      case 'ALL_ORGANIZERS':
-        return 'Tous les organisateurs';
-      case 'COMPETITION_COACHES':
-        return 'Coachs de compétition';
-      case 'GLOBAL':
-        return 'Message global';
-      default:
-        return 'Message';
-    }
+    return getRecipientCategoryLabel(
+      message.recipientCategory, 
+      message.recipientIds ? message.recipientIds.length : 1
+    );
   };
   
   // Formatter les dates en français
@@ -103,44 +97,18 @@ const MessageCard = ({
   };
   
   // Détermine la couleur du badge en fonction du rôle de l'expéditeur/destinataire
-  const getRoleBadgeColor = (role) => {
-    switch (role) {
-      case 'PLAYER':
-        return 'primary';
-      case 'COACH':
-        return 'success';
-      case 'ORGANIZER':
-        return 'warning';
-      case 'ADMIN':
-        return 'error';
-      case 'SYSTEM':
-        return 'info';
-      default:
-        return 'default';
-    }
+  const getLocalRoleBadgeColor = (role) => {
+    return getRoleBadgeColor(role);
   };
   
   // Affiche le nom du rôle en français
-  const getRoleLabel = (role) => {
-    switch (role) {
-      case 'PLAYER':
-        return 'Joueur';
-      case 'COACH':
-        return 'Coach';
-      case 'ORGANIZER':
-        return 'Organisateur';
-      case 'ADMIN':
-        return 'Administrateur';
-    //   case 'SYSTEM':
-    //     return 'Système';
-      default:
-        return role;
-    }
+  const getLocalRoleLabel = (role) => {
+    return getRoleLabel(role);
   };
   
   // Vérifier si c'est un message de diffusion
-  const isBroadcastMessage = () => {
-    return ['ALL_PLAYERS', 'ALL_COACHES', 'ALL_ORGANIZERS', 'COMPETITION_COACHES', 'GLOBAL'].includes(message.recipientCategory);
+  const isMessageBroadcast = () => {
+    return isBroadcastMessage(message.recipientCategory);
   };
   
   // Obtenir l'info du type de message pour l'affichage
@@ -155,7 +123,7 @@ const MessageCard = ({
     }
     
     // Message individuel
-    if (message.recipientCategory === 'INDIVIDUAL') {
+    if (message.recipientCategory === RECIPIENT_CATEGORIES.INDIVIDUAL) {
       return {
         icon: <Person fontSize="small" />,
         label: 'Individuel',
@@ -164,7 +132,7 @@ const MessageCard = ({
     }
     
     // Message d'équipe
-    if (['TEAM', 'TEAM_WITH_COACH'].includes(message.recipientCategory)) {
+    if ([RECIPIENT_CATEGORIES.TEAM, RECIPIENT_CATEGORIES.TEAM_WITH_COACH].includes(message.recipientCategory)) {
       return {
         icon: <Group fontSize="small" />,
         label: 'Équipe',
@@ -173,7 +141,7 @@ const MessageCard = ({
     }
     
     // Message de diffusion
-    if (isBroadcastMessage()) {
+    if (isMessageBroadcast()) {
       return {
         icon: <Campaign fontSize="small" />,
         label: 'Diffusion',
@@ -237,7 +205,7 @@ const MessageCard = ({
           <Avatar>
             {isInbox 
               ? message.senderName?.charAt(0).toUpperCase() || 'U'
-              : message.recipientCategory === 'INDIVIDUAL' && message.recipientName
+              : message.recipientCategory === RECIPIENT_CATEGORIES.INDIVIDUAL && message.recipientName
                 ? message.recipientName.charAt(0).toUpperCase()
                 : getCategoryIcon()
             }

@@ -15,6 +15,7 @@ import MessageFilter from './filters/MessageFilter';
 import  * as  MessageService from '../../services/message-service';
 import { useNotification } from '../../hooks/useNotification';
 import { useAuth } from '../../hooks/useAuth';
+import { adaptMessageResponse } from '../../utils/messageUtils';
 
 /**
  * Liste de messages (boîte de réception ou envoyés)
@@ -50,20 +51,20 @@ const MessageList = ({
       const messageFilters = {
         ...filters,
         ...activeFilters,
-        page,
+        page: page - 1, // Convertir de pagination 1-indexed à 0-indexed pour le backend
+        size: 10, // Utiliser 'size' au lieu de 'pageSize' pour correspondre au contrôleur
         isRead: showUnreadOnly ? false : activeFilters.isRead
       };
-      
-      // Limiter la taille de page pour améliorer les performances
-      messageFilters.pageSize = 10;
       
       // Appel du service approprié selon qu'on affiche la boîte de réception ou les messages envoyés
       const response = isInbox 
         ? await MessageService.getInboxMessages(messageFilters)
         : await MessageService.getSentMessages(messageFilters);
       
-      setMessages(response.data || []);
-      setTotalPages(Math.ceil(response.total / response.pageSize) || 1);
+      // Adapter la réponse selon le format retourné par le backend
+      const adaptedResponse = adaptMessageResponse(response);
+      setMessages(adaptedResponse.messages);
+      setTotalPages(adaptedResponse.totalPages);
       setError(null);
     } catch (err) {
       console.error('Erreur lors du chargement des messages:', err);
@@ -124,7 +125,17 @@ const MessageList = ({
   // Supprimer un message
   const handleDelete = useCallback(async (messageId) => {
     try {
-      await MessageService.deleteMessage(messageId);
+      // Récupérer l'ID de l'utilisateur connecté
+      const userId = user?.id;
+      if (!userId) {
+        showNotification({
+          type: 'error',
+          message: 'Utilisateur non authentifié'
+        });
+        return;
+      }
+      
+      await MessageService.deleteMessage(messageId, userId);
       
       // Mettre à jour l'état local sans déclencher de re-render complet
       setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));
@@ -140,7 +151,7 @@ const MessageList = ({
         message: 'Erreur lors de la suppression du message'
       });
     }
-  }, [showNotification]);
+  }, [showNotification, user]);
   
   // Répondre à un message
   const handleReply = useCallback((message) => {

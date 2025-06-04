@@ -76,15 +76,18 @@ const MessageComposer = ({
         loadPotentialRecipients();
         
         // Charger les équipes si l'utilisateur est un joueur ou un coach
-        if (user.role === 'PLAYER' || user.role === 'COACH') {
-          const teamsResponse = await TeamService.getUserTeams(user.id);
-          setTeams(teamsResponse.data || []);
+        if (user.role === 'PLAYER') {
+          const teamsResponse = await TeamService.getTeamsByPlayer(user.id);
+          setTeams(teamsResponse || []);
+        } else if (user.role === 'COACH') {
+          const teamsResponse = await TeamService.getAllCoachTeams(user.id);
+          setTeams(teamsResponse || []);
         }
         
         // Charger les compétitions si l'utilisateur est un organisateur
         if (user.role === 'ORGANIZER') {
-          const competitionsResponse = await CompetitionService.getUserCompetitions(user.id);
-          setCompetitions(competitionsResponse.data || []);
+          const competitionsResponse = await CompetitionService.getCompetitionsByUserId(user.id);
+          setCompetitions(competitionsResponse || []);
         }
       } catch (err) {
         console.error('Erreur lors du chargement des données initiales:', err);
@@ -108,14 +111,18 @@ const MessageComposer = ({
         return;
       }
       
-      if (user.role === 'COACH' && formData.recipientCategory === 'INDIVIDUAL') {
-        // Un coach peut envoyer à un joueur ou un organisateur
-        roleSpecificFilters.targetRole = filters.targetRole || 'PLAYER';
-      }
-      
-      if (user.role === 'ORGANIZER' && formData.recipientCategory === 'INDIVIDUAL') {
-        // Un organisateur peut envoyer à un coach
-        roleSpecificFilters.targetRole = 'COACH';
+      if (formData.recipientCategory === 'INDIVIDUAL') {
+        // Définir les rôles cibles selon le rôle de l'utilisateur actuel
+        if (user.role === 'PLAYER') {
+          // Un joueur peut envoyer à un coach ou un organisateur
+          roleSpecificFilters.targetRole = filters.targetRole || 'COACH';
+        } else if (user.role === 'COACH') {
+          // Un coach peut envoyer à un joueur ou un organisateur
+          roleSpecificFilters.targetRole = filters.targetRole || 'PLAYER';
+        } else if (user.role === 'ORGANIZER') {
+          // Un organisateur peut envoyer à un coach ou un joueur
+          roleSpecificFilters.targetRole = filters.targetRole || 'COACH';
+        }
       }
       
       // Si une recherche est en cours
@@ -129,7 +136,7 @@ const MessageComposer = ({
         ...filters
       });
       
-      setPotentialRecipients(response.data || []);
+      setPotentialRecipients(response || []);
     } catch (err) {
       console.error('Erreur lors du chargement des destinataires:', err);
     }

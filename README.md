@@ -85,3 +85,8 @@ Si vous vous utiliser sur votre machine personnelle, rassurez vous d'avoir un te
 ou remplacé mate-terminal par gnome-terminal (si la distrubtion utilisé est ubuntu et que gnome est le terminal par defaut)
 A defaut , vous pouvez installer l un comme l autre via apt install mate-terminal ou apt install gnome-terminal
 
+Exemple
+player_1_3@n7.com
+coach5@n7.com
+admin@n7.com
+organizer2@n7.com
