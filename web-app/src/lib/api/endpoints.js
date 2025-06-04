@@ -54,7 +54,7 @@ const competitionsEndpoints = {
     delete: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/${competitionId}`,
     updateStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/status?reason=${reason}`,
     updateTeamStatus: (organizerId, reason) => `${baseUrl}/competitions/organizer/${organizerId}/team-status?reason=${reason}`,
-    processRequest: (organizerId, requestId, approved, reason) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}?approved=${approved}?reason=${reason}`,
+    processRequest: (organizerId, requestId, approved, reason) => `${baseUrl}/competitions/organizer/${organizerId}/request/${requestId}?approved=${approved}&reason=${reason}`,
     requests: (organizerId, competitionId) => `${baseUrl}/competitions/organizer/${organizerId}/competition/${competitionId}/requests`,
   
   },
