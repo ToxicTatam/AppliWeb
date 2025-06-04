@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getCompetitionById } from '@/services/competition-service';
 import { scheduleMatch } from '@/services/match-service';
+import { getCompetitionTeamsByOrganizer } from '@/services/team-service';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -52,12 +53,13 @@ export default function ScheduleMatchPage() {
       const competitionData = await getCompetitionById(competitionId);
       setCompetition(competitionData);
       
-      // Dans une vraie application, récupérer les équipes inscrites à cette compétition
-      // Pour ce prototype, nous supposons que les équipes sont incluses dans l'objet competition
-      if (competitionData.teams) {
-        setTeams(competitionData.teams);
-      } else {
-        // Simulation de données pour le développement
+      // Récupérer les équipes inscrites à cette compétition
+      try {
+        const teamsData = await getCompetitionTeamsByOrganizer(user.id, competitionId);
+        console.log(teamsData)
+        setTeams(teamsData || []);
+      } catch (teamsError) {
+        console.warn('Erreur lors de la récupération des équipes:', teamsError);
         setTeams([]);
       }
       
@@ -236,11 +238,18 @@ export default function ScheduleMatchPage() {
                 disabled={loading || teams.length === 0}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Sélectionner une équipe</option>
+                <option value="">
+                  {teams.length === 0 ? 'Aucune équipe disponible' : 'Sélectionner une équipe'}
+                </option>
                 {teams.map(team => (
                   <option key={`home-${team.id}`} value={team.id}>{team.name}</option>
                 ))}
               </select>
+              {teams.length === 0 && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Aucune équipe inscrite à cette compétition
+                </p>
+              )}
             </div>
             
             <div>
