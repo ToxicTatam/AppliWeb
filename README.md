@@ -88,6 +88,7 @@ A defaut , vous pouvez installer l un comme l autre via apt install mate-termina
 
 IDENTIFIANT DE CONNEXIONS
 
+```bash
 player_1_3@n7.com
 coach1@n7.com
 coach2@n7.com
@@ -96,6 +97,7 @@ admin@n7.com
 organizer1@n7.com
 organizer2@n7.com
 organizer3@n7.com
+```
 
-mot de passe par défaut
+mot de passe par défaut :
 password
