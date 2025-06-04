@@ -4,6 +4,7 @@
 
 - **Node.js** : Version 22.10 recommandée (version minimale 19)
 - **Système d'exploitation** : Linux (testé sur Ubuntu)
+- **Navigateur de test** : Google chrome(windows) , Chromium (Linux). 
 
 ## Structure du projet
 
@@ -85,6 +86,7 @@ Si vous vous utiliser sur votre machine personnelle, rassurez vous d'avoir un te
 ou remplacé(dans le script start.sh se trouvant à la racine du proje)  mate-terminal par gnome-terminal (si la distrubtion utilisé est ubuntu et que gnome est le terminal par defaut)
 A defaut , vous pouvez installer l un comme l autre via apt install mate-terminal ou apt install gnome-terminal
 
+Nous utilisons un dataseeder pour initialiser la base de donnée.
 
 QUELQUES IDENTIFIANT DE CONNEXIONS
 
@@ -93,7 +95,6 @@ player_1_3@n7.com
 coach1@n7.com
 coach2@n7.com
 coach5@n7.com
-admin@n7.com
 organizer1@n7.com
 organizer2@n7.com
 organizer3@n7.com
