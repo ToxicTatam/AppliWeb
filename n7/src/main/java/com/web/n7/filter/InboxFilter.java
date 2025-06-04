@@ -13,6 +13,7 @@ public class InboxFilter {
         private String senderRole;
         private List<String> senderRoles;
         private List<String> excludeSenderRoles;
+        private Boolean isPlatformMessage;
         private String senderName;
         private Long relatedEntityId;
         private String relatedEntityType;

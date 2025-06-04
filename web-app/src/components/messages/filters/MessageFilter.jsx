@@ -150,7 +150,7 @@ const MessageFilter = ({ isInbox = true, onFilterChange, currentFilters = {} }) 
         break;
       case 'system':
         // Inclure à la fois les messages système et administrateurs
-        filters.senderRoles = ['SYSTEM', 'ADMIN'];
+        filters.isPlatformMessage = true;
         break;
       default:
         // Pas de filtre spécifique pour 'all'

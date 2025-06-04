@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +54,19 @@ public class MessageServiceImpl implements MessageService {
             messages = messageRepository.findBySenderRole(role).stream()
                     .filter(m -> m.getRecipients().contains(currentUser))
                     .collect(Collectors.toList());
+        } else if (filter.getSenderRoles() != null && !filter.getSenderRoles().isEmpty()) {
+            // Filtrer par plusieurs rôles d'expéditeur
+            List<Role> roles = filter.getSenderRoles().stream()
+                    .map(Role::valueOf)
+                    .collect(Collectors.toList());
+            messages = messageRepository.findAllInbox(currentUser).stream()
+                    .filter(m -> roles.contains(m.getSenderRole()))
+                    .collect(Collectors.toList());
+        } else if (filter.getIsPlatformMessage() != null && filter.getIsPlatformMessage()) {
+            // Filtrer les messages de la plateforme (ADMIN uniquement)
+            messages = messageRepository.findAllInbox(currentUser).stream()
+                    .filter(m -> m.getSenderRole() == Role.ADMIN)
+                    .collect(Collectors.toList());
         } else if (filter.getRecipientCategory() != null) {
             messages = messageRepository.findByRecipientAndCategory(currentUser, filter.getRecipientCategory().name());
         } else if (filter.getRelatedEntityId() != null && filter.getRelatedEntityType() != null) {
@@ -64,6 +76,16 @@ public class MessageServiceImpl implements MessageService {
                     .collect(Collectors.toList());
         } else {
             messages = messageRepository.findAllInbox(currentUser);
+        }
+        
+        // Filtrer par rôles d'expéditeur à exclure si spécifié
+        if (filter.getExcludeSenderRoles() != null && !filter.getExcludeSenderRoles().isEmpty()) {
+            List<Role> excludeRoles = filter.getExcludeSenderRoles().stream()
+                    .map(Role::valueOf)
+                    .collect(Collectors.toList());
+            messages = messages.stream()
+                    .filter(m -> !excludeRoles.contains(m.getSenderRole()))
+                    .collect(Collectors.toList());
         }
         
         // Filtrer par statut de lecture si spécifié

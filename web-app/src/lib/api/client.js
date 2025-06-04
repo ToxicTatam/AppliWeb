@@ -31,7 +31,8 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Interception des réponses pour gérer les erreurs et le rafraîchissement du token
+// Interception des réponses pour gérer les err
+// eurs et le rafraîchissement du token
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
